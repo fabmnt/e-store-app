@@ -14,6 +14,12 @@ importers:
       '@next/env':
         specifier: ^15.5.0
         version: 15.5.0
+      '@orpc/client':
+        specifier: ^1.8.2
+        version: 1.8.2
+      '@orpc/server':
+        specifier: ^1.8.2
+        version: 1.8.2
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -688,6 +694,49 @@ packages:
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
+
+  '@orpc/client@1.8.2':
+    resolution: {integrity: sha512-0ut9MjI8Fhnns2zwkgEZWM2zsTZQMwViV81wSVehRzMfZ6zzeR8OB/WyiXpDS4u3gQJef6ji1kciGNUy8hqNqg==}
+
+  '@orpc/contract@1.8.2':
+    resolution: {integrity: sha512-KCQJt/k7r0JVSZbxQKIPYcC3TaY2B2tU14YbdwFWIHEnsoRJBWfv/Oi8o6y69GQUjML8k78Uascz5PwdYmmVEw==}
+
+  '@orpc/interop@1.8.2':
+    resolution: {integrity: sha512-CRngUojcq1H+uMI/3QBm+Eyv7b1gW3iNB64arYU420HxyfwV/z5g4T/HfeIIfmTzzyXXXvFr0BnO9zy+rRWVOA==}
+
+  '@orpc/server@1.8.2':
+    resolution: {integrity: sha512-aUPPsLAdqZEGB1oHIlFuu6Yu2JRT2nE+kt0lviMnzMhAhRKq3P39O2smicpRWu0gLZps04InxjX/I7eX8o32RA==}
+    peerDependencies:
+      crossws: '>=0.3.4'
+      ws: '>=8.18.1'
+    peerDependenciesMeta:
+      crossws:
+        optional: true
+      ws:
+        optional: true
+
+  '@orpc/shared@1.8.2':
+    resolution: {integrity: sha512-B+cW5jsQmP5+LNaxgKL6Bky67Nv0DPfpBiRovtN0Lk2iCFCoXv3A/XjDhxY1w7aX9wxk4M32jLIeRzC4vP3gkw==}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.9.0'
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+
+  '@orpc/standard-server-aws-lambda@1.8.2':
+    resolution: {integrity: sha512-vCS+Ftw2fNlhSJRuVCa9PPOcit9W0pM1gBnr9VdB6br38OhsMu40et/wnUYsGfVTfECqm6wXD6F5Z4S4P8Do9w==}
+
+  '@orpc/standard-server-fetch@1.8.2':
+    resolution: {integrity: sha512-b70cMftMDyuWs4iMYHc7RFBukHz3KI7fztN6KY/U4AU+SmMZtA9sslGQic1KsKMainFw0GmMxN8KbIHRpaFmRw==}
+
+  '@orpc/standard-server-node@1.8.2':
+    resolution: {integrity: sha512-/CFXVWfV74qCVx6l3oxxBGiwgKP022kOWbG8RlsutXdRaX/yvDTcu2dt8etmOVS5uSeikmzPteue0eZVOOvS8g==}
+
+  '@orpc/standard-server-peer@1.8.2':
+    resolution: {integrity: sha512-BExWRBpN3NII9K9YtHkeUIs8lT4GbMsfIyjwhrVh1U7L7Bho1hj30dr0os5bLEjalUu9hma8d9X7sIpOWriALw==}
+
+  '@orpc/standard-server@1.8.2':
+    resolution: {integrity: sha512-n6xkDwBjIcgyuNg/qSrwPY2tF55k8BAZcnVpCfocOpnP5NYM53ZWfllVi7fDTcHyu5H2KB8N7RFFn3N1m2xcCQ==}
 
   '@peculiar/asn1-android@2.4.0':
     resolution: {integrity: sha512-YFueREq97CLslZZBI8dKzis7jMfEHSLxM+nr0Zdx1POiXFLjqqwoY5s0F1UimdBiEw/iKlHey2m56MRDv7Jtyg==}
@@ -1501,6 +1550,9 @@ packages:
     resolution: {integrity: sha512-VwoDfvLXSCaRiD+xCIuyslU0HLxVggeE5BL06+GbsP2l1fGf5op8e0c3ZtKoi+vSg1q4ikjtAghC23ze2Q3H9g==}
     engines: {node: '>=20.0.0'}
 
+  '@standard-schema/spec@1.0.0':
+    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
+
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
@@ -1772,6 +1824,10 @@ packages:
   consola@3.4.2:
     resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
     engines: {node: ^14.18.0 || >=16.10.0}
+
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
@@ -2169,6 +2225,9 @@ packages:
     resolution: {integrity: sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ==}
     engines: {node: '>=18'}
 
+  openapi-types@12.1.3:
+    resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
+
   pathe@2.0.3:
     resolution: {integrity: sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==}
 
@@ -2236,6 +2295,10 @@ packages:
   pvutils@1.1.3:
     resolution: {integrity: sha512-pMpnA0qRdFp32b1sJl1wOJNxZLQ2cbQx+k6tjNtZ8CpvVhNqEPRgivZ2WOUev2YMajecdH7ctUPDvEe87nariQ==}
     engines: {node: '>=6.0.0'}
+
+  radash@12.1.1:
+    resolution: {integrity: sha512-h36JMxKRqrAxVD8201FrCpyeNuUY9Y5zZwujr20fFO77tpUtGa6EZzfKw/3WaiBX95fq7+MpsuMLNdSnORAwSA==}
+    engines: {node: '>=14.18.0'}
 
   radix-ui@1.4.3:
     resolution: {integrity: sha512-aWizCQiyeAenIdUbqEpXgRA1ya65P13NKn/W8rWkcN0OPkRDxdBVLWnIEDsS2RpwCK2nobI7oMUSmexzTDyAmA==}
@@ -2449,6 +2512,10 @@ packages:
 
   tw-animate-css@1.3.7:
     resolution: {integrity: sha512-lvLb3hTIpB5oGsk8JmLoAjeCHV58nKa2zHYn8yWOoG5JJusH3bhJlF2DLAZ/5NmJ+jyH3ssiAx/2KmbhavJy/A==}
+
+  type-fest@4.41.0:
+    resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
+    engines: {node: '>=16'}
 
   typescript@5.9.2:
     resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
@@ -2979,6 +3046,83 @@ snapshots:
   '@noble/ciphers@0.6.0': {}
 
   '@noble/hashes@1.8.0': {}
+
+  '@orpc/client@1.8.2':
+    dependencies:
+      '@orpc/shared': 1.8.2
+      '@orpc/standard-server': 1.8.2
+      '@orpc/standard-server-fetch': 1.8.2
+      '@orpc/standard-server-peer': 1.8.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/contract@1.8.2':
+    dependencies:
+      '@orpc/client': 1.8.2
+      '@orpc/shared': 1.8.2
+      '@standard-schema/spec': 1.0.0
+      openapi-types: 12.1.3
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/interop@1.8.2': {}
+
+  '@orpc/server@1.8.2':
+    dependencies:
+      '@orpc/client': 1.8.2
+      '@orpc/contract': 1.8.2
+      '@orpc/interop': 1.8.2
+      '@orpc/shared': 1.8.2
+      '@orpc/standard-server': 1.8.2
+      '@orpc/standard-server-aws-lambda': 1.8.2
+      '@orpc/standard-server-fetch': 1.8.2
+      '@orpc/standard-server-node': 1.8.2
+      '@orpc/standard-server-peer': 1.8.2
+      cookie: 1.0.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/shared@1.8.2':
+    dependencies:
+      radash: 12.1.1
+      type-fest: 4.41.0
+
+  '@orpc/standard-server-aws-lambda@1.8.2':
+    dependencies:
+      '@orpc/shared': 1.8.2
+      '@orpc/standard-server': 1.8.2
+      '@orpc/standard-server-fetch': 1.8.2
+      '@orpc/standard-server-node': 1.8.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/standard-server-fetch@1.8.2':
+    dependencies:
+      '@orpc/shared': 1.8.2
+      '@orpc/standard-server': 1.8.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/standard-server-node@1.8.2':
+    dependencies:
+      '@orpc/shared': 1.8.2
+      '@orpc/standard-server': 1.8.2
+      '@orpc/standard-server-fetch': 1.8.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/standard-server-peer@1.8.2':
+    dependencies:
+      '@orpc/shared': 1.8.2
+      '@orpc/standard-server': 1.8.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
+
+  '@orpc/standard-server@1.8.2':
+    dependencies:
+      '@orpc/shared': 1.8.2
+    transitivePeerDependencies:
+      - '@opentelemetry/api'
 
   '@peculiar/asn1-android@2.4.0':
     dependencies:
@@ -3832,6 +3976,8 @@ snapshots:
       '@peculiar/asn1-schema': 2.4.0
       '@peculiar/asn1-x509': 2.4.0
 
+  '@standard-schema/spec@1.0.0': {}
+
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.8.1
@@ -4103,6 +4249,8 @@ snapshots:
   confbox@0.2.2: {}
 
   consola@3.4.2: {}
+
+  cookie@1.0.2: {}
 
   csstype@3.1.3: {}
 
@@ -4408,6 +4556,8 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
+  openapi-types@12.1.3: {}
+
   pathe@2.0.3: {}
 
   pathval@2.0.1: {}
@@ -4465,6 +4615,8 @@ snapshots:
       tslib: 2.8.1
 
   pvutils@1.1.3: {}
+
+  radash@12.1.1: {}
 
   radix-ui@1.4.3(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -4742,6 +4894,8 @@ snapshots:
   tslib@2.8.1: {}
 
   tw-animate-css@1.3.7: {}
+
+  type-fest@4.41.0: {}
 
   typescript@5.9.2: {}
 
