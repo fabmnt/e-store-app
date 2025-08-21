@@ -1,12 +1,11 @@
 'use server';
 
-import { ORPCError } from '@orpc/server';
+import { ORPCError, os } from '@orpc/server';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { auth } from '@/lib/auth';
-import { publicOs } from './procedures';
 
-export const signIn = publicOs
+export const signIn = os
   .input(
     z.object({
       email: z.email(),
@@ -25,17 +24,17 @@ export const signIn = publicOs
       throw new ORPCError('BAD_REQUEST');
     }
   })
-  .actionable({ context: { headers: await headers() } });
+  .actionable();
 
-export const signOut = publicOs
-  .handler(async ({ context }) => {
+export const signOut = os
+  .handler(async () => {
     await auth.api.signOut({
-      headers: context.headers,
+      headers: await headers(),
     });
   })
-  .actionable({ context: { headers: await headers() } });
+  .actionable();
 
-export const signUp = publicOs
+export const signUp = os
   .input(
     z.object({
       name: z.string(),
@@ -56,4 +55,4 @@ export const signUp = publicOs
       throw new ORPCError('BAD_REQUEST');
     }
   })
-  .actionable({ context: { headers: await headers() } });
+  .actionable();
