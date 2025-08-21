@@ -5,7 +5,7 @@ const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
 const envSchema = z.object({
-  DATABASE_URL: z.string().nonempty('DATABASE_URL is required'),
+  DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
 });
 
 export const { DATABASE_URL } = envSchema.parse(process.env);
