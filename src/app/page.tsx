@@ -1,8 +1,5 @@
-import { safe } from '@orpc/server';
-import { client } from '@/lib/orpc';
-
-export default async function Home() {
-  const salut = await client.hello({ name: 'fabian' });
+export default function Home() {
+  /*   const salut = await client.hello({ name: 'fabian' });
   const { error, data: ping, isDefined } = await safe(client.pong());
 
   if (isDefined && error.code === 'UNAUTHORIZED') {
@@ -12,10 +9,6 @@ export default async function Home() {
   if (error) {
     return <div>Something went wrong</div>;
   }
-
-  return (
-    <div>
-      {salut} {ping}
-    </div>
-  );
+ */
+  return <div>{/* {salut} {ping} */}</div>;
 }
