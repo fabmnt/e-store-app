@@ -1,4 +1,13 @@
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import {
+  boolean,
+  integer,
+  numeric,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -59,3 +68,87 @@ export const verification = pgTable('verification', {
     () => /* @__PURE__ */ new Date()
   ),
 });
+
+export const store = pgTable('store', {
+  id: uuid().defaultRandom().primaryKey(),
+  name: text().notNull(),
+  slug: text().notNull().unique(),
+  description: text(),
+  imageURL: text(),
+  address: text(),
+  phone: text(),
+  whatsapp: text(),
+  email: text(),
+  website: text(),
+  facebook: text(),
+  instagram: text(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const category = pgTable('category', {
+  id: uuid().defaultRandom().primaryKey(),
+  name: text().notNull(),
+  slug: text().notNull().unique(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  storeId: uuid('store_id')
+    .notNull()
+    .references(() => store.id, { onDelete: 'cascade' }),
+});
+
+export const product = pgTable('product', {
+  id: uuid().defaultRandom().primaryKey(),
+  name: text().notNull(),
+  slug: text().notNull().unique(),
+  description: text(),
+  imageURL: text(),
+  price: numeric({ mode: 'number', precision: 10, scale: 2 }).notNull(),
+  stock: integer().notNull().default(0),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  storeId: uuid('store_id')
+    .notNull()
+    .references(() => store.id, { onDelete: 'cascade' }),
+  categoryId: uuid('category_id')
+    .notNull()
+    .references(() => category.id, { onDelete: 'cascade' }),
+});
+
+export const productImage = pgTable('product_image', {
+  id: uuid().defaultRandom().primaryKey(),
+  url: text().notNull(),
+  productId: uuid('product_id')
+    .notNull()
+    .references(() => product.id, { onDelete: 'cascade' }),
+});
+
+// relations
+export const storeRelations = relations(store, ({ many }) => ({
+  categories: many(category),
+  products: many(product),
+}));
+
+export const categoryRelations = relations(category, ({ many, one }) => ({
+  products: many(product),
+  store: one(store, {
+    fields: [category.storeId],
+    references: [store.id],
+  }),
+}));
+
+export const productRelations = relations(product, ({ many, one }) => ({
+  images: many(productImage),
+  category: one(category, {
+    fields: [product.categoryId],
+    references: [category.id],
+  }),
+  store: one(store, {
+    fields: [product.storeId],
+    references: [store.id],
+  }),
+}));
+
+export const productImageRelations = relations(productImage, ({ one }) => ({
+  product: one(product, {
+    fields: [productImage.productId],
+    references: [product.id],
+  }),
+}));
