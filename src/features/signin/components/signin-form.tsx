@@ -85,6 +85,7 @@ export function SignInForm() {
                 onChange={(e) => {
                   field.handleChange(e.target.value);
                 }}
+                value={field.state.value}
               />
               <FieldInfo field={field} />
             </>
