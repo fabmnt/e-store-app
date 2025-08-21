@@ -2,16 +2,12 @@
 
 import { ORPCError, os } from '@orpc/server';
 import { headers } from 'next/headers';
-import * as z from 'zod';
+import { signInSchema } from '@/features/signin/schemas/signin-schema';
+import { signUpSchema } from '@/features/signup/schemas/signup-schema';
 import { auth } from '@/lib/auth';
 
 export const signIn = os
-  .input(
-    z.object({
-      email: z.email(),
-      password: z.string(),
-    })
-  )
+  .input(signInSchema)
   .handler(async ({ input }) => {
     try {
       await auth.api.signInEmail({
@@ -35,13 +31,7 @@ export const signOut = os
   .actionable();
 
 export const signUp = os
-  .input(
-    z.object({
-      name: z.string(),
-      email: z.email(),
-      password: z.string(),
-    })
-  )
+  .input(signUpSchema)
   .handler(async ({ input }) => {
     try {
       await auth.api.signUpEmail({
