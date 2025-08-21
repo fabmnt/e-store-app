@@ -8,6 +8,11 @@ export const publicOs = os.$context<{
 
 export const protectedOs = os
   .$context<{ headers: Awaited<ReturnType<typeof headers>> }>()
+  .errors({
+    UNAUTHORIZED: {
+      message: 'Unauthorized user',
+    },
+  })
   .use(async ({ context, next }) => {
     const session = await auth.api.getSession({ headers: context.headers });
 
