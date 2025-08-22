@@ -83,6 +83,7 @@ export const store = pgTable('store', {
   facebook: text(),
   instagram: text(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
 export const category = pgTable('category', {
@@ -90,6 +91,7 @@ export const category = pgTable('category', {
   name: text().notNull(),
   slug: text().notNull().unique(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
   storeId: uuid('store_id')
     .notNull()
     .references(() => store.id, { onDelete: 'cascade' }),
@@ -104,6 +106,7 @@ export const product = pgTable('product', {
   price: numeric({ mode: 'number', precision: 10, scale: 2 }).notNull(),
   stock: integer().notNull().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
   storeId: uuid('store_id')
     .notNull()
     .references(() => store.id, { onDelete: 'cascade' }),
@@ -115,6 +118,7 @@ export const product = pgTable('product', {
 export const productImage = pgTable('product_image', {
   id: uuid().defaultRandom().primaryKey(),
   url: text().notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
   productId: uuid('product_id')
     .notNull()
     .references(() => product.id, { onDelete: 'cascade' }),

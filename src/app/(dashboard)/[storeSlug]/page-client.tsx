@@ -6,5 +6,5 @@ type StorePageClientProps = {
 };
 
 export function StorePageClient({ store }: StorePageClientProps) {
-  return <div>{store.name}</div>;
+  return <div>{JSON.stringify(store)}</div>;
 }
