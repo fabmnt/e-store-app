@@ -8,6 +8,9 @@
       },
       "suspicious": {
         "noConsole": "off"
+      },
+      "correctness": {
+        "noChildrenProp": "off"
       }
     }
   }

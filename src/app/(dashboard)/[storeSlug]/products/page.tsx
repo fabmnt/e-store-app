@@ -2,6 +2,7 @@ import { safe } from '@orpc/client';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { CreateProductDialog } from '@/features/products/components/create-product-dialog';
 import { ProductsTable } from '@/features/products/components/products-table';
 import { auth } from '@/lib/auth';
 import { client } from '@/lib/orpc';
@@ -24,11 +25,14 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col">
-      <div className="py-4">
-        <h1 className="font-bold text-2xl">Products</h1>
-        <p className="text-muted-foreground text-sm">
-          Manage your products here.
-        </p>
+      <div className="flex items-center justify-between py-4">
+        <div>
+          <h1 className="font-bold text-2xl">Products</h1>
+          <p className="text-muted-foreground text-sm">
+            Manage your products here.
+          </p>
+        </div>
+        <CreateProductDialog />
       </div>
       <Suspense fallback={<div>Loading...</div>}>
         <ProductsTableWrapper storeSlug={storeSlug} />
