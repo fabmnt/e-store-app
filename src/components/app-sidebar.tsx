@@ -1,5 +1,7 @@
+'use client';
+
 import { HomeIcon, PackageIcon, TagIcon } from 'lucide-react';
-import Link from 'next/link';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
   Sidebar,
   SidebarContent,
@@ -16,22 +18,27 @@ import {
 const sidebarItems = [
   {
     label: 'Home',
-    href: '/',
+    href: '',
     icon: HomeIcon,
   },
   {
     label: 'Products',
-    href: '/products',
+    href: 'products',
     icon: PackageIcon,
   },
   {
     label: 'Categories',
-    href: '/categories',
+    href: 'categories',
     icon: TagIcon,
   },
 ];
 
 export function AppSidebar() {
+  const { storeSlug } = useParams();
+  const pathname = usePathname().replace(`/${storeSlug}`, '').replace('/', '');
+  const router = useRouter();
+  const isActive = (href: string) => pathname === href;
+
   return (
     <Sidebar>
       <SidebarHeader />
@@ -42,11 +49,12 @@ export function AppSidebar() {
             <SidebarMenu>
               {sidebarItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.href}>
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {item.label}
-                    </Link>
+                  <SidebarMenuButton
+                    isActive={isActive(item.href)}
+                    onClick={() => router.push(`/${storeSlug}/${item.href}`)}
+                  >
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {item.label}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
