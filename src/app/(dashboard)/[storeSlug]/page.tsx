@@ -15,7 +15,7 @@ export default async function StorePage({ params }: StorePageProps) {
     data: store,
     error,
     isDefined,
-  } = await safe(client.stores.getBySlug({ slug: storeSlug }));
+  } = await safe(client.stores.getBySlug.call({ slug: storeSlug }));
 
   if (error) {
     if (isDefined && error.code === 'UNAUTHORIZED') {

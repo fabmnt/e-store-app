@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import '../lib/orpc.server';
 import { Toaster } from '@/components/ui/sonner';
+import { TanstackQueryClientProvider } from '@/providers/query-client-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 
 const geistSans = Geist({
@@ -36,8 +37,10 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          {children}
-          <Toaster />
+          <TanstackQueryClientProvider>
+            {children}
+            <Toaster />
+          </TanstackQueryClientProvider>
         </ThemeProvider>
       </body>
     </html>
