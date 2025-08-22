@@ -1,3 +1,4 @@
+import { HomeIcon, PackageIcon, TagIcon } from 'lucide-react';
 import Link from 'next/link';
 import {
   Sidebar,
@@ -16,14 +17,17 @@ const sidebarItems = [
   {
     label: 'Home',
     href: '/',
+    icon: HomeIcon,
   },
   {
     label: 'Products',
     href: '/products',
+    icon: PackageIcon,
   },
   {
     label: 'Categories',
     href: '/categories',
+    icon: TagIcon,
   },
 ];
 
@@ -39,7 +43,10 @@ export function AppSidebar() {
               {sidebarItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.href}>{item.label}</Link>
+                    <Link href={item.href}>
+                      <item.icon className="mr-2 h-4 w-4" />
+                      {item.label}
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
