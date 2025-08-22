@@ -1,5 +1,9 @@
 import { safe } from '@orpc/client';
-import { notFound, redirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import { ProductsTable } from '@/features/products/components/products-table';
+import { auth } from '@/lib/auth';
 import { client } from '@/lib/orpc';
 
 type ProductsPageProps = {
@@ -9,24 +13,38 @@ type ProductsPageProps = {
 };
 
 export default async function ProductsPage({ params }: ProductsPageProps) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect('/auth/signin');
+  }
   const { storeSlug } = await params;
-  const {
-    error,
-    data: products,
-    isDefined,
-  } = await safe(client.products.getAllByStoreSlug({ storeSlug }));
+
+  return (
+    <div className="mx-auto flex w-full max-w-4xl flex-col">
+      <div className="py-4">
+        <h1 className="font-bold text-2xl">Products</h1>
+        <p className="text-muted-foreground text-sm">
+          Manage your products here.
+        </p>
+      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProductsTableWrapper storeSlug={storeSlug} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ProductsTableWrapper({ storeSlug }: { storeSlug: string }) {
+  const { data: products, error } = await safe(
+    client.products.getAllByStoreSlug({ storeSlug })
+  );
 
   if (error) {
-    if (isDefined && error.code === 'UNAUTHORIZED') {
-      redirect('/auth/signin');
-    }
-
-    if (isDefined && error.code === 'NOT_FOUND') {
-      return notFound();
-    }
-
     return <div>Error: {error.message}</div>;
   }
 
-  return <div>{JSON.stringify(products)}</div>;
+  return <ProductsTable products={products} />;
 }
