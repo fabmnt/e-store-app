@@ -1,5 +1,5 @@
 import { safe } from '@orpc/client';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { client } from '@/lib/orpc';
 
 type ProductsPageProps = {
@@ -17,6 +17,10 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
   } = await safe(client.products.getAllByStoreSlug({ storeSlug }));
 
   if (error) {
+    if (isDefined && error.code === 'UNAUTHORIZED') {
+      redirect('/auth/signin');
+    }
+
     if (isDefined && error.code === 'NOT_FOUND') {
       return notFound();
     }
