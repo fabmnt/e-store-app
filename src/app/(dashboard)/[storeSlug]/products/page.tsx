@@ -21,6 +21,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
   if (!session) {
     redirect('/auth/signin');
   }
+
   const { storeSlug } = await params;
 
   return (
