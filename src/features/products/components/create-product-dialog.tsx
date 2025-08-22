@@ -91,7 +91,7 @@ export function CreateProductDialog() {
                           field.handleChange(value.floatValue);
                         }
                       }}
-                      placeholder="100"
+                      placeholder="100.00"
                       value={field.state.value}
                     />
                   </div>
