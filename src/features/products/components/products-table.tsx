@@ -6,6 +6,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -18,6 +26,30 @@ import type { Product } from '../schemas/product-schema';
 
 type ProductsTableProps = {
   products: Product[];
+};
+
+const RowActions = ({ product }: { product: Product }) => {
+  console.log(product);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="icon" variant="outline">
+          <EllipsisVerticalIcon className="size-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>
+          <PencilIcon className="size-4" />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem variant="destructive">
+          <TrashIcon className="size-4" />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 };
 
 const columnHelper = createColumnHelper<Product>();
@@ -42,6 +74,10 @@ const productsColumns = [
   columnHelper.accessor('stock', {
     header: 'Stock',
     cell: ({ row }) => row.original.stock,
+  }),
+  columnHelper.display({
+    header: 'Actions',
+    cell: ({ row }) => <RowActions product={row.original} />,
   }),
 ];
 
