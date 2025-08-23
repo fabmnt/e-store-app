@@ -12,7 +12,9 @@ export default function StoreLayout({
         <AppSidebar />
         <main className="flex flex-1 flex-col overflow-auto">
           <SidebarTrigger />
-          {children}
+          <div className="mx-auto w-full px-4 sm:max-w-4xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
+            {children}
+          </div>
         </main>
       </div>
     </SidebarProvider>

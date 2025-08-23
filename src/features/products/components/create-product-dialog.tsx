@@ -1,7 +1,9 @@
 'use client';
 
-import { useForm, useStore } from '@tanstack/react-form';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { onError, onSuccess } from '@orpc/client';
+import { useServerAction } from '@orpc/react/hooks';
+import { useForm } from '@tanstack/react-form';
+import { skipToken, useQuery } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -28,6 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { client } from '@/lib/orpc';
+import { createProductAction } from '@/orpc/products/actions';
 import {
   type ProductCreate,
   productCreateSchema,
@@ -35,28 +38,32 @@ import {
 
 export function CreateProductDialog() {
   const { storeSlug } = useParams();
-  const queryClient = useQueryClient();
   const { data: store } = useQuery(
     client.stores.getBySlug.queryOptions({
-      enabled: !!storeSlug,
-      input: { slug: storeSlug as string },
+      input: storeSlug ? { slug: storeSlug as string } : skipToken,
     })
   );
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
     client.categories.getAllByStoreSlug.queryOptions({
-      enabled: !!store,
-      input: { storeSlug: store?.slug ?? '' },
+      input: store?.slug ? { storeSlug: store.slug } : skipToken,
     })
   );
-  const { mutate: createProduct, isPending: isCreatingProduct } = useMutation(
-    client.products.create.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: client.products.getAllByStoreSlug.key(),
-        });
-      },
-    })
+  const { execute, isPending: isCreatingProduct } = useServerAction(
+    createProductAction,
+    {
+      interceptors: [
+        onSuccess(() => {
+          form.reset();
+          setOpen(false);
+          toast.success('Product created successfully');
+        }),
+        onError((error) => {
+          toast.error(error.message);
+        }),
+      ],
+    }
   );
+
   const [open, setOpen] = useState(false);
 
   const form = useForm({
@@ -73,25 +80,20 @@ export function CreateProductDialog() {
       onSubmit: productCreateSchema,
     },
     onSubmit: ({ value }) => {
-      createProduct(value, {
-        onSuccess: () => {
-          form.reset();
-          toast.success('Product created successfully');
-          setOpen(false);
-        },
-        onError: () => {
-          toast.error('Failed to create product');
-        },
-      });
+      execute(value);
     },
   });
 
-  const errors = useStore(form.store, (state) => state.errors);
-
-  console.log(errors);
-
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
+    <Dialog
+      onOpenChange={(opened) => {
+        if (!opened) {
+          form.reset();
+        }
+        setOpen(opened);
+      }}
+      open={open}
+    >
       <DialogTrigger asChild>
         <Button>Create new</Button>
       </DialogTrigger>

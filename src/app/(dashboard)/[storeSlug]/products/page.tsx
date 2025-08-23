@@ -25,7 +25,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
   const { storeSlug } = await params;
 
   return (
-    <div className="mx-auto flex w-full flex-col sm:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl">
+    <div className="flex w-full flex-col">
       <div className="flex items-center justify-between py-4">
         <div>
           <h1 className="font-bold text-2xl">Products</h1>

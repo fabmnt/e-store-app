@@ -13,11 +13,24 @@ export const productsRouter = {
   create: protectedOs
     .input(productCreateSchema)
     .output(productSchema)
+    .errors({
+      NOT_FOUND: {
+        message: 'Store not found',
+      },
+    })
     .handler(async ({ input }) => {
+      const storeFound = await db.query.store.findFirst({
+        where: eq(store.id, input.storeId),
+      });
+      if (!storeFound) {
+        throw new ORPCError('NOT_FOUND');
+      }
+
       const [productCreated] = await db
         .insert(product)
         .values(input)
         .returning();
+
       if (!productCreated) {
         throw new ORPCError('INTERNAL_SERVER_ERROR');
       }
