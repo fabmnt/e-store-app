@@ -40,7 +40,7 @@ export function AppSidebar() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
