@@ -48,7 +48,8 @@ export const deleteProductAction = protectedOs
     const { id } = input;
 
     await db.delete(product).where(eq(product.id, id));
-  });
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
 
 export const updateProductAction = protectedOs
   .input(productUpdateSchema)
@@ -72,4 +73,5 @@ export const updateProductAction = protectedOs
     }
 
     return productUpdated;
-  });
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
