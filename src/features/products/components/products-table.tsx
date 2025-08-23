@@ -29,14 +29,11 @@ const productsColumns = [
   }),
   columnHelper.accessor('description', {
     header: 'Description',
-    cell: ({ row }) => row.original.description,
+    cell: ({ row }) => row.original.description || '-',
   }),
   columnHelper.accessor('price', {
     header: 'Price',
-    cell: ({ row }) =>
-      row.original.price.toLocaleString('en-US', {
-        style: 'currency',
-      }),
+    cell: ({ row }) => row.original.price.toFixed(2),
   }),
   columnHelper.accessor('stock', {
     header: 'Stock',

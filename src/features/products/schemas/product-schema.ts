@@ -2,13 +2,13 @@ import * as z from 'zod';
 
 export const productSchema = z.object({
   id: z.uuid(),
-  name: z.string(),
-  slug: z.string(),
+  name: z.string().min(1, 'Name is required'),
+  slug: z.string().min(1, 'Slug is required'),
   description: z.string().nullable(),
-  price: z.number().positive(),
-  stock: z.number().positive(),
-  categoryId: z.uuid(),
-  storeId: z.uuid(),
+  price: z.number().positive('Price must be positive'),
+  stock: z.number().positive('Stock must be positive'),
+  categoryId: z.uuid('Category is required'),
+  storeId: z.uuid('Store is required'),
   createdAt: z.coerce.date(),
 });
 
