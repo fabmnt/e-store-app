@@ -10,6 +10,7 @@ import { product, store } from '@/db/schema';
 import {
   productCreateSchema,
   productSchema,
+  productUpdateSchema,
 } from '@/features/products/schemas/product-schema';
 import { protectedOs } from '../procedures';
 
@@ -47,4 +48,28 @@ export const deleteProductAction = protectedOs
     const { id } = input;
 
     await db.delete(product).where(eq(product.id, id));
+  });
+
+export const updateProductAction = protectedOs
+  .input(productUpdateSchema)
+  .output(productSchema)
+  .errors({
+    NOT_FOUND: {
+      message: 'Product not found',
+    },
+  })
+  .handler(async ({ input }) => {
+    const { id, ...data } = input;
+
+    const [productUpdated] = await db
+      .update(product)
+      .set(data)
+      .where(eq(product.id, id))
+      .returning();
+
+    if (!productUpdated) {
+      throw new ORPCError('NOT_FOUND');
+    }
+
+    return productUpdated;
   });
