@@ -89,7 +89,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="overflow-hidden rounded-md border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

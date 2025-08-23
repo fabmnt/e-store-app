@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     browserDebugInfoInTerminal: true,
   },
+  typedRoutes: true,
 };
 
 export default nextConfig;
