@@ -2,6 +2,7 @@
 
 import { useForm, useStore } from '@tanstack/react-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Loader } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
@@ -78,6 +79,9 @@ export function CreateProductDialog() {
           toast.success('Product created successfully');
           setOpen(false);
         },
+        onError: () => {
+          toast.error('Failed to create product');
+        },
       });
     },
   });
@@ -111,6 +115,7 @@ export function CreateProductDialog() {
                     <Label htmlFor={field.name}>Name</Label>
                     <Input
                       autoComplete="off"
+                      disabled={isCreatingProduct}
                       id={field.name}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -128,6 +133,7 @@ export function CreateProductDialog() {
                     <Label htmlFor={field.name}>Slug</Label>
                     <Input
                       autoComplete="off"
+                      disabled={isCreatingProduct}
                       id={field.name}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -147,6 +153,7 @@ export function CreateProductDialog() {
                       allowNegative={false}
                       customInput={Input}
                       decimalScale={2}
+                      disabled={isCreatingProduct}
                       fixedDecimalScale
                       id={field.name}
                       onBlur={field.handleBlur}
@@ -171,6 +178,7 @@ export function CreateProductDialog() {
                       allowNegative={false}
                       customInput={Input}
                       decimalScale={0}
+                      disabled={isCreatingProduct}
                       fixedDecimalScale
                       id={field.name}
                       onBlur={field.handleBlur}
@@ -192,7 +200,11 @@ export function CreateProductDialog() {
                   <div className="space-y-2">
                     <Label htmlFor={field.name}>Category</Label>
                     <Select
-                      disabled={isLoadingCategories || !categories?.length}
+                      disabled={
+                        isLoadingCategories ||
+                        !categories?.length ||
+                        isCreatingProduct
+                      }
                       onValueChange={(value) => {
                         field.handleChange(value);
                       }}
@@ -220,6 +232,7 @@ export function CreateProductDialog() {
                     <Label htmlFor={field.name}>Description</Label>
                     <Input
                       autoComplete="off"
+                      disabled={isCreatingProduct}
                       id={field.name}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
@@ -238,11 +251,16 @@ export function CreateProductDialog() {
             <Button variant="outline">Cancel</Button>
           </DialogClose>
           <Button
+            className="w-20"
             disabled={isCreatingProduct}
             form="create-product-form"
             type="submit"
           >
-            Create
+            {isCreatingProduct ? (
+              <Loader className="size-4 animate-spin" />
+            ) : (
+              'Create'
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

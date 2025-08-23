@@ -27,6 +27,10 @@ const productsColumns = [
     header: 'Name',
     cell: ({ row }) => row.original.name,
   }),
+  columnHelper.accessor('slug', {
+    header: 'Slug',
+    cell: ({ row }) => row.original.slug,
+  }),
   columnHelper.accessor('description', {
     header: 'Description',
     cell: ({ row }) => row.original.description || '-',
