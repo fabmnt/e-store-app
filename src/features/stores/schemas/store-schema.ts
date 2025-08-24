@@ -2,8 +2,8 @@ import * as z from 'zod';
 
 export const storeSchema = z.object({
   id: z.uuid(),
-  name: z.string().min(1),
-  slug: z.string().min(1),
+  name: z.string().min(1, 'Store name is required'),
+  slug: z.string().min(1, 'Store slug is required'),
   description: z.string().nullable(),
   imageURL: z.url().nullable(),
   address: z.string().nullable(),
@@ -24,6 +24,8 @@ export const createStoreSchema = storeSchema.omit({
 export const updateStoreSchema = storeSchema
   .omit({
     createdAt: true,
+    imageURL: true,
+    website: true,
   })
   .partial()
   .extend({

@@ -1,5 +1,7 @@
 import { safe } from '@orpc/server';
+import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -37,11 +39,18 @@ export default async function StorePage({ params }: StorePageProps) {
 
   return (
     <div className="flex flex-col gap-4 py-4">
-      <div>
-        <h1 className="font-bold text-2xl">Your Store</h1>
-        <p className="text-muted-foreground text-sm">
-          See and update information about your store
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-bold text-2xl">Your Store</h1>
+          <p className="text-muted-foreground text-sm">
+            See and update information about your store
+          </p>
+        </div>
+        <div>
+          <Button asChild>
+            <Link href={`/d/${storeId}/update-store`}>Update Store</Link>
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-8">
         <Card>
