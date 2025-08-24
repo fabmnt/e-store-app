@@ -1,8 +1,10 @@
 import { safe } from '@orpc/server';
 import { notFound, redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UpdateStoreForm } from '@/features/stores/components/update-store-form';
+import { StoreImagesGrid } from '@/features/stores-images/component/store-images-grid';
 import { UploadStoreImage } from '@/features/stores-images/component/upload-store-image';
 import { client } from '@/lib/orpc';
 
@@ -57,11 +59,28 @@ export default async function UpdateStorePage({
               <UpdateStoreForm store={store} />
             </TabsContent>
             <TabsContent value="update-images">
-              <UploadStoreImage store={store} />
+              <div>
+                <Suspense fallback={<div>Loading images...</div>}>
+                  <StoreImagesWrapper storeId={store.id} />
+                </Suspense>
+                <UploadStoreImage store={store} />
+              </div>
             </TabsContent>
           </CardContent>
         </Tabs>
       </Card>
     </div>
   );
+}
+
+async function StoreImagesWrapper({ storeId }: { storeId: string }) {
+  const { data: storeImages, error } = await safe(
+    client.storeImages.getAllByStoreId.call({ storeId })
+  );
+
+  if (error) {
+    return <div>Couldn't get store images</div>;
+  }
+
+  return <StoreImagesGrid storeImages={storeImages ?? []} />;
 }
