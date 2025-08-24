@@ -6,6 +6,15 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { EllipsisVerticalIcon, PencilIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -15,8 +24,36 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Category } from '../schemas/category-schema';
+import { UpdateCategoryDialog } from './update-category-dialog';
 
 const columnHelper = createColumnHelper<Category>();
+
+const RowActions = ({ category }: { category: Category }) => {
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  return (
+    <>
+      <UpdateCategoryDialog
+        category={category}
+        onOpenChange={setOpenEditDialog}
+        open={openEditDialog}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="outline">
+            <EllipsisVerticalIcon className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
+            <PencilIcon className="size-4" />
+            Edit
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+};
 
 const categoriesColumns = [
   columnHelper.accessor('name', {
@@ -28,6 +65,10 @@ const categoriesColumns = [
   columnHelper.accessor('description', {
     header: 'Description',
     cell: ({ row }) => row.original.description || '-',
+  }),
+  columnHelper.display({
+    header: 'Actions',
+    cell: ({ row }) => <RowActions category={row.original} />,
   }),
 ];
 

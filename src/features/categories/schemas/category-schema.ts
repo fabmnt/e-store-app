@@ -24,6 +24,7 @@ export const categoryUpdateSchema = categorySchema
   .partial()
   .extend({
     id: z.uuid(),
+    storeId: z.uuid(),
   });
 
 export type Category = z.infer<typeof categorySchema>;

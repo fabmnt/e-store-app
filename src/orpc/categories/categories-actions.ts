@@ -9,6 +9,7 @@ import { category, store } from '@/db/schema';
 import {
   categoryCreateSchema,
   categorySchema,
+  categoryUpdateSchema,
 } from '@/features/categories/schemas/category-schema';
 import { protectedOs } from '../procedures';
 
@@ -43,5 +44,40 @@ export const createCategoryAction = protectedOs
 
     revalidatePath(`/${storeFound.slug}/categories`);
     return categoryCreated;
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
+
+export const updateCategoryAction = protectedOs
+  .input(categoryUpdateSchema)
+  .output(categorySchema)
+  .errors({
+    INTERNAL_SERVER_ERROR: {
+      message: 'Failed to update category',
+    },
+  })
+  .handler(async ({ input }) => {
+    const [categoryUpdated] = await db
+      .update(category)
+      .set(input)
+      .where(eq(category.id, input.id))
+      .returning();
+
+    if (!categoryUpdated) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    const storeFound = await db.query.store.findFirst({
+      where: eq(store.id, input.storeId),
+      columns: {
+        slug: true,
+      },
+    });
+
+    if (!storeFound) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    revalidatePath(`/${storeFound.slug}/categories`);
+    return categoryUpdated;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
