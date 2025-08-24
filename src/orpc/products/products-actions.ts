@@ -49,7 +49,7 @@ export const createProductAction = protectedOs
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
 
-    revalidatePath(`/${storeFound.slug}/products`);
+    revalidatePath(`/d/${storeFound.id}/products`);
 
     return productWithRelations;
   })
@@ -59,19 +59,16 @@ export const deleteProductAction = protectedOs
   .input(z.object({ id: z.string() }))
   .handler(async ({ input }) => {
     const { id } = input;
+    const [productFound] = await db
+      .delete(product)
+      .where(eq(product.id, id))
+      .returning();
 
-    const productFound = await db.query.product.findFirst({
-      where: eq(product.id, id),
-      with: {
-        store: true,
-      },
-    });
-
-    await db.delete(product).where(eq(product.id, id));
-
-    if (productFound?.store?.slug) {
-      revalidatePath(`/${productFound.store.slug}/products`);
+    if (!productFound) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
+
+    revalidatePath(`/d/${productFound.storeId}/products`);
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -86,18 +83,13 @@ export const updateProductAction = protectedOs
   .handler(async ({ input }) => {
     const { id, ...data } = input;
 
-    const [productUpdated] = await db
+    await db
       .update(product)
       .set({ ...data, updatedAt: new Date() })
-      .where(eq(product.id, id))
-      .returning();
-
-    if (!productUpdated) {
-      throw new ORPCError('NOT_FOUND');
-    }
+      .where(eq(product.id, id));
 
     const productWithRelations = await db.query.product.findFirst({
-      where: eq(product.id, productUpdated.id),
+      where: eq(product.id, id),
       with: {
         category: true,
         store: true,
@@ -108,7 +100,7 @@ export const updateProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
-    revalidatePath(`/${productWithRelations.store.slug}/products`);
+    revalidatePath(`/d/${productWithRelations.store.id}/products`);
 
     return productWithRelations;
   })

@@ -8,5 +8,5 @@ type StorePageProps = {
 
 export default async function StorePage({ params }: StorePageProps) {
   const { storeId } = await params;
-  redirect(`/${storeId}/my-store`, RedirectType.replace);
+  redirect(`/d/${storeId}/my-store`, RedirectType.replace);
 }

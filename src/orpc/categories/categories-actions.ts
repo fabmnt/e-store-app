@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { db } from '@/db';
-import { category, store } from '@/db/schema';
+import { category } from '@/db/schema';
 import {
   categoryCreateSchema,
   categorySchema,
@@ -32,18 +32,7 @@ export const createCategoryAction = protectedOs
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
 
-    const storeFound = await db.query.store.findFirst({
-      where: eq(store.id, input.storeId),
-      columns: {
-        slug: true,
-      },
-    });
-
-    if (!storeFound) {
-      throw new ORPCError('INTERNAL_SERVER_ERROR');
-    }
-
-    revalidatePath(`/${storeFound.slug}/categories`);
+    revalidatePath(`/d/${input.storeId}/categories`);
     return categoryCreated;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
@@ -67,18 +56,7 @@ export const updateCategoryAction = protectedOs
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
 
-    const storeFound = await db.query.store.findFirst({
-      where: eq(store.id, input.storeId),
-      columns: {
-        slug: true,
-      },
-    });
-
-    if (!storeFound) {
-      throw new ORPCError('INTERNAL_SERVER_ERROR');
-    }
-
-    revalidatePath(`/${storeFound.slug}/categories`);
+    revalidatePath(`/d/${input.storeId}/categories`);
     return categoryUpdated;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
@@ -97,6 +75,6 @@ export const deleteCategoryAction = protectedOs
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
 
-    revalidatePath(`/${input.storeId}/categories`);
+    revalidatePath(`/d/${input.storeId}/categories`);
   })
   .actionable({ context: async () => ({ headers: await headers() }) });

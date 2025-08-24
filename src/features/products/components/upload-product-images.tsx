@@ -25,7 +25,7 @@ export function UploadProductImages({
       }}
       onClientUploadComplete={async () => {
         toast.success('Images uploaded successfully');
-        await revalidatePathAction(`/${storeId}/products`);
+        await revalidatePathAction(`/d/${storeId}/products`);
       }}
       onUploadError={() => {
         toast.error('Failed to upload images');
