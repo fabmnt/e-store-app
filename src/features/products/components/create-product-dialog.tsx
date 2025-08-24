@@ -221,7 +221,7 @@ export function CreateProductDialog() {
                         onValueChange={(value) => {
                           field.handleChange(value);
                         }}
-                        value={field.state.value}
+                        value={field.state.value ?? ''}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select a category" />

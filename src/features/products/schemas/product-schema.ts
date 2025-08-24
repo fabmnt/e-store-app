@@ -10,9 +10,9 @@ export const productSchema = z.object({
   description: z.string().nullable(),
   price: z.number().min(0, 'Price must be positive'),
   stock: z.number().min(0, 'Stock must be positive'),
-  categoryId: z.uuid('Category is required'),
+  categoryId: z.uuid('Category is required').nullable(),
   storeId: z.uuid('Store is required'),
-  category: categorySchema,
+  category: categorySchema.nullable(),
   store: storeSchema,
   createdAt: z.coerce.date(),
 });

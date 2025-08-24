@@ -50,7 +50,7 @@ export function DeleteCategoryDialog({
             <span>Are you sure you want to delete this category?</span>
             <br />
             <span>
-              This will delete all products associated with this category.
+              The products of this category will be tagged as "Uncategorized".
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>

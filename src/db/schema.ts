@@ -110,9 +110,9 @@ export const product = pgTable('product', {
   storeId: uuid('store_id')
     .notNull()
     .references(() => store.id, { onDelete: 'cascade' }),
-  categoryId: uuid('category_id')
-    .notNull()
-    .references(() => category.id, { onDelete: 'cascade' }),
+  categoryId: uuid('category_id').references(() => category.id, {
+    onDelete: 'set null',
+  }),
 });
 
 export const productImage = pgTable('product_image', {
