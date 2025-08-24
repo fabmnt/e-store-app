@@ -26,6 +26,7 @@ export const createProductAction = protectedOs
     const storeFound = await db.query.store.findFirst({
       where: eq(store.id, input.storeId),
     });
+
     if (!storeFound) {
       throw new ORPCError('NOT_FOUND');
     }
@@ -36,9 +37,21 @@ export const createProductAction = protectedOs
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
 
+    const productWithRelations = await db.query.product.findFirst({
+      where: eq(product.id, productCreated.id),
+      with: {
+        category: true,
+        store: true,
+      },
+    });
+
+    if (!productWithRelations) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
     revalidatePath(`/${storeFound.slug}/products`);
 
-    return productCreated;
+    return productWithRelations;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -47,8 +60,18 @@ export const deleteProductAction = protectedOs
   .handler(async ({ input }) => {
     const { id } = input;
 
+    const productFound = await db.query.product.findFirst({
+      where: eq(product.id, id),
+      with: {
+        store: true,
+      },
+    });
+
     await db.delete(product).where(eq(product.id, id));
-    revalidatePath(`/${store.slug}/products`);
+
+    if (productFound?.store?.slug) {
+      revalidatePath(`/${productFound.store.slug}/products`);
+    }
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -73,8 +96,20 @@ export const updateProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
-    revalidatePath(`/${store.slug}/products`);
+    const productWithRelations = await db.query.product.findFirst({
+      where: eq(product.id, productUpdated.id),
+      with: {
+        category: true,
+        store: true,
+      },
+    });
 
-    return productUpdated;
+    if (!productWithRelations) {
+      throw new ORPCError('NOT_FOUND');
+    }
+
+    revalidatePath(`/${productWithRelations.store.slug}/products`);
+
+    return productWithRelations;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });

@@ -24,19 +24,25 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Category } from '../schemas/category-schema';
+import { DeleteCategoryDialog } from './delete-category-dialog';
 import { UpdateCategoryDialog } from './update-category-dialog';
 
 const columnHelper = createColumnHelper<Category>();
 
 const RowActions = ({ category }: { category: Category }) => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
-
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   return (
     <>
       <UpdateCategoryDialog
         category={category}
         onOpenChange={setOpenEditDialog}
         open={openEditDialog}
+      />
+      <DeleteCategoryDialog
+        category={category}
+        onOpenChange={setOpenDeleteDialog}
+        open={openDeleteDialog}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

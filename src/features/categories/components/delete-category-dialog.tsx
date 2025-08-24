@@ -13,51 +13,56 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { deleteProductAction } from '@/orpc/products/products-actions';
+import { deleteCategoryAction } from '@/orpc/categories/categories-actions';
+import type { Category } from '../schemas/category-schema';
 
-type DeleteProductDialogProps = {
-  productId: string;
+type DeleteCategoryDialogProps = {
+  category: Category;
   onOpenChange: (open: boolean) => void;
   open: boolean;
 };
 
-export function DeleteProductDialog({
-  productId,
-  open,
+export function DeleteCategoryDialog({
+  category,
   onOpenChange,
-}: DeleteProductDialogProps) {
+  open,
+}: DeleteCategoryDialogProps) {
   const { execute: executeDelete, isPending: isDeleting } = useServerAction(
-    deleteProductAction,
+    deleteCategoryAction,
     {
       interceptors: [
         onSuccess(() => {
-          toast.success('Product deleted successfully');
+          toast.success('Category deleted successfully');
           onOpenChange(false);
         }),
         onError(() => {
-          toast.error('Failed to delete product');
+          toast.error('Failed to delete category');
         }),
       ],
     }
   );
-
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Product</AlertDialogTitle>
+          <AlertDialogTitle>Delete Category</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this product?
+            <p>Are you sure you want to delete this category?</p>
+            <p>This will delete all products associated with this category.</p>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction asChild onClick={(e) => e.preventDefault()}>
+          <AlertDialogAction
+            asChild
+            onClick={(e) => {
+              e.preventDefault();
+              executeDelete({ id: category.id });
+            }}
+          >
             <Button
               className="w-20 text-accent-foreground"
               disabled={isDeleting}
-              onClick={() => executeDelete({ id: productId })}
-              type="button"
               variant="destructive"
             >
               {isDeleting ? (

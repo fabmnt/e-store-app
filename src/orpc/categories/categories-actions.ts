@@ -4,6 +4,7 @@ import { ORPCError } from '@orpc/server';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
+import * as z from 'zod';
 import { db } from '@/db';
 import { category, store } from '@/db/schema';
 import {
@@ -79,5 +80,21 @@ export const updateCategoryAction = protectedOs
 
     revalidatePath(`/${storeFound.slug}/categories`);
     return categoryUpdated;
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
+
+export const deleteCategoryAction = protectedOs
+  .input(z.object({ id: z.string() }))
+  .errors({
+    INTERNAL_SERVER_ERROR: {
+      message: 'Failed to delete category',
+    },
+  })
+  .handler(async ({ input }) => {
+    try {
+      await db.delete(category).where(eq(category.id, input.id));
+    } catch (_e) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
   })
   .actionable({ context: async () => ({ headers: await headers() }) });

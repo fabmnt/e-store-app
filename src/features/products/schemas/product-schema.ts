@@ -1,5 +1,7 @@
 import * as z from 'zod';
+import { categorySchema } from '@/features/categories/schemas/category-schema';
 import { productImageSchema } from '@/features/products-images/schemas/product-images-schema';
+import { storeSchema } from '@/features/stores/schemas/store-schema';
 
 export const productSchema = z.object({
   id: z.uuid(),
@@ -10,12 +12,16 @@ export const productSchema = z.object({
   stock: z.number().min(0, 'Stock must be positive'),
   categoryId: z.uuid('Category is required'),
   storeId: z.uuid('Store is required'),
+  category: categorySchema,
+  store: storeSchema,
   createdAt: z.coerce.date(),
 });
 
 export const productCreateSchema = productSchema.omit({
   id: true,
   createdAt: true,
+  category: true,
+  store: true,
 });
 
 export const productUpdateSchema = productSchema
@@ -23,6 +29,8 @@ export const productUpdateSchema = productSchema
     createdAt: true,
     storeId: true,
     categoryId: true,
+    category: true,
+    store: true,
   })
   .partial()
   .extend({

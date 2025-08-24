@@ -82,6 +82,10 @@ const productsColumns = [
     header: 'Slug',
     cell: ({ row }) => row.original.slug,
   }),
+  columnHelper.accessor('category', {
+    header: 'Category',
+    cell: ({ row }) => row.original.category?.name || '-',
+  }),
   columnHelper.accessor('description', {
     header: 'Description',
     cell: ({ row }) => row.original.description || '-',
