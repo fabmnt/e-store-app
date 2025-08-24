@@ -1,6 +1,7 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
+import { useQuery } from '@tanstack/react-query';
 import { Loader, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -19,7 +20,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { client } from '@/lib/orpc';
 import { updateProductAction } from '@/orpc/products/products-actions';
 import { deleteProductImage } from '@/orpc/products-images/products-images-actions';
 import {
@@ -42,6 +51,12 @@ export function UpdateProductDialog({
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'details' | 'images'>('details');
   const { storeId } = useParams();
+
+  const { data: categories, isLoading: isLoadingCategories } = useQuery(
+    client.categories.getAllByStoreId.queryOptions({
+      input: { storeId: storeId as string },
+    })
+  );
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,
@@ -77,6 +92,7 @@ export function UpdateProductDialog({
       price: product.price,
       stock: product.stock,
       slug: product.slug,
+      categoryId: product.categoryId ?? '',
     } as ProductUpdate,
     validators: {
       onSubmit: productUpdateSchema,
@@ -208,10 +224,34 @@ export function UpdateProductDialog({
                   )}
                   name="stock"
                 />
+                <form.Field
+                  children={(field) => (
+                    <div className="space-y-2">
+                      <Label htmlFor={field.name}>Category</Label>
+                      <Select
+                        disabled={isUpdating || isLoadingCategories}
+                        onValueChange={(value) => field.handleChange(value)}
+                        value={field.state.value ?? ''}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories?.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  name="categoryId"
+                />
 
                 <form.Field
                   children={(field) => (
-                    <div className="col-span-2 space-y-2">
+                    <div className="space-y-2">
                       <Label htmlFor={field.name}>Description</Label>
                       <Input
                         autoComplete="off"
