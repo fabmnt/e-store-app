@@ -2,6 +2,7 @@ import { safe } from '@orpc/server';
 import { notFound, redirect } from 'next/navigation';
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -42,7 +43,7 @@ export default async function StorePage({ params }: StorePageProps) {
           See and update information about your store
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-8">
         <Card>
           <CardHeader>
             <CardTitle>{store.name}</CardTitle>
@@ -54,6 +55,55 @@ export default async function StorePage({ params }: StorePageProps) {
             <CardTitle>{store.slug}</CardTitle>
             <CardDescription>Slug of your store</CardDescription>
           </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>{store.description ?? 'No description'}</CardTitle>
+            <CardDescription>Store description</CardDescription>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>https://milmio.com/{store.slug}</CardTitle>
+            <CardDescription>Your store URL</CardDescription>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Contact Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Address</p>
+                <p className="text-sm">{store.address ?? 'No address'}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Phone</p>
+                <p className="text-sm">{store.phone ?? 'No phone'}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Whatsapp</p>
+                <p className="text-sm">{store.whatsapp ?? 'No whatsapp'}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Email</p>
+                <p className="text-sm">{store.email ?? 'No email'}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Website</p>
+                <p className="text-sm">{store.website ?? 'No website'}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Facebook</p>
+                <p className="text-sm">{store.facebook ?? 'No facebook'}</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-muted-foreground text-sm">Instagram</p>
+                <p className="text-sm">{store.instagram ?? 'No instagram'}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>

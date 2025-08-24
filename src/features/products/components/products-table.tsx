@@ -116,7 +116,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
   });
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

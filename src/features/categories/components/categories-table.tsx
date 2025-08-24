@@ -97,7 +97,7 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

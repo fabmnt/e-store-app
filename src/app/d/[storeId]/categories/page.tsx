@@ -1,5 +1,6 @@
 import { safe } from '@orpc/server';
 import { notFound, redirect } from 'next/navigation';
+import { Card, CardContent } from '@/components/ui/card';
 import { CategoriesTable } from '@/features/categories/components/categories-table';
 import { CreateCategoryDialog } from '@/features/categories/components/create-category-dialog';
 import { client } from '@/lib/orpc';
@@ -39,7 +40,11 @@ export default async function CategoriesPage({ params }: CategoriesPageProps) {
         </div>
         <CreateCategoryDialog />
       </div>
-      <CategoriesTable categories={categories} />
+      <Card>
+        <CardContent>
+          <CategoriesTable categories={categories} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { safe } from '@orpc/client';
 import { notFound, redirect } from 'next/navigation';
+import { Card, CardContent } from '@/components/ui/card';
 import { CreateProductDialog } from '@/features/products/components/create-product-dialog';
 import { ProductsTable } from '@/features/products/components/products-table';
 import { client } from '@/lib/orpc';
@@ -41,7 +42,11 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
         </div>
         <CreateProductDialog />
       </div>
-      <ProductsTable products={products} />
+      <Card>
+        <CardContent>
+          <ProductsTable products={products} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
