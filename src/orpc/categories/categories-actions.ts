@@ -1,9 +1,11 @@
 'use server';
 
 import { ORPCError } from '@orpc/server';
+import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { db } from '@/db';
-import { category } from '@/db/schema';
+import { category, store } from '@/db/schema';
 import {
   categoryCreateSchema,
   categorySchema,
@@ -28,6 +30,18 @@ export const createCategoryAction = protectedOs
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
 
+    const storeFound = await db.query.store.findFirst({
+      where: eq(store.id, input.storeId),
+      columns: {
+        slug: true,
+      },
+    });
+
+    if (!storeFound) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    revalidatePath(`/${storeFound.slug}/categories`);
     return categoryCreated;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });

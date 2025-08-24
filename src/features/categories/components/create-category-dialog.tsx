@@ -43,6 +43,7 @@ export function CreateCategoryDialog() {
         onSuccess(() => {
           form.reset();
           toast.success('Category created successfully');
+          setOpen(false);
         }),
         onError((error) => {
           toast.error(error.message);
