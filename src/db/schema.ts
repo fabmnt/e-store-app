@@ -122,7 +122,7 @@ export const productImage = pgTable('product_image', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   productId: uuid('product_id')
     .notNull()
-    .references(() => product.id, { onDelete: 'cascade' }),
+    .references(() => product.id, { onDelete: 'no action' }),
 });
 
 // relations

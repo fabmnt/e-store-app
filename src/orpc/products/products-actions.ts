@@ -1,17 +1,19 @@
 'use server';
 
 import { ORPCError } from '@orpc/client';
+import { onError } from '@orpc/server';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { db } from '@/db';
-import { product, store } from '@/db/schema';
+import { product, productImage, store } from '@/db/schema';
 import {
   productCreateSchema,
   productSchema,
   productUpdateSchema,
 } from '@/features/products/schemas/product-schema';
+import { utapi } from '@/server/utapi';
 import { protectedOs } from '../procedures';
 
 export const createProductAction = protectedOs
@@ -59,6 +61,18 @@ export const deleteProductAction = protectedOs
   .input(z.object({ id: z.string() }))
   .handler(async ({ input }) => {
     const { id } = input;
+
+    const deletedProductImages = await db.query.productImage.findMany({
+      where: eq(productImage.productId, id),
+    });
+
+    const deleteProductFilesPromises = deletedProductImages.map(
+      (deletedProductImage) => utapi.deleteFiles(deletedProductImage.fileKey)
+    );
+
+    await Promise.all(deleteProductFilesPromises);
+    await db.delete(productImage).where(eq(productImage.productId, id));
+
     const [productFound] = await db
       .delete(product)
       .where(eq(product.id, id))
@@ -70,7 +84,14 @@ export const deleteProductAction = protectedOs
 
     revalidatePath(`/d/${productFound.storeId}/products`);
   })
-  .actionable({ context: async () => ({ headers: await headers() }) });
+  .actionable({
+    context: async () => ({ headers: await headers() }),
+    interceptors: [
+      onError(async (err) => {
+        await console.log(err);
+      }),
+    ],
+  });
 
 export const updateProductAction = protectedOs
   .input(productUpdateSchema)
