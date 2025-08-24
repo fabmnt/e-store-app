@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 import * as z from 'zod';
@@ -23,6 +24,7 @@ export const ourFileRouter = {
     .input(
       z.object({
         productId: z.string(),
+        storeSlug: z.string(),
       })
     )
     .middleware(async ({ req, input }) => {
@@ -37,14 +39,21 @@ export const ourFileRouter = {
       }
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: session.user.id, productId: input.productId };
+      return {
+        userId: session.user.id,
+        productId: input.productId,
+        storeSlug: input.storeSlug,
+      };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       await db.insert(productImage).values({
         productId: metadata.productId,
         url: file.ufsUrl,
+        fileKey: file.key,
       });
+
+      revalidatePath(`/${metadata.storeSlug}/products`);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };

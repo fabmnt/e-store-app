@@ -23,14 +23,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { Product } from '../schemas/product-schema';
+import type { ProductWithImages } from '../schemas/product-schema';
 import { UpdateProductDialog } from './update-product-dialog';
 
 type ProductsTableProps = {
-  products: Product[];
+  products: ProductWithImages[];
 };
 
-const RowActions = ({ product }: { product: Product }) => {
+const RowActions = ({ product }: { product: ProductWithImages }) => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
   return (
@@ -61,7 +61,7 @@ const RowActions = ({ product }: { product: Product }) => {
   );
 };
 
-const columnHelper = createColumnHelper<Product>();
+const columnHelper = createColumnHelper<ProductWithImages>();
 
 const productsColumns = [
   columnHelper.accessor('name', {

@@ -2,7 +2,13 @@ import { toast } from 'sonner';
 import { buttonVariants } from '@/components/ui/button';
 import { UploadButton } from '@/lib/uploadthing';
 
-export function UploadProductImages({ productId }: { productId: string }) {
+export function UploadProductImages({
+  productId,
+  storeSlug,
+}: {
+  productId: string;
+  storeSlug: string;
+}) {
   return (
     <UploadButton
       appearance={{
@@ -14,6 +20,7 @@ export function UploadProductImages({ productId }: { productId: string }) {
       endpoint="imageUploader"
       input={{
         productId,
+        storeSlug,
       }}
       onClientUploadComplete={() => {
         toast.success('Images uploaded successfully');

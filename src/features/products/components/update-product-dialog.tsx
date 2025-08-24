@@ -5,6 +5,7 @@ import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
 import { Loader, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
@@ -43,6 +44,7 @@ export function UpdateProductDialog({
   onOpenChange,
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'details' | 'images'>('details');
+  const { storeSlug } = useParams();
   const [images, setImages] = useState<ProductImage[]>(product.images ?? []);
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
@@ -233,7 +235,10 @@ export function UpdateProductDialog({
           </TabsContent>
           <TabsContent className="mt-4" value="images">
             <div className="space-y-4">
-              <UploadProductImages productId={product.id} />
+              <UploadProductImages
+                productId={product.id}
+                storeSlug={storeSlug as string}
+              />
 
               {images.length > 0 ? (
                 <div className="grid grid-cols-3 gap-3">
