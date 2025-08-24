@@ -2,10 +2,10 @@ import * as z from 'zod';
 
 export const categorySchema = z.object({
   id: z.uuid(),
-  name: z.string(),
-  slug: z.string(),
+  name: z.string().min(1, 'Name is required'),
+  slug: z.string().min(1, 'Slug is required'),
   description: z.string().nullable(),
-  storeId: z.uuid(),
+  storeId: z.uuid('Store ID is required'),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

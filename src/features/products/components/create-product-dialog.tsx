@@ -85,7 +85,10 @@ export function CreateProductDialog() {
       onSubmit: productCreateSchema,
     },
     onSubmit: ({ value }) => {
-      execute(value);
+      execute({
+        ...value,
+        description: value.description === '' ? null : value.description,
+      });
     },
   });
 

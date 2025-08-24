@@ -1,6 +1,7 @@
 import { safe } from '@orpc/server';
 import { notFound, redirect } from 'next/navigation';
 import { CategoriesTable } from '@/features/categories/components/categories-table';
+import { CreateCategoryDialog } from '@/features/categories/components/create-category-dialog';
 import { client } from '@/lib/orpc';
 
 type CategoriesPageProps = {
@@ -29,11 +30,14 @@ export default async function CategoriesPage({ params }: CategoriesPageProps) {
 
   return (
     <div className="flex flex-col gap-4 py-4">
-      <div>
-        <h1 className="font-bold text-2xl">Categories</h1>
-        <p className="text-muted-foreground text-sm">
-          Manage your categories here.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-bold text-2xl">Categories</h1>
+          <p className="text-muted-foreground text-sm">
+            Manage your categories here.
+          </p>
+        </div>
+        <CreateCategoryDialog />
       </div>
       <CategoriesTable categories={categories} />
     </div>
