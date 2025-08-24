@@ -84,7 +84,7 @@ const productsColumns = [
   }),
   columnHelper.accessor('category', {
     header: 'Category',
-    cell: ({ row }) => row.original.category?.name || '-',
+    cell: ({ row }) => row.original.category?.name || 'Uncategorized',
   }),
   columnHelper.accessor('description', {
     header: 'Description',
