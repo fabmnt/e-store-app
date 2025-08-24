@@ -256,9 +256,12 @@ export function CreateProductDialog() {
               </div>
             </form>
           )}
-          {formStep === 'images' && createdProduct && (
+          {formStep === 'images' && createdProduct && store?.slug && (
             <div>
-              <UploadProductImages productId={createdProduct.id} />
+              <UploadProductImages
+                productId={createdProduct.id}
+                storeSlug={store.slug}
+              />
             </div>
           )}
         </div>

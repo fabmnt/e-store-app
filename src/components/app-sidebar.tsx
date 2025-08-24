@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeIcon, PackageIcon, TagIcon } from 'lucide-react';
+import { PackageIcon, StoreIcon, TagIcon } from 'lucide-react';
 import type { Route } from 'next';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
@@ -18,9 +18,9 @@ import {
 
 const sidebarItems = [
   {
-    label: 'Home',
+    label: 'My Store',
     href: '',
-    icon: HomeIcon,
+    icon: StoreIcon,
   },
   {
     label: 'Products',
@@ -45,7 +45,7 @@ export function AppSidebar() {
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {sidebarItems.map((item) => (
