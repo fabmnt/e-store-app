@@ -1,6 +1,7 @@
 import { toast } from 'sonner';
 import { buttonVariants } from '@/components/ui/button';
 import { UploadButton } from '@/lib/uploadthing';
+import { revalidatePathAction } from '@/server/actions';
 
 export function UploadProductImages({
   productId,
@@ -22,11 +23,12 @@ export function UploadProductImages({
         productId,
         storeSlug,
       }}
-      onClientUploadComplete={() => {
+      onClientUploadComplete={async () => {
         toast.success('Images uploaded successfully');
+        await revalidatePathAction(`/${storeSlug}/products`);
       }}
-      onUploadError={() => {
-        toast.error('Failed to upload images');
+      onUploadError={(error) => {
+        toast.error(error.message);
       }}
     />
   );

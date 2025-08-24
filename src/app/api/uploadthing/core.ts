@@ -1,10 +1,12 @@
-import { revalidatePath } from 'next/cache';
+import { count, eq } from 'drizzle-orm';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 import * as z from 'zod';
 import { db } from '@/db';
 import { productImage } from '@/db/schema';
 import { auth } from '@/lib/auth';
+
+export const MAX_IMAGES = 5;
 
 const f = createUploadthing();
 
@@ -18,7 +20,7 @@ export const ourFileRouter = {
        * @see https://docs.uploadthing.com/file-routes#route-config
        */
       maxFileSize: '4MB',
-      maxFileCount: 1,
+      maxFileCount: 5,
     },
   })
     .input(
@@ -27,7 +29,7 @@ export const ourFileRouter = {
         storeSlug: z.string(),
       })
     )
-    .middleware(async ({ req, input }) => {
+    .middleware(async ({ req, input, files }) => {
       // This code runs on your server before upload
       const session = await auth.api.getSession({
         headers: req.headers,
@@ -36,6 +38,27 @@ export const ourFileRouter = {
       // If you throw, the user will not be able to upload
       if (!session) {
         throw new UploadThingError('Unauthorized');
+      }
+
+      const [totalCurrentImages] = await db
+        .select({ count: count() })
+        .from(productImage)
+        .where(eq(productImage.productId, input.productId));
+
+      if (totalCurrentImages == null) {
+        throw new UploadThingError({
+          code: 'NOT_FOUND',
+          message: 'Product not found',
+        });
+      }
+
+      const totalImages = totalCurrentImages.count + files.length;
+
+      if (totalImages > MAX_IMAGES) {
+        throw new UploadThingError({
+          code: 'TOO_MANY_FILES',
+          message: `Maximum number of images (${MAX_IMAGES}) will be reached if you upload ${files.length} more files`,
+        });
       }
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
@@ -52,8 +75,6 @@ export const ourFileRouter = {
         url: file.ufsUrl,
         fileKey: file.key,
       });
-
-      revalidatePath(`/${metadata.storeSlug}/products`);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };

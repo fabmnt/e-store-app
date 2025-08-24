@@ -6,7 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import { Loader, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -46,6 +46,10 @@ export function UpdateProductDialog({
   const [tab, setTab] = useState<'details' | 'images'>('details');
   const { storeSlug } = useParams();
   const [images, setImages] = useState<ProductImage[]>(product.images ?? []);
+
+  useEffect(() => {
+    setImages(product.images ?? []);
+  }, [product]);
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,
