@@ -2,11 +2,11 @@ import { RedirectType, redirect } from 'next/navigation';
 
 type StorePageProps = {
   params: Promise<{
-    storeSlug: string;
+    storeId: string;
   }>;
 };
 
 export default async function StorePage({ params }: StorePageProps) {
-  const { storeSlug } = await params;
-  redirect(`/${storeSlug}/my-store`, RedirectType.replace);
+  const { storeId } = await params;
+  redirect(`/${storeId}/my-store`, RedirectType.replace);
 }

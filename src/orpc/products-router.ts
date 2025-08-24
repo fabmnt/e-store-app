@@ -7,10 +7,10 @@ import { productWithImagesSchema } from '@/features/products/schemas/product-sch
 import { protectedOs } from './procedures';
 
 export const productsRouter = {
-  getAllByStoreSlug: protectedOs
+  getAllByStoreId: protectedOs
     .input(
       z.object({
-        storeSlug: z.string(),
+        storeId: z.string(),
       })
     )
     .output(z.array(productWithImagesSchema))
@@ -21,7 +21,7 @@ export const productsRouter = {
     })
     .handler(async ({ input }) => {
       const storeFound = await db.query.store.findFirst({
-        where: eq(store.slug, input.storeSlug),
+        where: eq(store.id, input.storeId),
       });
 
       if (!storeFound) {

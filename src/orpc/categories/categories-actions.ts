@@ -84,7 +84,7 @@ export const updateCategoryAction = protectedOs
   .actionable({ context: async () => ({ headers: await headers() }) });
 
 export const deleteCategoryAction = protectedOs
-  .input(z.object({ id: z.string() }))
+  .input(z.object({ id: z.string(), storeId: z.string() }))
   .errors({
     INTERNAL_SERVER_ERROR: {
       message: 'Failed to delete category',
@@ -96,5 +96,7 @@ export const deleteCategoryAction = protectedOs
     } catch (_e) {
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
+
+    revalidatePath(`/${input.storeId}/categories`);
   })
   .actionable({ context: async () => ({ headers: await headers() }) });

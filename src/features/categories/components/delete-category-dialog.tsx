@@ -47,8 +47,11 @@ export function DeleteCategoryDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Category</AlertDialogTitle>
           <AlertDialogDescription>
-            <p>Are you sure you want to delete this category?</p>
-            <p>This will delete all products associated with this category.</p>
+            <span>Are you sure you want to delete this category?</span>
+            <br />
+            <span>
+              This will delete all products associated with this category.
+            </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -57,7 +60,7 @@ export function DeleteCategoryDialog({
             asChild
             onClick={(e) => {
               e.preventDefault();
-              executeDelete({ id: category.id });
+              executeDelete({ id: category.id, storeId: category.storeId });
             }}
           >
             <Button

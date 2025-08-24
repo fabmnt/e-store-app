@@ -28,7 +28,6 @@ export const productUpdateSchema = productSchema
   .omit({
     createdAt: true,
     storeId: true,
-    categoryId: true,
     category: true,
     store: true,
   })

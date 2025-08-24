@@ -9,7 +9,7 @@ import { client } from '@/lib/orpc';
 
 type ProductsPageProps = {
   params: Promise<{
-    storeSlug: string;
+    storeId: string;
   }>;
 };
 
@@ -22,7 +22,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     redirect('/auth/signin');
   }
 
-  const { storeSlug } = await params;
+  const { storeId } = await params;
 
   return (
     <div className="flex w-full flex-col">
@@ -36,15 +36,15 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
         <CreateProductDialog />
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProductsTableWrapper storeSlug={storeSlug} />
+        <ProductsTableWrapper storeId={storeId} />
       </Suspense>
     </div>
   );
 }
 
-async function ProductsTableWrapper({ storeSlug }: { storeSlug: string }) {
+async function ProductsTableWrapper({ storeId }: { storeId: string }) {
   const { data: products, error } = await safe(
-    client.products.getAllByStoreSlug.call({ storeSlug })
+    client.products.getAllByStoreId.call({ storeId })
   );
 
   if (error) {

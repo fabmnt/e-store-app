@@ -4,7 +4,7 @@ import { useForm } from '@tanstack/react-form';
 import { Loader, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -20,7 +20,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { ProductImage } from '@/features/products-images/schemas/product-images-schema';
 import { updateProductAction } from '@/orpc/products/products-actions';
 import { deleteProductImage } from '@/orpc/products-images/products-images-actions';
 import {
@@ -32,8 +31,8 @@ import { UploadProductImages } from './upload-product-images';
 
 type UpdateProductDialogProps = {
   product: ProductWithImages;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
 export function UpdateProductDialog({
@@ -43,11 +42,6 @@ export function UpdateProductDialog({
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'details' | 'images'>('details');
   const { storeSlug } = useParams();
-  const [images, setImages] = useState<ProductImage[]>(product.images ?? []);
-
-  useEffect(() => {
-    setImages(product.images ?? []);
-  }, [product]);
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,
@@ -242,9 +236,9 @@ export function UpdateProductDialog({
                 storeSlug={storeSlug as string}
               />
 
-              {images.length > 0 ? (
+              {product.images.length > 0 ? (
                 <div className="grid grid-cols-3 gap-3">
-                  {images.map((img) => (
+                  {product.images.map((img) => (
                     <div
                       className="group relative overflow-hidden rounded border"
                       key={img.id}
@@ -266,9 +260,6 @@ export function UpdateProductDialog({
                               fileKey: img.fileKey,
                               storeSlug: storeSlug as string,
                             });
-                            setImages((prev) =>
-                              prev.filter((image) => image.id !== idToDelete)
-                            );
                           }}
                           size="icon"
                           title="Delete image"

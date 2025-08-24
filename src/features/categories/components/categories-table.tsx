@@ -6,7 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { EllipsisVerticalIcon, PencilIcon } from 'lucide-react';
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -54,6 +54,13 @@ const RowActions = ({ category }: { category: Category }) => {
           <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
             <PencilIcon className="size-4" />
             Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setOpenDeleteDialog(true)}
+            variant="destructive"
+          >
+            <TrashIcon className="size-4" />
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
