@@ -4,6 +4,7 @@ export const categorySchema = z.object({
   id: z.uuid(),
   name: z.string(),
   slug: z.string(),
+  description: z.string().nullable(),
   storeId: z.uuid(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

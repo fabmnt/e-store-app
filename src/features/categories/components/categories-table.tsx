@@ -25,6 +25,10 @@ const categoriesColumns = [
   columnHelper.accessor('slug', {
     header: 'Slug',
   }),
+  columnHelper.accessor('description', {
+    header: 'Description',
+    cell: ({ row }) => row.original.description || '-',
+  }),
 ];
 
 type CategoriesTableProps = {

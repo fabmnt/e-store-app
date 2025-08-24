@@ -90,6 +90,7 @@ export const category = pgTable('category', {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
   slug: text().notNull().unique(),
+  description: text(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   storeId: uuid('store_id')
