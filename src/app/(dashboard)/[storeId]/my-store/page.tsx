@@ -37,7 +37,7 @@ export default async function StorePage({ params }: StorePageProps) {
   return (
     <div className="flex flex-col gap-4 py-4">
       <div>
-        <h1 className="font-bold text-2xl">{store.name}</h1>
+        <h1 className="font-bold text-2xl">Your Store</h1>
         <p className="text-muted-foreground text-sm">
           See and update information about your store
         </p>

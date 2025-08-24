@@ -1,10 +1,7 @@
 import { safe } from '@orpc/client';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
+import { notFound, redirect } from 'next/navigation';
 import { CreateProductDialog } from '@/features/products/components/create-product-dialog';
 import { ProductsTable } from '@/features/products/components/products-table';
-import { auth } from '@/lib/auth';
 import { client } from '@/lib/orpc';
 
 type ProductsPageProps = {
@@ -14,15 +11,24 @@ type ProductsPageProps = {
 };
 
 export default async function ProductsPage({ params }: ProductsPageProps) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    redirect('/auth/signin');
-  }
-
   const { storeId } = await params;
+  const {
+    data: products,
+    error,
+    isDefined,
+  } = await safe(client.products.getAllByStoreId.call({ storeId }));
+
+  if (error) {
+    if (isDefined && error.code === 'UNAUTHORIZED') {
+      redirect('/auth/signin');
+    }
+
+    if (isDefined && error.code === 'NOT_FOUND') {
+      notFound();
+    }
+
+    throw error;
+  }
 
   return (
     <div className="flex w-full flex-col">
@@ -35,21 +41,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
         </div>
         <CreateProductDialog />
       </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProductsTableWrapper storeId={storeId} />
-      </Suspense>
+      <ProductsTable products={products} />
     </div>
   );
-}
-
-async function ProductsTableWrapper({ storeId }: { storeId: string }) {
-  const { data: products, error } = await safe(
-    client.products.getAllByStoreId.call({ storeId })
-  );
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  return <ProductsTable products={products} />;
 }
