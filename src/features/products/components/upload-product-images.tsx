@@ -5,10 +5,10 @@ import { revalidatePathAction } from '@/server/actions';
 
 export function UploadProductImages({
   productId,
-  storeSlug,
+  storeId,
 }: {
   productId: string;
-  storeSlug: string;
+  storeId: string;
 }) {
   return (
     <UploadButton
@@ -21,11 +21,11 @@ export function UploadProductImages({
       endpoint="imageUploader"
       input={{
         productId,
-        storeSlug,
+        storeId,
       }}
       onClientUploadComplete={async () => {
         toast.success('Images uploaded successfully');
-        await revalidatePathAction(`/${storeSlug}/products`);
+        await revalidatePathAction(`/${storeId}/products`);
       }}
       onUploadError={() => {
         toast.error('Failed to upload images');

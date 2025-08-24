@@ -7,8 +7,8 @@ import { categorySchema } from '@/features/categories/schemas/category-schema';
 import { protectedOs } from './procedures';
 
 export const categoriesRouter = {
-  getAllByStoreSlug: protectedOs
-    .input(z.object({ storeSlug: z.string() }))
+  getAllByStoreId: protectedOs
+    .input(z.object({ storeId: z.string() }))
     .output(categorySchema.array())
     .errors({
       NOT_FOUND: {
@@ -17,7 +17,7 @@ export const categoriesRouter = {
     })
     .handler(async ({ input }) => {
       const storeFound = await db.query.store.findFirst({
-        where: eq(store.slug, input.storeSlug),
+        where: eq(store.id, input.storeId),
       });
 
       if (!storeFound) {

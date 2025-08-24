@@ -35,8 +35,8 @@ const sidebarItems = [
 ];
 
 export function AppSidebar() {
-  const { storeSlug } = useParams();
-  const pathname = usePathname().replace(`/${storeSlug}`, '').replace('/', '');
+  const { storeId } = useParams();
+  const pathname = usePathname().replace(`/${storeId}`, '').replace('/', '');
   const router = useRouter();
   const isActive = (href: string) => pathname === href;
 
@@ -53,7 +53,7 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     isActive={isActive(item.href)}
                     onClick={() =>
-                      router.push(`/${storeSlug}/${item.href}` as Route)
+                      router.push(`/${storeId}/${item.href}` as Route)
                     }
                   >
                     <item.icon className="mr-2 h-4 w-4" />

@@ -5,16 +5,16 @@ import { CreateCategoryDialog } from '@/features/categories/components/create-ca
 import { client } from '@/lib/orpc';
 
 type CategoriesPageProps = {
-  params: Promise<{ storeSlug: string }>;
+  params: Promise<{ storeId: string }>;
 };
 
 export default async function CategoriesPage({ params }: CategoriesPageProps) {
-  const { storeSlug } = await params;
+  const { storeId } = await params;
   const {
     data: categories,
     error,
     isDefined,
-  } = await safe(client.categories.getAllByStoreSlug.call({ storeSlug }));
+  } = await safe(client.categories.getAllByStoreId.call({ storeId }));
 
   if (error) {
     if (isDefined && error.code === 'NOT_FOUND') {

@@ -43,7 +43,7 @@ export const deleteProductImage = protectedOs
     z.object({
       id: z.string(),
       fileKey: z.string(),
-      storeSlug: z.string(),
+      storeId: z.string(),
     })
   )
   .errors({
@@ -57,7 +57,7 @@ export const deleteProductImage = protectedOs
   .handler(async ({ input }) => {
     await utapi.deleteFiles(input.fileKey);
     await db.delete(productImage).where(eq(productImage.id, input.id));
-    revalidatePath(`/${input.storeSlug}/products`);
+    revalidatePath(`/${input.storeId}/products`);
   })
   .actionable({
     context: async () => ({ headers: await headers() }),

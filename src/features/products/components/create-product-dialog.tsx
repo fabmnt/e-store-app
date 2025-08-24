@@ -40,16 +40,16 @@ import { UploadProductImages } from './upload-product-images';
 
 export function CreateProductDialog() {
   const [formStep, setFormStep] = useState<'details' | 'images'>('details');
-  const { storeSlug } = useParams();
+  const { storeId } = useParams();
   const { data: store } = useQuery(
-    client.stores.getBySlug.queryOptions({
-      input: storeSlug ? { slug: storeSlug as string } : skipToken,
+    client.stores.getById.queryOptions({
+      input: storeId ? { id: storeId as string } : skipToken,
     })
   );
   const [createdProduct, setCreatedProduct] = useState<Product | null>(null);
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
-    client.categories.getAllByStoreSlug.queryOptions({
-      input: store?.slug ? { storeSlug: store.slug } : skipToken,
+    client.categories.getAllByStoreId.queryOptions({
+      input: store?.id ? { storeId: store.id } : skipToken,
     })
   );
   const { execute, isPending: isCreatingProduct } = useServerAction(
@@ -259,11 +259,11 @@ export function CreateProductDialog() {
               </div>
             </form>
           )}
-          {formStep === 'images' && createdProduct && store?.slug && (
+          {formStep === 'images' && createdProduct && store && (
             <div>
               <UploadProductImages
                 productId={createdProduct.id}
-                storeSlug={store.slug}
+                storeId={store.id}
               />
             </div>
           )}

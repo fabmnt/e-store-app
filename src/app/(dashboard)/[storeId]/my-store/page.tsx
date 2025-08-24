@@ -10,17 +10,17 @@ import { client } from '@/lib/orpc';
 
 type StorePageProps = {
   params: Promise<{
-    storeSlug: string;
+    storeId: string;
   }>;
 };
 
 export default async function StorePage({ params }: StorePageProps) {
-  const { storeSlug } = await params;
+  const { storeId } = await params;
   const {
     data: store,
     error,
     isDefined,
-  } = await safe(client.stores.getBySlug.call({ slug: storeSlug }));
+  } = await safe(client.stores.getById.call({ id: storeId }));
 
   if (error) {
     if (isDefined && error.code === 'UNAUTHORIZED') {

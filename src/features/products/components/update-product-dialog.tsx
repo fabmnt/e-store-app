@@ -41,7 +41,7 @@ export function UpdateProductDialog({
   onOpenChange,
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'details' | 'images'>('details');
-  const { storeSlug } = useParams();
+  const { storeId } = useParams();
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,
@@ -233,7 +233,7 @@ export function UpdateProductDialog({
             <div className="space-y-4">
               <UploadProductImages
                 productId={product.id}
-                storeSlug={storeSlug as string}
+                storeId={storeId as string}
               />
 
               {product.images.length > 0 ? (
@@ -258,7 +258,7 @@ export function UpdateProductDialog({
                             await executeDeleteImage({
                               id: idToDelete,
                               fileKey: img.fileKey,
-                              storeSlug: storeSlug as string,
+                              storeId: storeId as string,
                             });
                           }}
                           size="icon"

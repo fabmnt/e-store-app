@@ -29,10 +29,10 @@ import { client } from '@/lib/orpc';
 import { createCategoryAction } from '@/orpc/categories/categories-actions';
 
 export function CreateCategoryDialog() {
-  const { storeSlug } = useParams();
+  const { storeId } = useParams();
   const { data: store } = useQuery(
-    client.stores.getBySlug.queryOptions({
-      input: storeSlug ? { slug: storeSlug as string } : skipToken,
+    client.stores.getById.queryOptions({
+      input: storeId ? { id: storeId as string } : skipToken,
     })
   );
 

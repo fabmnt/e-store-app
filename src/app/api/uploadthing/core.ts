@@ -26,7 +26,7 @@ export const ourFileRouter = {
     .input(
       z.object({
         productId: z.string(),
-        storeSlug: z.string(),
+        storeId: z.string(),
       })
     )
     .middleware(async ({ req, input, files }) => {
@@ -65,7 +65,7 @@ export const ourFileRouter = {
       return {
         userId: session.user.id,
         productId: input.productId,
-        storeSlug: input.storeSlug,
+        storeId: input.storeId,
       };
     })
     .onUploadComplete(async ({ metadata, file }) => {
