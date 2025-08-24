@@ -18,7 +18,7 @@ export function UploadProductImages({
       config={{
         mode: 'manual',
       }}
-      endpoint="imageUploader"
+      endpoint="productImageUploader"
       input={{
         productId,
         storeId,

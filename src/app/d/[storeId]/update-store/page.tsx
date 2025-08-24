@@ -1,7 +1,9 @@
 import { safe } from '@orpc/server';
 import { notFound, redirect } from 'next/navigation';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UpdateStoreForm } from '@/features/stores/components/update-store-form';
+import { UploadStoreImage } from '@/features/stores-images/component/upload-store-image';
 import { client } from '@/lib/orpc';
 
 type UpdateStorePageProps = {
@@ -43,9 +45,22 @@ export default async function UpdateStorePage({
         </div>
       </div>
       <Card>
-        <CardContent>
-          <UpdateStoreForm store={store} />
-        </CardContent>
+        <Tabs defaultValue="update-details">
+          <CardHeader>
+            <TabsList>
+              <TabsTrigger value="update-details">Update details</TabsTrigger>
+              <TabsTrigger value="update-images">Update images</TabsTrigger>
+            </TabsList>
+          </CardHeader>
+          <CardContent>
+            <TabsContent value="update-details">
+              <UpdateStoreForm store={store} />
+            </TabsContent>
+            <TabsContent value="update-images">
+              <UploadStoreImage store={store} />
+            </TabsContent>
+          </CardContent>
+        </Tabs>
       </Card>
     </div>
   );

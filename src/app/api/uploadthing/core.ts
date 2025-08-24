@@ -3,7 +3,7 @@ import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 import * as z from 'zod';
 import { db } from '@/db';
-import { productImage } from '@/db/schema';
+import { productImage, storeImage } from '@/db/schema';
 import { auth } from '@/lib/auth';
 
 export const MAX_IMAGES = 5;
@@ -13,7 +13,7 @@ const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({
+  productImageUploader: f({
     image: {
       /**
        * For full list of options and defaults, see the File Route API reference
@@ -25,8 +25,8 @@ export const ourFileRouter = {
   })
     .input(
       z.object({
-        productId: z.string(),
-        storeId: z.string(),
+        productId: z.uuid(),
+        storeId: z.uuid(),
       })
     )
     .middleware(async ({ req, input, files }) => {
@@ -37,7 +37,10 @@ export const ourFileRouter = {
 
       // If you throw, the user will not be able to upload
       if (!session) {
-        throw new UploadThingError('Unauthorized');
+        throw new UploadThingError({
+          code: 'FORBIDDEN',
+          message: 'Unathorized',
+        });
       }
 
       const [totalCurrentImages] = await db
@@ -78,6 +81,40 @@ export const ourFileRouter = {
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
+    }),
+  storeImageUploader: f({
+    image: {
+      maxFileSize: '4MB',
+      maxFileCount: 10,
+    },
+  })
+    .input(
+      z.object({
+        storeId: z.uuid(),
+      })
+    )
+    .middleware(async ({ req, input }) => {
+      const session = await auth.api.getSession({ headers: req.headers });
+      if (!session) {
+        throw new UploadThingError({
+          code: 'FORBIDDEN',
+          message: 'Unauthorized',
+        });
+      }
+
+      return {
+        userId: session.user.id,
+        storeId: input.storeId,
+      };
+    })
+    .onUploadComplete(async ({ file, metadata }) => {
+      await db
+        .insert(storeImage)
+        .values({
+          fileKey: file.key,
+          url: file.ufsUrl,
+          storeId: metadata.storeId,
+        });
     }),
 } satisfies FileRouter;
 

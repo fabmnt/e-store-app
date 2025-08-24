@@ -86,6 +86,16 @@ export const store = pgTable('store', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+export const storeImage = pgTable('store_image', {
+  id: uuid().defaultRandom().primaryKey(),
+  url: text().notNull(),
+  fileKey: text().notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  storeId: uuid('store_id').references(() => store.id, {
+    onDelete: 'set null',
+  }),
+});
+
 export const category = pgTable('category', {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
@@ -129,12 +139,20 @@ export const productImage = pgTable('product_image', {
 export const storeRelations = relations(store, ({ many }) => ({
   categories: many(category),
   products: many(product),
+  imanges: many(storeImage),
 }));
 
 export const categoryRelations = relations(category, ({ many, one }) => ({
   products: many(product),
   store: one(store, {
     fields: [category.storeId],
+    references: [store.id],
+  }),
+}));
+
+export const storeImageRelations = relations(storeImage, ({ one }) => ({
+  store: one(store, {
+    fields: [storeImage.storeId],
     references: [store.id],
   }),
 }));
