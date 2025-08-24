@@ -25,27 +25,25 @@ import type { ProductImage } from '@/features/products-images/schemas/product-im
 import { updateProductAction } from '@/orpc/products/products-actions';
 import { deleteProductImage } from '@/orpc/products-images/products-images-actions';
 import {
-  type Product,
   type ProductUpdate,
+  type ProductWithImages,
   productUpdateSchema,
 } from '../schemas/product-schema';
 import { UploadProductImages } from './upload-product-images';
 
 type UpdateProductDialogProps = {
-  product: Product;
-  images?: ProductImage[];
+  product: ProductWithImages;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
 export function UpdateProductDialog({
   product,
-  images: initialImages,
   open,
   onOpenChange,
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'details' | 'images'>('details');
-  const [images, setImages] = useState<ProductImage[]>(initialImages ?? []);
+  const [images, setImages] = useState<ProductImage[]>(product.images ?? []);
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,

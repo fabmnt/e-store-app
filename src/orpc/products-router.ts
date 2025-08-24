@@ -6,6 +6,7 @@ import { product, store } from '@/db/schema';
 import {
   productCreateSchema,
   productSchema,
+  productWithImagesSchema,
 } from '@/features/products/schemas/product-schema';
 import { protectedOs } from './procedures';
 
@@ -43,7 +44,7 @@ export const productsRouter = {
         storeSlug: z.string(),
       })
     )
-    .output(z.array(productSchema))
+    .output(z.array(productWithImagesSchema))
     .errors({
       NOT_FOUND: {
         message: 'Store not found',
@@ -61,6 +62,9 @@ export const productsRouter = {
       const productsFound = await db.query.product.findMany({
         where: eq(product.storeId, storeFound.id),
         orderBy: [desc(product.createdAt)],
+        with: {
+          images: true,
+        },
       });
 
       return productsFound;

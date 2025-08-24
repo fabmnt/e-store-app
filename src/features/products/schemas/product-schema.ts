@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { productImageSchema } from '@/features/products-images/schemas/product-images-schema';
 
 export const productSchema = z.object({
   id: z.uuid(),
@@ -29,6 +30,11 @@ export const productUpdateSchema = productSchema
     slug: z.string().optional(),
   });
 
+export const productWithImagesSchema = productSchema.extend({
+  images: z.array(productImageSchema),
+});
+
+export type ProductWithImages = z.infer<typeof productWithImagesSchema>;
 export type Product = z.infer<typeof productSchema>;
 export type ProductCreate = z.infer<typeof productCreateSchema>;
 export type ProductUpdate = z.infer<typeof productUpdateSchema>;
