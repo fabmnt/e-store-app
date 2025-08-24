@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -23,32 +24,40 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Product } from '../schemas/product-schema';
+import { UpdateProductDialog } from './update-product-dialog';
 
 type ProductsTableProps = {
   products: Product[];
 };
 
 const RowActions = ({ product }: { product: Product }) => {
-  console.log(product);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline">
-          <EllipsisVerticalIcon className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
-          <PencilIcon className="size-4" />
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive">
-          <TrashIcon className="size-4" />
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <UpdateProductDialog
+        onOpenChange={setOpenEditDialog}
+        open={openEditDialog}
+        product={product}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="outline">
+            <EllipsisVerticalIcon className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
+            <PencilIcon className="size-4" />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem variant="destructive">
+            <TrashIcon className="size-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 

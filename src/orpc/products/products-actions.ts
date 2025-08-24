@@ -48,6 +48,7 @@ export const deleteProductAction = protectedOs
     const { id } = input;
 
     await db.delete(product).where(eq(product.id, id));
+    revalidatePath(`/${store.slug}/products`);
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -64,13 +65,15 @@ export const updateProductAction = protectedOs
 
     const [productUpdated] = await db
       .update(product)
-      .set(data)
+      .set({ ...data, updatedAt: new Date() })
       .where(eq(product.id, id))
       .returning();
 
     if (!productUpdated) {
       throw new ORPCError('NOT_FOUND');
     }
+
+    revalidatePath(`/${store.slug}/products`);
 
     return productUpdated;
   })

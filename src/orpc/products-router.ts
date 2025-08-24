@@ -1,5 +1,5 @@
 import { ORPCError } from '@orpc/client';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { product, store } from '@/db/schema';
@@ -60,6 +60,7 @@ export const productsRouter = {
 
       const productsFound = await db.query.product.findMany({
         where: eq(product.storeId, storeFound.id),
+        orderBy: [desc(product.createdAt)],
       });
 
       return productsFound;
