@@ -1,5 +1,3 @@
-'use client';
-
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
@@ -296,7 +294,7 @@ export function UpdateProductDialog({
           </DialogClose>
           {tab === 'details' && (
             <Button
-              className="w-24"
+              className="w-20"
               disabled={isUpdating}
               form="update-product-form"
               type="submit"

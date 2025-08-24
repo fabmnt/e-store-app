@@ -27,8 +27,8 @@ export function UploadProductImages({
         toast.success('Images uploaded successfully');
         await revalidatePathAction(`/${storeSlug}/products`);
       }}
-      onUploadError={(error) => {
-        toast.error(error.message);
+      onUploadError={() => {
+        toast.error('Failed to upload images');
       }}
     />
   );

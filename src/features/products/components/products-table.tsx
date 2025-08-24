@@ -24,6 +24,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { ProductWithImages } from '../schemas/product-schema';
+import { DeleteProductDialog } from './delete-product-dialog';
 import { UpdateProductDialog } from './update-product-dialog';
 
 type ProductsTableProps = {
@@ -32,6 +33,7 @@ type ProductsTableProps = {
 
 const RowActions = ({ product }: { product: ProductWithImages }) => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   return (
     <>
@@ -39,6 +41,11 @@ const RowActions = ({ product }: { product: ProductWithImages }) => {
         onOpenChange={setOpenEditDialog}
         open={openEditDialog}
         product={product}
+      />
+      <DeleteProductDialog
+        onOpenChange={setOpenDeleteDialog}
+        open={openDeleteDialog}
+        productId={product.id}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -51,7 +58,10 @@ const RowActions = ({ product }: { product: ProductWithImages }) => {
             <PencilIcon className="size-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem variant="destructive">
+          <DropdownMenuItem
+            onClick={() => setOpenDeleteDialog(true)}
+            variant="destructive"
+          >
             <TrashIcon className="size-4" />
             Delete
           </DropdownMenuItem>
