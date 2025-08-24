@@ -19,7 +19,7 @@ import {
 const sidebarItems = [
   {
     label: 'My Store',
-    href: '',
+    href: 'my-store',
     icon: StoreIcon,
   },
   {
