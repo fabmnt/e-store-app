@@ -1,6 +1,8 @@
 /** biome-ignore-all lint/suspicious/noUnknownAtRules: tailwind v4 */
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "uploadthing/tw/v4";
+@source "../../node_modules/@uploadthing/react/dist";
 
 @custom-variant dark (&:is(.dark *));
 

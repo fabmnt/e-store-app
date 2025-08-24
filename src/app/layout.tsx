@@ -2,9 +2,12 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import '../lib/orpc.server';
+import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
+import { extractRouterConfig } from 'uploadthing/server';
 import { Toaster } from '@/components/ui/sonner';
 import { TanstackQueryClientProvider } from '@/providers/query-client-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { ourFileRouter } from './api/uploadthing/core';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
