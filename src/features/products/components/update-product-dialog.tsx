@@ -259,7 +259,11 @@ export function UpdateProductDialog({
                           disabled={isDeletingImage}
                           onClick={async () => {
                             const idToDelete = img.id;
-                            await executeDeleteImage({ id: idToDelete });
+                            await executeDeleteImage({
+                              id: idToDelete,
+                              fileKey: img.fileKey,
+                              storeSlug: storeSlug as string,
+                            });
                             setImages((prev) =>
                               prev.filter((image) => image.id !== idToDelete)
                             );

@@ -1,7 +1,8 @@
 'use server';
 
-import { ORPCError } from '@orpc/server';
+import { ORPCError, onError } from '@orpc/server';
 import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { db } from '@/db';
@@ -10,6 +11,7 @@ import {
   createProductImageSchema,
   productImageSchema,
 } from '@/features/products-images/schemas/product-images-schema';
+import { utapi } from '@/server/utapi';
 import { protectedOs } from '../procedures';
 
 export const createProductImage = protectedOs
@@ -40,6 +42,8 @@ export const deleteProductImage = protectedOs
   .input(
     z.object({
       id: z.string(),
+      fileKey: z.string(),
+      storeSlug: z.string(),
     })
   )
   .errors({
@@ -51,6 +55,15 @@ export const deleteProductImage = protectedOs
     },
   })
   .handler(async ({ input }) => {
+    await utapi.deleteFiles(input.fileKey);
     await db.delete(productImage).where(eq(productImage.id, input.id));
+    revalidatePath(`/${input.storeSlug}/products`);
   })
-  .actionable({ context: async () => ({ headers: await headers() }) });
+  .actionable({
+    context: async () => ({ headers: await headers() }),
+    interceptors: [
+      onError(async (err) => {
+        await console.log(err);
+      }),
+    ],
+  });

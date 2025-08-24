@@ -84,6 +84,10 @@ const productsColumns = [
     header: 'Stock',
     cell: ({ row }) => row.original.stock,
   }),
+  columnHelper.accessor('images', {
+    header: 'Images',
+    cell: ({ row }) => row.original.images?.length,
+  }),
   columnHelper.display({
     header: 'Actions',
     cell: ({ row }) => <RowActions product={row.original} />,
