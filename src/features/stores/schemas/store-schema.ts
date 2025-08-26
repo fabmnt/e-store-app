@@ -1,5 +1,6 @@
 import * as z from 'zod';
 import { categorySchema } from '@/features/categories/schemas/category-schema';
+import { storeImageSchema } from '@/features/stores-images/schemas/store-image-schema';
 
 export const storeSchema = z.object({
   id: z.uuid(),
@@ -19,6 +20,7 @@ export const storeSchema = z.object({
 
 export const storeWithCategoriesSchema = storeSchema.extend({
   categories: z.array(categorySchema),
+  images: z.array(storeImageSchema),
 });
 
 export type StoreWithCategories = z.infer<typeof storeWithCategoriesSchema>;

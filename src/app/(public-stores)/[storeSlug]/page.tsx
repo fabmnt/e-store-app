@@ -1,4 +1,5 @@
 import { safe } from '@orpc/server';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -33,6 +34,19 @@ export default async function PublicStorePage({
 
   return (
     <div className="space-y-8">
+      <div className="sticky top-0 z-50 border-b bg-background py-4">
+        <Container>
+          <header>
+            <Image
+              alt={store.name}
+              className="rounded-full object-cover"
+              height={50}
+              src={store.images[0]?.url ?? ''}
+              width={50}
+            />
+          </header>
+        </Container>
+      </div>
       <div className="text-center">
         <h1 className="font-semibold text-2xl capitalize tracking-wide">
           {store.name}

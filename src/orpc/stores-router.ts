@@ -67,6 +67,7 @@ export const storeRouter = {
         where: eq(store.slug, input.slug),
         with: {
           categories: true,
+          images: true,
         },
       });
 

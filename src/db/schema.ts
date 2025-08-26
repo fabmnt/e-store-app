@@ -147,7 +147,7 @@ export const productImage = pgTable('product_image', {
 export const storeRelations = relations(store, ({ many }) => ({
   categories: many(category),
   products: many(product),
-  imanges: many(storeImage),
+  images: many(storeImage),
 }));
 
 export const categoryRelations = relations(category, ({ many, one }) => ({
