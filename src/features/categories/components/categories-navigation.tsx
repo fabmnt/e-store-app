@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { Category } from '../schemas/category-schema';
 
@@ -13,12 +12,12 @@ export function CategoriesNavigation({
     <nav className="flex items-center gap-x-6">
       {categories.map((category) => (
         <Button
-          asChild
-          className="rounded-full px-10 tracking-tight"
+          className="relative rounded-none px-10 py-5 tracking-tight"
           key={category.id}
-          variant="outline"
+          variant="ghost"
         >
-          <Link href={'/'}>{category.name}</Link>
+          <span>{category.name}</span>
+          <div className="absolute bottom-0 left-0 h-[1.5px] w-full bg-primary" />
         </Button>
       ))}
     </nav>
