@@ -53,7 +53,9 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     isActive={isActive(item.href)}
                     onClick={() =>
-                      router.push(`/d/${storeId}/${item.href}` as Route)
+                      router.push(
+                        `/d/${storeId}/${item.href}/my-store` as Route
+                      )
                     }
                   >
                     <item.icon className="mr-2 h-4 w-4" />

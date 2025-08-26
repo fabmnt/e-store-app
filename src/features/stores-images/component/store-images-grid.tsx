@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import type { StoreImage } from '@/features/stores-images/schemas/store-image-schema';
 
 type StoreImagesGridProps = {
@@ -8,11 +7,16 @@ type StoreImagesGridProps = {
 
 export function StoreImagesGrid({ storeImages }: StoreImagesGridProps) {
   return (
-    <div className="grid grid-cols-5">
+    <div className="">
       {storeImages.map((storeImage, index) => (
-        <AspectRatio className="size-[320px]" key={storeImage.id} ratio={1 / 1}>
-          <Image alt={`Image ${index + 1}`} fill src={storeImage.url} />
-        </AspectRatio>
+        <Image
+          alt={`Image ${index + 1}`}
+          className="h-[300px]"
+          height={300}
+          key={storeImage.id}
+          src={storeImage.url}
+          width={300}
+        />
       ))}
     </div>
   );
