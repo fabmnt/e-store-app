@@ -13,7 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { signInSchema } from '@/features/signin/schemas/signin-schema';
-import { signIn } from '@/orpc/auth';
+import { signIn } from '@/rpc/auth';
 
 export function SignInForm() {
   const router = useRouter();

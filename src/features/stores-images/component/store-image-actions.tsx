@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { updateStoreImageType } from '@/orpc/stores-images/stores-images-actions';
+import { updateStoreImageType } from '@/rpc/stores-images/stores-images-actions';
 
 type StoreImageActionsProps = {
   storeImageId: string;

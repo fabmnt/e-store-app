@@ -26,12 +26,12 @@ import {
   categoryCreateSchema,
 } from '@/features/categories/schemas/category-schema';
 import { client } from '@/lib/orpc';
-import { createCategoryAction } from '@/orpc/categories/categories-actions';
+import { createCategoryAction } from '@/rpc/categories/categories-actions';
 
 export function CreateCategoryDialog() {
   const { storeId } = useParams();
   const { data: store } = useQuery(
-    client.stores.getById.queryOptions({
+    client.stores.protected.getById.queryOptions({
       input: storeId ? { id: storeId as string } : skipToken,
     })
   );

@@ -22,7 +22,7 @@ export default async function PublicStorePage({
     data: store,
     error,
     isDefined,
-  } = await safe(client.stores.getBySlug.call({ slug: storeSlug }));
+  } = await safe(client.stores.public.getBySlug.call({ slug: storeSlug }));
 
   if (error) {
     if (isDefined && error.code === 'NOT_FOUND') {
@@ -78,7 +78,9 @@ export default async function PublicStorePage({
 }
 
 async function ProductsWrapper({ storeId }: { storeId: string }) {
-  const products = await client.products.getAllByStoreId.call({ storeId });
+  const products = await client.products.public.getAllByStoreId.call({
+    storeId,
+  });
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

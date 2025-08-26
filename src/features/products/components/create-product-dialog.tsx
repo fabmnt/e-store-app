@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { client } from '@/lib/orpc';
-import { createProductAction } from '@/orpc/products/products-actions';
+import { createProductAction } from '@/rpc/products/products-actions';
 import {
   type Product,
   type ProductCreate,
@@ -42,13 +42,13 @@ export function CreateProductDialog() {
   const [formStep, setFormStep] = useState<'details' | 'images'>('details');
   const { storeId } = useParams();
   const { data: store } = useQuery(
-    client.stores.getById.queryOptions({
+    client.stores.protected.getById.queryOptions({
       input: storeId ? { id: storeId as string } : skipToken,
     })
   );
   const [createdProduct, setCreatedProduct] = useState<Product | null>(null);
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
-    client.categories.getAllByStoreId.queryOptions({
+    client.categories.protected.getAllByStoreId.queryOptions({
       input: store?.id ? { storeId: store.id } : skipToken,
     })
   );

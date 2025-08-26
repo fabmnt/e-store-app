@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { deleteCategoryAction } from '@/orpc/categories/categories-actions';
+import { deleteCategoryAction } from '@/rpc/categories/categories-actions';
 import type { Category } from '../schemas/category-schema';
 
 type DeleteCategoryDialogProps = {

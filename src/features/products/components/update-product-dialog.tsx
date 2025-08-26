@@ -29,8 +29,8 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { client } from '@/lib/orpc';
-import { updateProductAction } from '@/orpc/products/products-actions';
-import { deleteProductImage } from '@/orpc/products-images/products-images-actions';
+import { updateProductAction } from '@/rpc/products/products-actions';
+import { deleteProductImage } from '@/rpc/products-images/products-images-actions';
 import {
   type ProductUpdate,
   type ProductWithImages,
@@ -53,7 +53,7 @@ export function UpdateProductDialog({
   const { storeId } = useParams();
 
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
-    client.categories.getAllByStoreId.queryOptions({
+    client.categories.protected.getAllByStoreId.queryOptions({
       input: { storeId: storeId as string },
     })
   );

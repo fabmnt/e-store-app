@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { signUpSchema } from '@/features/signup/schemas/signup-schema';
-import { signUp } from '@/orpc/auth';
+import { signUp } from '@/rpc/auth';
 
 export function SignUpForm() {
   const router = useRouter();

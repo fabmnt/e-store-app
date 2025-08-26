@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { deleteProductAction } from '@/orpc/products/products-actions';
+import { deleteProductAction } from '@/rpc/products/products-actions';
 
 type DeleteProductDialogProps = {
   productId: string;

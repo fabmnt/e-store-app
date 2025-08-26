@@ -22,7 +22,7 @@ export default async function UpdateStorePage({
     data: store,
     error,
     isDefined,
-  } = await safe(client.stores.getById.call({ id: storeId }));
+  } = await safe(client.stores.protected.getById.call({ id: storeId }));
 
   if (error) {
     if (isDefined && error.code === 'UNAUTHORIZED') {

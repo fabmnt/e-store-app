@@ -39,7 +39,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${monaSans.variable} antialiased`}
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-
         <TanstackQueryClientProvider>
           {children}
           <Toaster />

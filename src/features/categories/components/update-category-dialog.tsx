@@ -20,7 +20,7 @@ import {
   type CategoryUpdate,
   categoryUpdateSchema,
 } from '@/features/categories/schemas/category-schema';
-import { updateCategoryAction } from '@/orpc/categories/categories-actions';
+import { updateCategoryAction } from '@/rpc/categories/categories-actions';
 
 type UpdateCategoryDialogProps = {
   category: Category;

@@ -9,7 +9,7 @@ export default async function Home() {
     data: stores,
     error,
     isDefined,
-  } = await safe(client.stores.getAll.call());
+  } = await safe(client.stores.protected.getAll.call());
 
   if (error) {
     if (isDefined && error.code === 'UNAUTHORIZED') {

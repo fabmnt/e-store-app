@@ -15,7 +15,7 @@ export default async function CategoriesPage({ params }: CategoriesPageProps) {
     data: categories,
     error,
     isDefined,
-  } = await safe(client.categories.getAllByStoreId.call({ storeId }));
+  } = await safe(client.categories.protected.getAllByStoreId.call({ storeId }));
 
   if (error) {
     if (isDefined && error.code === 'NOT_FOUND') {
