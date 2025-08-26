@@ -26,7 +26,7 @@ export default async function Home() {
       </div>
       <div className="grid grid-cols-4 gap-4">
         {stores?.map((store) => (
-          <Link href={`/d/${store.id}`} key={store.id}>
+          <Link href={`/d/${store.id}/my-store`} key={store.id}>
             <StoreCard key={store.id} store={store} />
           </Link>
         ))}
