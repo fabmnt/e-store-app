@@ -1,5 +1,8 @@
 import { safe } from '@orpc/server';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Container } from '@/components/container';
+import { Button } from '@/components/ui/button';
 import { CategoriesNavigation } from '@/features/categories/components/categories-navigation';
 import { client } from '@/lib/orpc';
 
@@ -27,8 +30,8 @@ export default async function PublicStorePage({
   }
 
   return (
-    <div>
-      <div className="space-y-2 py-6 text-center">
+    <div className="space-y-8">
+      <div className="space-y-2 py-2 text-center">
         <h1 className="font-semibold text-2xl capitalize tracking-wide">
           {store.name}
         </h1>
@@ -37,6 +40,16 @@ export default async function PublicStorePage({
       <section className="flex justify-center">
         <CategoriesNavigation categories={store.categories} />
       </section>
+      <Container>
+        <div className="flex gap-x-4">
+          <Button asChild className="rounded-full px-8">
+            <Link href={'/'}>Popular</Link>
+          </Button>
+          <Button asChild className="rounded-full px-8" variant="ghost">
+            <Link href={'/'}>Most recent</Link>
+          </Button>
+        </div>
+      </Container>
     </div>
   );
 }
