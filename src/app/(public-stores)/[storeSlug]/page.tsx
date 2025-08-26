@@ -34,7 +34,7 @@ export default async function PublicStorePage({
 
   return (
     <div className="space-y-8">
-      <div className="sticky top-0 z-50 border-b bg-background py-4">
+      <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <Container>
           <header>
             <Image
