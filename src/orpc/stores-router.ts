@@ -6,6 +6,7 @@ import { store } from '@/db/schema';
 import {
   createStoreSchema,
   storeSchema,
+  storeWithCategoriesSchema,
   updateStoreSchema,
 } from '@/features/stores/schemas/store-schema';
 import { protectedOs, publicOs } from './procedures';
@@ -60,10 +61,13 @@ export const storeRouter = {
       },
     })
     .input(z.object({ slug: z.string() }))
-    .output(storeSchema)
+    .output(storeWithCategoriesSchema)
     .handler(async ({ input }) => {
       const storeFound = await db.query.store.findFirst({
         where: eq(store.slug, input.slug),
+        with: {
+          categories: true,
+        },
       });
 
       if (!storeFound) {

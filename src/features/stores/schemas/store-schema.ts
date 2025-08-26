@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { categorySchema } from '@/features/categories/schemas/category-schema';
 
 export const storeSchema = z.object({
   id: z.uuid(),
@@ -15,6 +16,12 @@ export const storeSchema = z.object({
   instagram: z.string().nullable(),
   createdAt: z.coerce.date(),
 });
+
+export const storeWithCategoriesSchema = storeSchema.extend({
+  categories: z.array(categorySchema),
+});
+
+export type StoreWithCategories = z.infer<typeof storeWithCategoriesSchema>;
 
 export const createStoreSchema = storeSchema.omit({
   id: true,
