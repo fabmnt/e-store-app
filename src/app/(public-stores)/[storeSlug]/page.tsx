@@ -32,6 +32,8 @@ export default async function PublicStorePage({
     throw error;
   }
 
+  const logoImage = store.images.find((image) => image.type === 'logo');
+
   return (
     <div className="space-y-8">
       <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -40,9 +42,9 @@ export default async function PublicStorePage({
             <Image
               alt={store.name}
               className="rounded-full object-cover"
-              height={50}
-              src={store.images[0]?.url ?? ''}
-              width={50}
+              height={100}
+              src={logoImage?.url ?? ''}
+              width={100}
             />
           </header>
         </Container>
