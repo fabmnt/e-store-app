@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Mona_Sans } from 'next/font/google';
 import './globals.css';
 import '../lib/orpc.server';
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { extractRouterConfig } from 'uploadthing/server';
 import { Toaster } from '@/components/ui/sonner';
 import { TanstackQueryClientProvider } from '@/providers/query-client-provider';
-import { ThemeProvider } from '@/providers/theme-provider';
 import { ourFileRouter } from './api/uploadthing/core';
 
 const geistSans = Geist({
@@ -16,6 +15,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
+
+const monaSans = Mona_Sans({
+  variable: '--font-mona-sans',
   subsets: ['latin'],
 });
 
@@ -32,20 +36,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${monaSans.variable} antialiased`}
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          disableTransitionOnChange
-          enableSystem
-        >
-          <TanstackQueryClientProvider>
-            {children}
-            <Toaster />
-          </TanstackQueryClientProvider>
-        </ThemeProvider>
+
+        <TanstackQueryClientProvider>
+          {children}
+          <Toaster />
+        </TanstackQueryClientProvider>
       </body>
     </html>
   );
