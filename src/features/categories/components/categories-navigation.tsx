@@ -14,7 +14,7 @@ export function CategoriesNavigation({
       {categories.map((category) => (
         <Button
           asChild
-          className="rounded-full px-10 tracking-tight"
+          className="rounded-none border border-x-0 border-t-0 border-b-2 px-10 tracking-tight"
           key={category.id}
           variant="outline"
         >
