@@ -3,6 +3,7 @@ import {
   boolean,
   integer,
   numeric,
+  pgEnum,
   pgTable,
   text,
   timestamp,
@@ -86,10 +87,17 @@ export const store = pgTable('store', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+export const storeImageType = pgEnum('store_image_type', [
+  'cover',
+  'logo',
+  'banner',
+]);
+
 export const storeImage = pgTable('store_image', {
   id: uuid().defaultRandom().primaryKey(),
   url: text().notNull(),
   fileKey: text().notNull(),
+  type: storeImageType('type'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   storeId: uuid('store_id').references(() => store.id, {
     onDelete: 'set null',

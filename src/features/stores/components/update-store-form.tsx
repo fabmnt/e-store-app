@@ -25,7 +25,6 @@ export function UpdateStoreForm({ store }: UpdateStoreFormProps) {
     useServerAction(updateStoreAction, {
       interceptors: [
         onSuccess(() => {
-          form.reset();
           toast.success('Store updated successfully');
         }),
       ],

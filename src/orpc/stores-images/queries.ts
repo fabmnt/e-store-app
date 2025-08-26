@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { storeImage } from '@/db/schema';
@@ -24,6 +24,7 @@ export const storeImagesQueries = {
     .handler(async ({ input }) => {
       const storeImages = await db.query.storeImage.findMany({
         where: eq(storeImage.storeId, input.storeId),
+        orderBy: [asc(storeImage.createdAt)],
       });
 
       return storeImages;
