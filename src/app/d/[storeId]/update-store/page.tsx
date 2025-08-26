@@ -59,7 +59,7 @@ export default async function UpdateStorePage({
               <UpdateStoreForm store={store} />
             </TabsContent>
             <TabsContent value="update-images">
-              <div>
+              <div className="flex flex-col gap-4">
                 <Suspense fallback={<div>Loading images...</div>}>
                   <StoreImagesWrapper storeId={store.id} />
                 </Suspense>
