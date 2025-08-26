@@ -10,14 +10,16 @@ export function CategoriesNavigation({
 }: CategoriesNavigationProps) {
   return (
     <nav className="flex items-center gap-x-6">
-      {categories.map((category) => (
+      {categories.map((category, i) => (
         <Button
           className="relative rounded-none px-10 py-5 tracking-tight"
           key={category.id}
           variant="ghost"
         >
           <span>{category.name}</span>
-          <div className="absolute bottom-0 left-0 h-[1.5px] w-full bg-primary" />
+          {i === 0 && (
+            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
+          )}
         </Button>
       ))}
     </nav>
