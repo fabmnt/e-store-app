@@ -123,6 +123,7 @@ export const product = pgTable('product', {
   description: text(),
   price: numeric({ mode: 'number', precision: 10, scale: 2 }).notNull(),
   stock: integer().notNull().default(0),
+  clicks: integer().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   storeId: uuid('store_id')

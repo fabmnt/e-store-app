@@ -10,13 +10,16 @@ export const productsRouter = {
     .input(
       z.object({
         storeId: z.string(),
+        by: z.enum(['clicks', 'createdAt']).optional().default('createdAt'),
       })
     )
     .output(z.array(productWithImagesSchema))
     .handler(async ({ input }) => {
       const productsFound = await db.query.product.findMany({
         where: eq(product.storeId, input.storeId),
-        orderBy: [desc(product.createdAt)],
+        orderBy: [
+          desc(input.by === 'clicks' ? product.clicks : product.createdAt),
+        ],
         with: {
           category: true,
           store: true,
