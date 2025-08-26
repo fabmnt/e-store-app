@@ -8,7 +8,7 @@ import {
   storeSchema,
   updateStoreSchema,
 } from '@/features/stores/schemas/store-schema';
-import { protectedOs } from './procedures';
+import { protectedOs, publicOs } from './procedures';
 
 export const storeRouter = {
   create: protectedOs
@@ -53,7 +53,7 @@ export const storeRouter = {
 
       return storeFound;
     }),
-  getBySlug: protectedOs
+  getBySlug: publicOs
     .errors({
       NOT_FOUND: {
         message: 'Store not found',
