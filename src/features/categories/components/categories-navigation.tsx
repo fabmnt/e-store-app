@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import type { Category } from '../schemas/category-schema';
 
 type CategoriesNavigationProps = {
@@ -12,7 +13,10 @@ export function CategoriesNavigation({
     <nav className="flex items-center gap-x-6">
       {categories.map((category, i) => (
         <Button
-          className="relative rounded-none px-10 py-5 tracking-tight"
+          className={cn(
+            'relative rounded-none px-10 py-5 tracking-tight transition-all hover:font-semibold',
+            i === 0 && 'font-semibold'
+          )}
           key={category.id}
           variant="ghost"
         >
