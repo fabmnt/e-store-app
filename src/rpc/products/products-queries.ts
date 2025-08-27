@@ -39,6 +39,7 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
+            details: true,
           },
         });
 
@@ -62,6 +63,7 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
+            details: true,
           },
           orderBy: [desc(product.createdAt)],
         });
@@ -92,6 +94,7 @@ export const productQueries = {
               category: true,
               store: true,
               images: true,
+              details: true,
             },
           });
 
@@ -115,6 +118,7 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
+            details: true,
           },
         });
 
@@ -136,6 +140,7 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
+            details: true,
           },
           orderBy: [desc(product.createdAt)],
         });

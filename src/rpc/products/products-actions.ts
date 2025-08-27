@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { db } from '@/db';
-import { product, productImage, store } from '@/db/schema';
+import { product, productDetail, productImage, store } from '@/db/schema';
 import {
   productCreateSchema,
   productSchema,
@@ -33,10 +33,24 @@ export const createProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
-    const [productCreated] = await db.insert(product).values(input).returning();
+    const { details, ...productData } = input;
+
+    const [productCreated] = await db
+      .insert(product)
+      .values(productData)
+      .returning();
 
     if (!productCreated) {
       throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    const newDetails = details?.map((detail) => ({
+      ...detail,
+      productId: productCreated.id,
+    }));
+
+    if (newDetails) {
+      await db.insert(productDetail).values(newDetails);
     }
 
     const productWithRelations = await db.query.product.findFirst({

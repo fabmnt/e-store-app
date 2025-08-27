@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import {
   boolean,
   integer,
+  jsonb,
   numeric,
   pgEnum,
   pgTable,
@@ -126,12 +127,23 @@ export const product = pgTable('product', {
   clicks: integer().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  details: jsonb('details').$type<string[]>().default([]),
   storeId: uuid('store_id')
     .notNull()
     .references(() => store.id, { onDelete: 'cascade' }),
   categoryId: uuid('category_id').references(() => category.id, {
     onDelete: 'set null',
   }),
+});
+
+export const productDetail = pgTable('product_detail', {
+  id: uuid().defaultRandom().primaryKey(),
+  content: text().notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  productId: uuid('product_id')
+    .notNull()
+    .references(() => product.id, { onDelete: 'cascade' }),
 });
 
 export const productImage = pgTable('product_image', {
@@ -168,6 +180,7 @@ export const storeImageRelations = relations(storeImage, ({ one }) => ({
 
 export const productRelations = relations(product, ({ many, one }) => ({
   images: many(productImage),
+  details: many(productDetail),
   category: one(category, {
     fields: [product.categoryId],
     references: [category.id],
@@ -175,6 +188,13 @@ export const productRelations = relations(product, ({ many, one }) => ({
   store: one(store, {
     fields: [product.storeId],
     references: [store.id],
+  }),
+}));
+
+export const productDetailRelations = relations(productDetail, ({ one }) => ({
+  product: one(product, {
+    fields: [productDetail.productId],
+    references: [product.id],
   }),
 }));
 

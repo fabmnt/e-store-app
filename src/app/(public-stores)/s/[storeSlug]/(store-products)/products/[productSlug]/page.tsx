@@ -46,11 +46,20 @@ export default async function ProductPage({ params }: PageProps) {
         </div>
 
         {product.description ? (
-          <p className="text-muted-foreground leading-7">
-            {product.description}
-          </p>
+          <p className="text-neutral-800 leading-7">{product.description}</p>
         ) : (
-          <p className="text-muted-foreground">Sin descripción.</p>
+          <p className="text-neutral-700">Sin descripción.</p>
+        )}
+
+        {product.details && product.details.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <h2 className="font-medium">Detalles</h2>
+            <ul className="list-inside list-disc text-neutral-700">
+              {product.details?.map((detail) => (
+                <li key={detail.id}>{detail.content}</li>
+              ))}
+            </ul>
+          </div>
         )}
 
         <div className="mt-2">

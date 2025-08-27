@@ -4,7 +4,7 @@ import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
 import { skipToken, useQuery } from '@tanstack/react-query';
-import { Loader } from 'lucide-react';
+import { Loader, Plus } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
@@ -37,6 +37,8 @@ import {
   productCreateSchema,
 } from '../schemas/product-schema';
 import { UploadProductImages } from './upload-product-images';
+
+const MAX_DETAILS = 5;
 
 export function CreateProductDialog() {
   const [formStep, setFormStep] = useState<'details' | 'images'>('details');
@@ -80,6 +82,7 @@ export function CreateProductDialog() {
       slug: '',
       categoryId: '',
       storeId: store?.id ?? '',
+      details: [],
     } as ProductCreate,
     validators: {
       onSubmit: productCreateSchema,
@@ -256,6 +259,53 @@ export function CreateProductDialog() {
                   )}
                   name="description"
                 />
+                <form.Field mode="array" name="details">
+                  {(field) => (
+                    <div className="col-span-2 space-y-2">
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <Label htmlFor={field.name}>Details</Label>
+                        <Button
+                          disabled={
+                            (field.state.value?.length ?? 0) >= MAX_DETAILS
+                          }
+                          onClick={() =>
+                            field.pushValue({
+                              id: crypto.randomUUID(),
+                              content: '',
+                            })
+                          }
+                          size="sm"
+                          type="button"
+                          variant="outline"
+                        >
+                          Add detail
+                          <Plus className="size-4" />
+                        </Button>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {field.state.value?.map((detail, index) => (
+                          <form.Field
+                            children={(subField) => (
+                              <div className="flex items-center gap-2">
+                                <Input
+                                  autoComplete="off"
+                                  onBlur={subField.handleBlur}
+                                  onChange={(e) =>
+                                    subField.handleChange(e.target.value)
+                                  }
+                                  placeholder="Add a detail for this product"
+                                  value={subField.state.value}
+                                />
+                              </div>
+                            )}
+                            key={detail.id}
+                            name={`details[${index}].content`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </form.Field>
               </div>
             </form>
           )}
