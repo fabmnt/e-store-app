@@ -16,7 +16,10 @@ export function ProductCard({ product }: ProductCardProps) {
       <Card className="rounded-none">
         <CardContent>
           <div className="space-y-2">
-            <AspectRatio className="max-w-[280px]" ratio={1}>
+            <AspectRatio
+              className="mx-auto max-w-[280px] xl:max-w-[320px]"
+              ratio={1}
+            >
               {firstImageUrl && (
                 <Image
                   alt={product.name}
@@ -40,7 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
             </div>
             <div>
-              <Button className="w-full" size="lg">
+              <Button className="w-full rounded-sm" size="lg">
                 Ver Producto
               </Button>
             </div>

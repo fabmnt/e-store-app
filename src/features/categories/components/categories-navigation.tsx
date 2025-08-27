@@ -17,11 +17,11 @@ export function CategoriesNavigation({
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-x-6">
+    <nav className="flex items-center gap-x-2 xl:gap-x-6">
       <Button
         asChild
         className={cn(
-          'relative rounded-none px-10 py-5 tracking-tight transition-all hover:font-semibold',
+          'relative rounded-none px-5 py-5 tracking-tight transition-all hover:font-semibold xl:px-10',
           pathname === `/${storeSlug}` && 'font-semibold'
         )}
         variant="ghost"
@@ -37,7 +37,7 @@ export function CategoriesNavigation({
         <Button
           asChild
           className={cn(
-            'relative rounded-none px-10 py-5 tracking-tight transition-all hover:font-semibold'
+            'relative rounded-none px-5 py-5 tracking-tight transition-all hover:font-semibold xl:px-10'
           )}
           key={category.id}
           variant="ghost"

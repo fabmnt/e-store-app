@@ -72,7 +72,7 @@ export default async function PublicStoreLayout({
           <section className="flex justify-center">
             <CategoriesNavigation categories={store.categories} />
           </section>
-          {children}
+          <Container>{children}</Container>
         </div>
       </ThemeProvider>
     </div>
