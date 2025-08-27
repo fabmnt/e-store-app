@@ -1,6 +1,7 @@
 import { safe } from '@orpc/server';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { WhatsApp } from '@/components/icons/whatsapp';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ProductCarousel } from '@/features/products/components/product-carousel';
@@ -63,7 +64,7 @@ export default async function ProductPage({ params }: PageProps) {
 
         <div className="mt-auto w-full">
           <Button className="w-full py-6 text-lg" size="lg">
-            Comprar ahora
+            Comprar ahora <WhatsApp className="size-6" />
           </Button>
         </div>
       </div>
