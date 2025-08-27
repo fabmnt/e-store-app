@@ -60,8 +60,8 @@ export function ProductCarousel({ product }: ProductCarouselProps) {
           </CarouselItem>
         )}
       </CarouselContent>
-      {current > 1 && <CarouselPrevious className="hidden md:block" />}
-      {current < count && <CarouselNext className="hidden md:block" />}
+      {current > 1 && <CarouselPrevious className="hidden md:flex" />}
+      {current < count && <CarouselNext className="hidden md:flex" />}
     </Carousel>
   );
 }
