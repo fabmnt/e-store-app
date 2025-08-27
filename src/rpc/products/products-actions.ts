@@ -2,7 +2,7 @@
 
 import { ORPCError } from '@orpc/client';
 import { onError } from '@orpc/server';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
@@ -14,7 +14,7 @@ import {
   productUpdateSchema,
 } from '@/features/products/schemas/product-schema';
 import { utapi } from '@/server/utapi';
-import { protectedOs } from '../procedures';
+import { protectedOs, publicOs } from '../procedures';
 
 export const createProductAction = protectedOs
   .input(productCreateSchema)
@@ -124,5 +124,21 @@ export const updateProductAction = protectedOs
     revalidatePath(`/d/${productWithRelations.store.id}/products`);
 
     return productWithRelations;
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
+
+export const addClickToProductAction = publicOs
+  .input(z.object({ id: z.string() }))
+  .handler(async ({ input }) => {
+    const { id } = input;
+
+    await db
+      .update(product)
+      .set({
+        clicks: sql`${product.clicks} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(product.id, id))
+      .returning();
   })
   .actionable({ context: async () => ({ headers: await headers() }) });

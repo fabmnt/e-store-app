@@ -1,8 +1,11 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { addClickToProductAction } from '@/rpc/products/products-actions';
 import type { ProductWithImages } from '../schemas/product-schema';
 
 type ProductCardProps = {
@@ -44,7 +47,14 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
             </div>
             <div>
-              <Button asChild className="w-full rounded-sm" size="lg">
+              <Button
+                asChild
+                className="w-full rounded-sm"
+                onClick={() => {
+                  addClickToProductAction({ id: product.id });
+                }}
+                size="lg"
+              >
                 <Link
                   href={`/s/${product.store.slug}/products/${product.slug}`}
                 >
