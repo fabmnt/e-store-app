@@ -14,7 +14,7 @@ export default async function PublicStoreLayout({
   params: Promise<{ storeSlug: string }>;
 }) {
   const { storeSlug } = await params;
-
+  console.log('refetching');
   const {
     data: store,
     error,
