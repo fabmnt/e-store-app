@@ -22,13 +22,13 @@ export function CategoriesNavigation({
         asChild
         className={cn(
           'relative rounded-none px-5 py-5 tracking-tight transition-all hover:font-semibold xl:px-10',
-          pathname === `/${storeSlug}` && 'font-semibold'
+          pathname === `/s/${storeSlug}` && 'font-semibold'
         )}
         variant="ghost"
       >
-        <Link href={`/${storeSlug}/`}>
+        <Link href={`/s/${storeSlug}/`}>
           <span>Todos</span>
-          {pathname === `/${storeSlug}` && (
+          {pathname === `/s/${storeSlug}` && (
             <span className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
           )}
         </Link>
@@ -44,12 +44,12 @@ export function CategoriesNavigation({
         >
           <Link
             className={cn(
-              pathname === `/${storeSlug}/${category.slug}` && 'font-semibold'
+              pathname === `/s/${storeSlug}/${category.slug}` && 'font-semibold'
             )}
-            href={`/${storeSlug}/${category.slug}`}
+            href={`/s/${storeSlug}/${category.slug}`}
           >
             <span>{category.name}</span>
-            {pathname === `/${storeSlug}/${category.slug}` && (
+            {pathname === `/s/${storeSlug}/${category.slug}` && (
               <span className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
             )}
           </Link>

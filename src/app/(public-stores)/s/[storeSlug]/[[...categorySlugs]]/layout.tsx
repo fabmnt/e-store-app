@@ -45,7 +45,7 @@ export default async function PublicStoreLayout({
           <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <Container>
               <header>
-                <Link href={'/'}>
+                <Link href={`/s/${storeSlug}/`}>
                   <div className="flex items-center gap-4">
                     <div className="relative size-[40px] overflow-hidden rounded-full">
                       <Image
