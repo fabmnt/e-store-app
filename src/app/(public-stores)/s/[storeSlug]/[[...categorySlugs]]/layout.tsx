@@ -1,8 +1,7 @@
 import { safe } from '@orpc/server';
-import Image from 'next/image';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Container } from '@/components/container';
+import { Header } from '@/components/header';
 import { CategoriesNavigation } from '@/features/categories/components/categories-navigation';
 import { client } from '@/lib/orpc';
 import { ThemeProvider } from '@/providers/theme-provider';
@@ -42,27 +41,7 @@ export default async function PublicStoreLayout({
         forcedTheme="light"
       >
         <div className="space-y-8">
-          <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <Container>
-              <header>
-                <Link href={`/s/${storeSlug}/`}>
-                  <div className="flex items-center gap-4">
-                    <div className="relative size-[40px] overflow-hidden rounded-full">
-                      <Image
-                        alt={store.name}
-                        className="object-cover"
-                        fill
-                        priority
-                        sizes="100px"
-                        src={logoImage?.url ?? ''}
-                      />
-                    </div>
-                    <span className="font-medium">{store.name}</span>
-                  </div>
-                </Link>
-              </header>
-            </Container>
-          </div>
+          <Header logoImage={logoImage} store={store} storeSlug={storeSlug} />
           <div className="text-center">
             <h1 className="font-semibold text-2xl capitalize tracking-wide">
               {store.name}
