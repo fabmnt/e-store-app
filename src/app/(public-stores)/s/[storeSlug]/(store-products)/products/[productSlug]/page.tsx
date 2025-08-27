@@ -1,14 +1,7 @@
 import { safe } from '@orpc/server';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
+import { ProductCarousel } from '@/features/products/components/product-carousel';
 import { client } from '@/lib/orpc';
 
 type PageProps = {
@@ -36,34 +29,7 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <div className="grid grid-cols-1 gap-16 py-8 md:grid-cols-2">
       <div className="w-full">
-        <Carousel className="w-full" opts={{ loop: true }}>
-          <CarouselContent>
-            {product.images.length > 0 ? (
-              product.images.map((img) => (
-                <CarouselItem
-                  className="flex items-center justify-center"
-                  key={img.id}
-                >
-                  <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted">
-                    <Image
-                      alt={product.name}
-                      className="object-cover"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      src={img.url}
-                    />
-                  </div>
-                </CarouselItem>
-              ))
-            ) : (
-              <CarouselItem className="flex items-center justify-center">
-                <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted" />
-              </CarouselItem>
-            )}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <ProductCarousel product={product} />
       </div>
 
       <div className="flex flex-col gap-4 self-start">
