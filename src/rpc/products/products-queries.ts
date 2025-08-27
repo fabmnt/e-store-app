@@ -8,6 +8,46 @@ import { protectedOs, publicOs } from '../procedures';
 
 export const productQueries = {
   public: {
+    getBySlug: publicOs
+      .errors({
+        NOT_FOUND: {
+          message: 'Product not found',
+        },
+      })
+      .input(
+        z.object({
+          storeSlug: z.string(),
+          productSlug: z.string(),
+        })
+      )
+      .output(productWithImagesSchema)
+      .handler(async ({ input }) => {
+        const storeFound = await db.query.store.findFirst({
+          where: eq(store.slug, input.storeSlug),
+        });
+
+        if (!storeFound) {
+          throw new ORPCError('NOT_FOUND');
+        }
+
+        const productFound = await db.query.product.findFirst({
+          where: and(
+            eq(product.slug, input.productSlug),
+            eq(product.storeId, storeFound.id)
+          ),
+          with: {
+            category: true,
+            store: true,
+            images: true,
+          },
+        });
+
+        if (!productFound) {
+          throw new ORPCError('NOT_FOUND');
+        }
+
+        return productFound;
+      }),
     getAllByStoreId: publicOs
       .input(
         z.object({
