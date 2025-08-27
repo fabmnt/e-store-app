@@ -35,7 +35,7 @@ export default async function ProductPage({ params }: PageProps) {
       </div>
 
       <div className="flex h-full w-full flex-col gap-4 self-start">
-        <div>
+        <div className="flex flex-col items-center gap-2 md:items-start">
           <Badge asChild className="rounded-full px-6" variant="outline">
             <Link href={`/s/${storeSlug}/${product.category?.slug}`}>
               {product.category?.name}

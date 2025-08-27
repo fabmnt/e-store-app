@@ -35,7 +35,7 @@ export function ProductCarousel({ product }: ProductCarouselProps) {
   }, [api]);
 
   return (
-    <Carousel className="w-full" opts={{ loop: true }} setApi={setApi}>
+    <Carousel className="relative w-full" opts={{ loop: true }} setApi={setApi}>
       <CarouselContent>
         {product.images.length > 0 ? (
           product.images.map((img) => (
@@ -60,8 +60,8 @@ export function ProductCarousel({ product }: ProductCarouselProps) {
           </CarouselItem>
         )}
       </CarouselContent>
-      {current > 1 && <CarouselPrevious />}
-      {current < count && <CarouselNext />}
+      {current > 1 && <CarouselPrevious className="hidden md:block" />}
+      {current < count && <CarouselNext className="hidden md:block" />}
     </Carousel>
   );
 }
