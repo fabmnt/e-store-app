@@ -2,7 +2,6 @@ import { relations } from 'drizzle-orm';
 import {
   boolean,
   integer,
-  jsonb,
   numeric,
   pgEnum,
   pgTable,
@@ -127,7 +126,6 @@ export const product = pgTable('product', {
   clicks: integer().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
-  details: jsonb('details').$type<string[]>().default([]),
   storeId: uuid('store_id')
     .notNull()
     .references(() => store.id, { onDelete: 'cascade' }),

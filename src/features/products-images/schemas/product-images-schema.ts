@@ -4,7 +4,7 @@ export const productImageSchema = z.object({
   id: z.uuid(),
   url: z.url(),
   fileKey: z.string(),
-  createdAt: z.coerce.date(),
+  createdAt: z.date(),
   productId: z.uuid(),
 });
 

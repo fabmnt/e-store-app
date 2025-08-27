@@ -33,13 +33,13 @@ import { updateProductAction } from '@/rpc/products/products-actions';
 import { deleteProductImage } from '@/rpc/products-images/products-images-actions';
 import {
   type ProductUpdate,
-  type ProductWithImages,
+  type ProductWithDetails,
   productUpdateSchema,
 } from '../schemas/product-schema';
 import { UploadProductImages } from './upload-product-images';
 
 type UpdateProductDialogProps = {
-  product: ProductWithImages;
+  product: ProductWithDetails;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };

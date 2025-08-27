@@ -58,6 +58,8 @@ export const createProductAction = protectedOs
       with: {
         category: true,
         store: true,
+        details: true,
+        images: true,
       },
     });
 
@@ -128,6 +130,8 @@ export const updateProductAction = protectedOs
       with: {
         category: true,
         store: true,
+        details: true,
+        images: true,
       },
     });
 

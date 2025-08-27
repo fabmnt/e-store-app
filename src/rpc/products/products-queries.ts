@@ -3,7 +3,10 @@ import { and, desc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { category, product, store } from '@/db/schema';
-import { productWithImagesSchema } from '@/features/products/schemas/product-schema';
+import {
+  productWithDetailsSchema,
+  productWithImagesSchema,
+} from '@/features/products/schemas/product-schema';
 import { protectedOs, publicOs } from '../procedures';
 
 export const productQueries = {
@@ -20,7 +23,7 @@ export const productQueries = {
           productSlug: z.string(),
         })
       )
-      .output(productWithImagesSchema)
+      .output(productWithDetailsSchema)
       .handler(async ({ input }) => {
         const storeFound = await db.query.store.findFirst({
           where: eq(store.slug, input.storeSlug),

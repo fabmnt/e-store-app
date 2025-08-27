@@ -16,14 +16,18 @@ export const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   slug: z.string().min(1, 'Slug is required'),
   description: z.string().nullable(),
-  details: z.array(productDetailSchema).optional(),
   price: z.number().min(0, 'Price must be positive'),
   stock: z.number().min(0, 'Stock must be positive'),
   categoryId: z.uuid('Category is required').nullable(),
   storeId: z.uuid('Store is required'),
   category: categorySchema.nullable(),
   store: storeSchema,
-  createdAt: z.coerce.date(),
+  createdAt: z.date(),
+});
+
+export const productWithDetailsSchema = productSchema.extend({
+  details: z.array(productDetailSchema).optional(),
+  images: z.array(productImageSchema),
 });
 
 export const productDetailCreateSchema = productDetailSchema.omit({
@@ -43,7 +47,7 @@ export const productCreateSchema = productSchema
     details: z.array(productDetailCreateSchema).default([]).optional(),
   });
 
-export const productUpdateSchema = productSchema
+export const productUpdateSchema = productWithDetailsSchema
   .omit({
     createdAt: true,
     storeId: true,
@@ -60,6 +64,7 @@ export const productWithImagesSchema = productSchema.extend({
   images: z.array(productImageSchema),
 });
 
+export type ProductWithDetails = z.infer<typeof productWithDetailsSchema>;
 export type ProductWithImages = z.infer<typeof productWithImagesSchema>;
 export type Product = z.infer<typeof productSchema>;
 export type ProductCreate = z.infer<typeof productCreateSchema>;
