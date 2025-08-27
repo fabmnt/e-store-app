@@ -54,11 +54,8 @@ export default async function ProductPage({ params }: PageProps) {
         )}
 
         <div className="mt-2">
-          <p className="font-bold text-2xl">
-            {new Intl.NumberFormat('es-ES', {
-              style: 'currency',
-              currency: 'USD',
-            }).format(product.price)}
+          <p className="font-bold text-3xl text-primary">
+            {product.price.toFixed(2)}
           </p>
         </div>
 
