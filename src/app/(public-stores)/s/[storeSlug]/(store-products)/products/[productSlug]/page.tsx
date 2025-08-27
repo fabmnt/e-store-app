@@ -59,9 +59,12 @@ export default async function ProductPage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="mt-auto w-full">
+        <div className="mt-auto flex w-full flex-col gap-2">
           <Button className="w-full py-6 text-lg" size="lg">
             Comprar ahora <WhatsApp className="size-6" />
+          </Button>
+          <Button className="w-full py-6 text-lg" size="lg" variant="outline">
+            Agregar al carrito
           </Button>
         </div>
       </div>
