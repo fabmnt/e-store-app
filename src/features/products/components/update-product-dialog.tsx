@@ -84,8 +84,6 @@ export function UpdateProductDialog({
       ],
     });
 
-  console.log(product.details);
-
   const form = useForm({
     defaultValues: {
       id: product.id,

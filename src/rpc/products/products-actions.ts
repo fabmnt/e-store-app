@@ -1,7 +1,6 @@
 'use server';
 
 import { ORPCError } from '@orpc/client';
-import { onError } from '@orpc/server';
 import { eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
@@ -102,11 +101,6 @@ export const deleteProductAction = protectedOs
   })
   .actionable({
     context: async () => ({ headers: await headers() }),
-    interceptors: [
-      onError(async (err) => {
-        await console.log(err);
-      }),
-    ],
   });
 
 export const updateProductAction = protectedOs
