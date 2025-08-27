@@ -39,16 +39,21 @@ export default async function PublicStorePage({
       <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <Container>
           <header>
-            <div>
-              <Image
-                alt={store.name}
-                className="size-[50px] rounded-full object-cover"
-                height={50}
-                priority
-                src={logoImage?.url ?? ''}
-                width={100}
-              />
-            </div>
+            <Link href={`/${storeSlug}`}>
+              <div className="flex items-center gap-4">
+                <div className="relative size-[40px] overflow-hidden rounded-full">
+                  <Image
+                    alt={store.name}
+                    className="object-cover"
+                    fill
+                    priority
+                    sizes="100px"
+                    src={logoImage?.url ?? ''}
+                  />
+                </div>
+                <span className="font-medium">{store.name}</span>
+              </div>
+            </Link>
           </header>
         </Container>
       </div>

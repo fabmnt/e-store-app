@@ -11,19 +11,22 @@ export function CategoriesNavigation({
 }: CategoriesNavigationProps) {
   return (
     <nav className="flex items-center gap-x-6">
-      {categories.map((category, i) => (
+      <Button
+        className="relative rounded-none px-10 py-5 font-semibold tracking-tight transition-all hover:font-semibold"
+        variant="ghost"
+      >
+        <span>Todos</span>
+        <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
+      </Button>
+      {categories.map((category) => (
         <Button
           className={cn(
-            'relative rounded-none px-10 py-5 tracking-tight transition-all hover:font-semibold',
-            i === 0 && 'font-semibold'
+            'relative rounded-none px-10 py-5 tracking-tight transition-all hover:font-semibold'
           )}
           key={category.id}
           variant="ghost"
         >
           <span>{category.name}</span>
-          {i === 0 && (
-            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
-          )}
         </Button>
       ))}
     </nav>
