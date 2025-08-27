@@ -40,13 +40,13 @@ export function ProductCarousel({ product }: ProductCarouselProps) {
         {product.images.length > 0 ? (
           product.images.map((img) => (
             <CarouselItem
-              className="flex items-center justify-center"
+              className="group flex items-center justify-center"
               key={img.id}
             >
               <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted">
                 <Image
                   alt={product.name}
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   src={img.url}

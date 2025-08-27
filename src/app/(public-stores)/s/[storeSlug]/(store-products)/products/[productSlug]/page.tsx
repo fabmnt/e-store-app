@@ -1,5 +1,7 @@
 import { safe } from '@orpc/server';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ProductCarousel } from '@/features/products/components/product-carousel';
 import { client } from '@/lib/orpc';
@@ -27,19 +29,19 @@ export default async function ProductPage({ params }: PageProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-16 py-8 md:grid-cols-2">
+    <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
       <div className="w-full">
         <ProductCarousel product={product} />
       </div>
 
-      <div className="flex flex-col gap-4 self-start">
+      <div className="flex h-full w-full flex-col gap-4 self-start">
         <div>
+          <Badge asChild className="rounded-full px-6" variant="outline">
+            <Link href={`/s/${storeSlug}/${product.category?.slug}`}>
+              {product.category?.name}
+            </Link>
+          </Badge>
           <h1 className="font-semibold text-3xl">{product.name}</h1>
-          {product.category ? (
-            <p className="text-muted-foreground">
-              Categoría: {product.category.name}
-            </p>
-          ) : null}
         </div>
 
         {product.description ? (
@@ -57,13 +59,10 @@ export default async function ProductPage({ params }: PageProps) {
               currency: 'USD',
             }).format(product.price)}
           </p>
-          <p className="text-muted-foreground text-sm">
-            Stock: {product.stock}
-          </p>
         </div>
 
-        <div className="mt-4">
-          <Button className="w-full md:w-auto" size="lg">
+        <div className="mt-auto w-full">
+          <Button className="w-full py-6 text-lg" size="lg">
             Comprar ahora
           </Button>
         </div>
