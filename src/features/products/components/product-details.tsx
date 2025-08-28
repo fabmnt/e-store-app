@@ -22,12 +22,11 @@ export function ProductDetails() {
   return (
     <div className="flex h-full w-full flex-col gap-4 self-start">
       <div className="flex flex-col items-center gap-2 md:items-start">
-        <Link
-          className="text-sm hover:underline"
-          href={`/s/${storeSlug}/${product.category?.slug}`}
-        >
-          {product.category?.name}
-        </Link>
+        <Button asChild mode="link" underline="solid">
+          <Link className="" href={`/s/${storeSlug}/${product.category?.slug}`}>
+            {product.category?.name}
+          </Link>
+        </Button>
         <div className="flex flex-col gap-1">
           <h1 className="font-semibold text-3xl">{product.name}</h1>
           <div className="flex items-center gap-2">
