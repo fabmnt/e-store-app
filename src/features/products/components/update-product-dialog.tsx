@@ -82,9 +82,6 @@ export function UpdateProductDialog({
   const { execute: executeDeleteImage, isPending: isDeletingImage } =
     useServerAction(deleteProductImage, {
       interceptors: [
-        onSuccess(() => {
-          toast.success('Image deleted');
-        }),
         onError((error) => {
           toast.error(error.message);
         }),
@@ -103,10 +100,17 @@ export function UpdateProductDialog({
       tags: product.tags ?? [],
     } as ProductUpdate,
     validators: {
-      onSubmit: productUpdateSchema,
+      onChange: productUpdateSchema,
     },
-    onSubmit: ({ value }) => {
-      executeUpdate(value);
+    listeners: {
+      onChangeDebounceMs: 200,
+      onChange: ({ formApi }) => {
+        const values = formApi.state.values;
+        const { success, data } = productUpdateSchema.safeParse(values);
+        if (success) {
+          executeUpdate(data);
+        }
+      },
     },
   });
 
@@ -152,7 +156,6 @@ export function UpdateProductDialog({
                       <Label htmlFor={field.name}>Name</Label>
                       <Input
                         autoComplete="off"
-                        disabled={isUpdating}
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -171,7 +174,6 @@ export function UpdateProductDialog({
                       <Label htmlFor={field.name}>Slug</Label>
                       <Input
                         autoComplete="off"
-                        disabled={isUpdating}
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -192,7 +194,6 @@ export function UpdateProductDialog({
                         allowNegative={false}
                         customInput={Input}
                         decimalScale={2}
-                        disabled={isUpdating}
                         fixedDecimalScale
                         id={field.name}
                         onBlur={field.handleBlur}
@@ -218,7 +219,6 @@ export function UpdateProductDialog({
                         allowNegative={false}
                         customInput={Input}
                         decimalScale={0}
-                        disabled={isUpdating}
                         fixedDecimalScale
                         id={field.name}
                         onBlur={field.handleBlur}
@@ -240,7 +240,9 @@ export function UpdateProductDialog({
                     <div className="space-y-2">
                       <Label htmlFor={field.name}>Category</Label>
                       <Select
-                        disabled={isUpdating || isLoadingCategories}
+                        disabled={
+                          isLoadingCategories || categories?.length === 0
+                        }
                         onValueChange={(value) => field.handleChange(value)}
                         value={field.state.value ?? ''}
                       >
@@ -266,7 +268,6 @@ export function UpdateProductDialog({
                       <Label htmlFor={field.name}>Description</Label>
                       <Input
                         autoComplete="off"
-                        disabled={isUpdating}
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -350,21 +351,12 @@ export function UpdateProductDialog({
           </TabsContent>
         </Tabs>
         <DialogFooter>
+          <div className="flex items-center justify-center">
+            {isUpdating && <Loader className="size-4 animate-spin" />}
+          </div>
           <DialogClose asChild>
-            <Button variant="outline">
-              {tab === 'product' ? 'Cancel' : 'Done'}
-            </Button>
+            <Button variant="outline">Done</Button>
           </DialogClose>
-          {tab === 'product' && (
-            <Button
-              className="w-20"
-              disabled={isUpdating}
-              form="update-product-form"
-              type="submit"
-            >
-              {isUpdating ? <Loader className="size-4 animate-spin" /> : 'Save'}
-            </Button>
-          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
