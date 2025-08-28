@@ -136,6 +136,25 @@ export function CreateCategoryDialog() {
                   </div>
                 )}
                 name="slug"
+                validators={{
+                  onChangeAsync: async ({ value }) => {
+                    if (!(value && store?.id)) {
+                      return;
+                    }
+
+                    const isSlugAvailable =
+                      await client.categories.protected.isSlugAvailable.call({
+                        slug: value,
+                        storeId: store.id,
+                      });
+
+                    if (!isSlugAvailable) {
+                      return 'Slug already exists';
+                    }
+
+                    return;
+                  },
+                }}
               />
               <form.Field
                 children={(field) => (

@@ -20,6 +20,7 @@ import {
   type CategoryUpdate,
   categoryUpdateSchema,
 } from '@/features/categories/schemas/category-schema';
+import { client } from '@/lib/orpc';
 import { updateCategoryAction } from '@/rpc/categories/categories-actions';
 
 type UpdateCategoryDialogProps = {
@@ -131,6 +132,25 @@ export function UpdateCategoryDialog({
                 </div>
               )}
               name="slug"
+              validators={{
+                onChangeAsync: async ({ value }) => {
+                  if (!value) {
+                    return;
+                  }
+                  const isSlugAvailable =
+                    await client.categories.protected.isSlugAvailable.call({
+                      slug: value,
+                      storeId: category.storeId,
+                      omitId: category.id,
+                    });
+
+                  if (!isSlugAvailable) {
+                    return 'Slug already exists';
+                  }
+
+                  return;
+                },
+              }}
             />
 
             <form.Field
