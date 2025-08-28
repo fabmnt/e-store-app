@@ -1,6 +1,7 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -20,6 +21,7 @@ import {
   type TagUpdate,
   tagUpdateSchema,
 } from '@/features/products/schemas/product-schema';
+import { client } from '@/lib/orpc';
 import { updateTagAction } from '@/rpc/tags/tags-actions';
 
 type UpdateTagDialogProps = {
@@ -33,12 +35,16 @@ export function UpdateTagDialog({
   open,
   onOpenChange,
 }: UpdateTagDialogProps) {
+  const queryClient = useQueryClient();
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateTagAction,
     {
       interceptors: [
         onSuccess(() => {
           toast.success('Tag updated successfully');
+          queryClient.invalidateQueries({
+            queryKey: client.tags.protected.getAllByStoreId.key(),
+          });
         }),
         onError((error) => {
           toast.error(error.message);

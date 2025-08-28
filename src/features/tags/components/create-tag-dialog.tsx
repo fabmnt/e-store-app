@@ -3,7 +3,7 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
-import { skipToken, useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -34,6 +34,7 @@ export function CreateTagDialog() {
       input: storeId ? { id: storeId as string } : skipToken,
     })
   );
+  const queryClient = useQueryClient();
 
   const { execute, isPending } = useServerAction(createTagAction, {
     interceptors: [
@@ -41,6 +42,9 @@ export function CreateTagDialog() {
         form.reset();
         toast.success('Tag created successfully');
         setOpen(false);
+        queryClient.invalidateQueries({
+          queryKey: client.tags.protected.getAllByStoreId.key(),
+        });
       }),
       onError((error) => {
         toast.error(error.message);
