@@ -6,7 +6,13 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { db } from '@/db';
-import { product, productDetail, productImage, store } from '@/db/schema';
+import {
+  product,
+  productDetail,
+  productImage,
+  productTag,
+  store,
+} from '@/db/schema';
 import {
   productCreateSchema,
   productDetailSchema,
@@ -33,7 +39,7 @@ export const createProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
-    const { details, ...productData } = input;
+    const { details, tags, ...productData } = input;
 
     const [productCreated] = await db
       .insert(product)
@@ -53,6 +59,14 @@ export const createProductAction = protectedOs
       await db.insert(productDetail).values(newDetails);
     }
 
+    if (tags && tags.length > 0) {
+      const rows = tags.map((tag) => ({
+        productId: productCreated.id,
+        tagId: tag.id,
+      }));
+      await db.insert(productTag).values(rows);
+    }
+
     const productWithRelations = await db.query.product.findFirst({
       where: eq(product.id, productCreated.id),
       with: {
@@ -60,6 +74,7 @@ export const createProductAction = protectedOs
         store: true,
         details: true,
         images: true,
+        productTags: { with: { tag: true } },
       },
     });
 
@@ -69,7 +84,12 @@ export const createProductAction = protectedOs
 
     revalidatePath(`/d/${storeFound.id}/products`);
 
-    return productWithRelations;
+    const result = {
+      ...productWithRelations,
+      tags: productWithRelations.productTags.map((pt) => pt.tag),
+    };
+
+    return result;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -113,12 +133,22 @@ export const updateProductAction = protectedOs
     },
   })
   .handler(async ({ input }) => {
-    const { id, ...data } = input;
+    const { id, tags, ...data } = input;
 
     await db
       .update(product)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(product.id, id));
+
+    // If tags were provided, replace existing associations
+    if (tags) {
+      // clear existing tags
+      await db.delete(productTag).where(eq(productTag.productId, id));
+      if (tags.length > 0) {
+        const rows = tags.map((t) => ({ productId: id, tagId: t.id }));
+        await db.insert(productTag).values(rows);
+      }
+    }
 
     const productWithRelations = await db.query.product.findFirst({
       where: eq(product.id, id),
@@ -127,6 +157,7 @@ export const updateProductAction = protectedOs
         store: true,
         details: true,
         images: true,
+        productTags: { with: { tag: true } },
       },
     });
 
@@ -134,9 +165,14 @@ export const updateProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
+    const result = {
+      ...productWithRelations,
+      tags: productWithRelations.productTags.map((pt) => pt.tag),
+    };
+
     revalidatePath(`/d/${productWithRelations.store.id}/products`);
 
-    return productWithRelations;
+    return result;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -151,8 +187,7 @@ export const addClickToProductAction = publicOs
         clicks: sql`${product.clicks} + 1`,
         updatedAt: new Date(),
       })
-      .where(eq(product.id, id))
-      .returning();
+      .where(eq(product.id, id));
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -179,6 +214,7 @@ export const addProductDetail = protectedOs
       where: eq(product.id, productId),
       with: {
         store: true,
+        productTags: { with: { tag: true } },
       },
     });
 

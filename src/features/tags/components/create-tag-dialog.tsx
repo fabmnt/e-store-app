@@ -3,8 +3,7 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
-import { skipToken, useQuery } from '@tanstack/react-query';
-import { Loader } from 'lucide-react';
+import { skipToken, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -22,35 +21,36 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  type CategoryCreate,
-  categoryCreateSchema,
-} from '@/features/categories/schemas/category-schema';
+  type TagCreate,
+  tagCreateSchema,
+} from '@/features/products/schemas/product-schema';
 import { client } from '@/lib/orpc';
-import { createCategoryAction } from '@/rpc/categories/categories-actions';
+import { createTagAction } from '@/rpc/tags/tags-actions';
 
-export function CreateCategoryDialog() {
+export function CreateTagDialog() {
   const { storeId } = useParams();
   const { data: store } = useQuery(
     client.stores.protected.getById.queryOptions({
       input: storeId ? { id: storeId as string } : skipToken,
     })
   );
+  const queryClient = useQueryClient();
 
-  const { execute, isPending: isCreatingCategory } = useServerAction(
-    createCategoryAction,
-    {
-      interceptors: [
-        onSuccess(() => {
-          form.reset();
-          toast.success('Category created successfully');
-          setOpen(false);
-        }),
-        onError((error) => {
-          toast.error(error.message);
-        }),
-      ],
-    }
-  );
+  const { execute, isPending } = useServerAction(createTagAction, {
+    interceptors: [
+      onSuccess(() => {
+        form.reset();
+        toast.success('Tag created successfully');
+        setOpen(false);
+        queryClient.invalidateQueries({
+          queryKey: client.tags.protected.getAllByStoreId.key(),
+        });
+      }),
+      onError((error) => {
+        toast.error(error.message);
+      }),
+    ],
+  });
 
   const [open, setOpen] = useState(false);
 
@@ -60,13 +60,10 @@ export function CreateCategoryDialog() {
       slug: '',
       description: '',
       storeId: store?.id ?? '',
-    } as CategoryCreate,
-    validators: {
-      onSubmit: categoryCreateSchema,
-    },
+    } as TagCreate,
+    validators: { onSubmit: tagCreateSchema },
     onSubmit: ({ value }) => {
-      // Ensure nullable description is passed as null if empty string
-      const payload: CategoryCreate = {
+      const payload: TagCreate = {
         ...value,
         description: value.description === '' ? null : value.description,
       };
@@ -89,11 +86,11 @@ export function CreateCategoryDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Category</DialogTitle>
+          <DialogTitle>Create Tag</DialogTitle>
         </DialogHeader>
         <div>
           <form
-            id="create-category-form"
+            id="create-tag-form"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -107,11 +104,11 @@ export function CreateCategoryDialog() {
                     <Label htmlFor={field.name}>Name</Label>
                     <Input
                       autoComplete="off"
-                      disabled={isCreatingCategory}
+                      disabled={isPending}
                       id={field.name}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Shoes..."
+                      placeholder="Summer"
                       value={field.state.value}
                     />
                     <FieldInfo field={field} />
@@ -125,36 +122,17 @@ export function CreateCategoryDialog() {
                     <Label htmlFor={field.name}>Slug</Label>
                     <Input
                       autoComplete="off"
-                      disabled={isCreatingCategory}
+                      disabled={isPending}
                       id={field.name}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="shoes-category"
+                      placeholder="summer"
                       value={field.state.value}
                     />
                     <FieldInfo field={field} />
                   </div>
                 )}
                 name="slug"
-                validators={{
-                  onChangeAsync: async ({ value }) => {
-                    if (!(value && store?.id)) {
-                      return;
-                    }
-
-                    const isSlugAvailable =
-                      await client.categories.protected.isSlugAvailable.call({
-                        slug: value,
-                        storeId: store.id,
-                      });
-
-                    if (!isSlugAvailable) {
-                      return 'Slug already exists';
-                    }
-
-                    return;
-                  },
-                }}
               />
               <form.Field
                 children={(field) => (
@@ -162,11 +140,11 @@ export function CreateCategoryDialog() {
                     <Label htmlFor={field.name}>Description</Label>
                     <Input
                       autoComplete="off"
-                      disabled={isCreatingCategory}
+                      disabled={isPending}
                       id={field.name}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      placeholder="Optional description..."
+                      placeholder="Optional description"
                       value={field.state.value ?? ''}
                     />
                     <FieldInfo field={field} />
@@ -183,15 +161,11 @@ export function CreateCategoryDialog() {
           </DialogClose>
           <Button
             className="w-20"
-            disabled={isCreatingCategory}
-            form="create-category-form"
+            disabled={isPending}
+            form="create-tag-form"
             type="submit"
           >
-            {isCreatingCategory ? (
-              <Loader className="size-4 animate-spin" />
-            ) : (
-              'Create'
-            )}
+            Create
           </Button>
         </DialogFooter>
       </DialogContent>

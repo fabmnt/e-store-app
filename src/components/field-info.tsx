@@ -6,7 +6,9 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
     <>
       {meta.isTouched && meta.errors.length > 0 && (
         <div className="text-red-500 text-sm">
-          {meta.errors.map((error) => error.message).join(', ')}
+          {meta.errors
+            .map((error) => (typeof error === 'string' ? error : error.message))
+            .join(', ')}
         </div>
       )}
     </>

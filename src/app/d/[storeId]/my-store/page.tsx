@@ -73,11 +73,15 @@ export default async function StorePage({ params }: StorePageProps) {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>https://milmio.com/{store.slug}</CardTitle>
+            <CardTitle className="max-w-[20ch] truncate lg:max-w-full">
+              <Link href={`https://milmio.com/s/${store.slug}`}>
+                https://milmio.com/s/{store.slug}
+              </Link>
+            </CardTitle>
             <CardDescription>Your store URL</CardDescription>
           </CardHeader>
         </Card>
-        <Card>
+        <Card className="col-span-2">
           <CardHeader>
             <CardTitle>Contact Information</CardTitle>
           </CardHeader>

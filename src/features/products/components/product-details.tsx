@@ -18,15 +18,27 @@ export function ProductDetails() {
       },
     })
   );
+
+  const text = `¡Hola! Me interesa el producto **${product.name}**`;
+
   return (
     <div className="flex h-full w-full flex-col gap-4 self-start">
       <div className="flex flex-col items-center gap-2 md:items-start">
-        <Badge asChild className="rounded-full px-6" variant="outline">
-          <Link href={`/s/${storeSlug}/${product.category?.slug}`}>
+        <Button asChild className="px-0" variant="link">
+          <Link className="" href={`/s/${storeSlug}/${product.category?.slug}`}>
             {product.category?.name}
           </Link>
-        </Badge>
-        <h1 className="font-semibold text-3xl">{product.name}</h1>
+        </Button>
+        <div className="flex flex-col gap-1">
+          <h1 className="font-semibold text-3xl">{product.name}</h1>
+          <div className="flex items-center gap-2">
+            {product.tags.map((tag) => (
+              <Badge className="px-4 text-sm" key={tag.id} variant="outline">
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </div>
 
       {product.description ? (
@@ -53,8 +65,14 @@ export function ProductDetails() {
       </div>
 
       <div className="mt-auto flex w-full flex-col gap-2">
-        <Button className="w-full py-6 text-lg" size="lg">
-          Comprar ahora <WhatsApp className="size-6" />
+        <Button asChild className="w-full py-6 text-lg" size="lg">
+          <Link
+            href={`https://wa.me/${product.store.whatsapp ?? ''}?text=${encodeURIComponent(
+              text
+            )}`}
+          >
+            Comprar ahora <WhatsApp className="size-6" />
+          </Link>
         </Button>
         <Button className="w-full py-6 text-lg" size="lg" variant="outline">
           Agregar al carrito

@@ -10,10 +10,10 @@ type StoreImagesGridProps = {
 
 export function StoreImagesGrid({ storeImages }: StoreImagesGridProps) {
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 place-items-center gap-4 lg:grid-cols-3">
       {storeImages.map((storeImage, index) => (
         <AspectRatio
-          className="relative w-[300px]"
+          className="relative mx-auto w-[300px]"
           key={storeImage.id}
           ratio={1}
         >

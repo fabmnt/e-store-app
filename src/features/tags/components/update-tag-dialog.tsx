@@ -1,6 +1,7 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -16,30 +17,34 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  type Category,
-  type CategoryUpdate,
-  categoryUpdateSchema,
-} from '@/features/categories/schemas/category-schema';
+  type Tag,
+  type TagUpdate,
+  tagUpdateSchema,
+} from '@/features/products/schemas/product-schema';
 import { client } from '@/lib/orpc';
-import { updateCategoryAction } from '@/rpc/categories/categories-actions';
+import { updateTagAction } from '@/rpc/tags/tags-actions';
 
-type UpdateCategoryDialogProps = {
-  category: Category;
+type UpdateTagDialogProps = {
+  tag: Tag;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
-export function UpdateCategoryDialog({
-  category,
+export function UpdateTagDialog({
+  tag,
   open,
   onOpenChange,
-}: UpdateCategoryDialogProps) {
+}: UpdateTagDialogProps) {
+  const queryClient = useQueryClient();
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
-    updateCategoryAction,
+    updateTagAction,
     {
       interceptors: [
         onSuccess(() => {
-          toast.success('Category updated successfully');
+          toast.success('Tag updated successfully');
+          queryClient.invalidateQueries({
+            queryKey: client.tags.protected.getAllByStoreId.key(),
+          });
         }),
         onError((error) => {
           toast.error(error.message);
@@ -50,25 +55,24 @@ export function UpdateCategoryDialog({
 
   const form = useForm({
     defaultValues: {
-      id: category.id,
-      name: category.name,
-      slug: category.slug,
-      description: category.description ?? '',
-      storeId: category.storeId,
-    } as unknown as CategoryUpdate,
+      id: tag.id,
+      name: tag.name,
+      slug: tag.slug,
+      description: tag.description ?? '',
+      storeId: tag.storeId,
+    } as unknown as TagUpdate,
     validators: {
-      onSubmit: categoryUpdateSchema,
+      onSubmit: tagUpdateSchema,
     },
     onSubmit: ({ value }) => {
-      const payload: CategoryUpdate = {
+      const payload: TagUpdate = {
         ...value,
-        // Submit nullable description as null when empty
         description:
           typeof value.description === 'string' &&
           value.description.trim() === ''
             ? (null as unknown as string | null)
             : (value.description as unknown as string | null),
-      } as CategoryUpdate;
+      } as TagUpdate;
       executeUpdate(payload);
     },
   });
@@ -85,10 +89,10 @@ export function UpdateCategoryDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update Category</DialogTitle>
+          <DialogTitle>Update Tag</DialogTitle>
         </DialogHeader>
         <form
-          id="update-category-form"
+          id="update-tag-form"
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -106,7 +110,7 @@ export function UpdateCategoryDialog({
                     id={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Shoes..."
+                    placeholder="Summer"
                     value={field.state.value}
                   />
                   <FieldInfo field={field} />
@@ -125,32 +129,13 @@ export function UpdateCategoryDialog({
                     id={field.name}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="shoes-category"
+                    placeholder="summer"
                     value={field.state.value}
                   />
                   <FieldInfo field={field} />
                 </div>
               )}
               name="slug"
-              validators={{
-                onChangeAsync: async ({ value }) => {
-                  if (!value) {
-                    return;
-                  }
-                  const isSlugAvailable =
-                    await client.categories.protected.isSlugAvailable.call({
-                      slug: value,
-                      storeId: category.storeId,
-                      omitId: category.id,
-                    });
-
-                  if (!isSlugAvailable) {
-                    return 'Slug already exists';
-                  }
-
-                  return;
-                },
-              }}
             />
 
             <form.Field
@@ -180,7 +165,7 @@ export function UpdateCategoryDialog({
           <Button
             className="w-20"
             disabled={isUpdating}
-            form="update-category-form"
+            form="update-tag-form"
             type="submit"
           >
             {isUpdating ? <Loader className="size-4 animate-spin" /> : 'Save'}

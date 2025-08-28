@@ -1,11 +1,11 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
-import { useForm } from '@tanstack/react-form';
-import { useQuery } from '@tanstack/react-query';
-import { Loader, Trash2 } from 'lucide-react';
+import { useForm, useStore } from '@tanstack/react-form';
+import { skipToken, useQuery } from '@tanstack/react-query';
+import { Loader, Plus, Trash2, X } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -32,15 +32,16 @@ import { client } from '@/lib/orpc';
 import { updateProductAction } from '@/rpc/products/products-actions';
 import { deleteProductImage } from '@/rpc/products-images/products-images-actions';
 import {
+  type Product,
   type ProductUpdate,
-  type ProductWithDetails,
   productUpdateSchema,
+  type Tag,
 } from '../schemas/product-schema';
 import UpdateProductDetails from './update-product-details';
 import { UploadProductImages } from './upload-product-images';
 
 type UpdateProductDialogProps = {
-  product: ProductWithDetails;
+  product: Product;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -53,8 +54,6 @@ export function UpdateProductDialog({
   const [tab, setTab] = useState<'product' | 'images' | 'details'>('product');
   const { storeId } = useParams();
 
-  console.log({ product });
-
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
     client.categories.protected.getAllByStoreId.queryOptions({
       input: { storeId: storeId as string },
@@ -65,9 +64,6 @@ export function UpdateProductDialog({
     updateProductAction,
     {
       interceptors: [
-        onSuccess(() => {
-          toast.success('Product updated successfully');
-        }),
         onError((error) => {
           toast.error(error.message);
         }),
@@ -96,14 +92,37 @@ export function UpdateProductDialog({
       stock: product.stock,
       slug: product.slug,
       categoryId: product.categoryId ?? '',
+      tags: product.tags ?? [],
     } as ProductUpdate,
     validators: {
-      onSubmit: productUpdateSchema,
+      onChange: productUpdateSchema,
     },
-    onSubmit: ({ value }) => {
-      executeUpdate(value);
+    listeners: {
+      onChangeDebounceMs: 200,
+      onChange: ({ formApi }) => {
+        const values = formApi.state.values;
+        const { success, data } = productUpdateSchema.safeParse(values);
+        if (success) {
+          executeUpdate(data);
+        }
+      },
     },
   });
+
+  const { data: tags } = useQuery(
+    client.tags.protected.getAllByStoreId.queryOptions({
+      input: storeId ? { storeId: storeId as string } : skipToken,
+    })
+  );
+
+  const currentTags = useStore(form.store, (state) => state.values.tags);
+  const availableTags = useMemo(() => {
+    return (
+      tags?.filter((tag) => !currentTags?.some((t) => t.id === tag.id)) ?? []
+    );
+  }, [tags, currentTags]);
+
+  const [seletectedTag, setSeletectedTag] = useState<Tag | null>(null);
 
   return (
     <Dialog
@@ -147,7 +166,6 @@ export function UpdateProductDialog({
                       <Label htmlFor={field.name}>Name</Label>
                       <Input
                         autoComplete="off"
-                        disabled={isUpdating}
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -166,7 +184,6 @@ export function UpdateProductDialog({
                       <Label htmlFor={field.name}>Slug</Label>
                       <Input
                         autoComplete="off"
-                        disabled={isUpdating}
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -177,6 +194,26 @@ export function UpdateProductDialog({
                     </div>
                   )}
                   name="slug"
+                  validators={{
+                    onChangeAsync: async ({ value }) => {
+                      if (!value) {
+                        return;
+                      }
+
+                      const isSlugAvailable =
+                        await client.products.protected.isSlugAvailable.call({
+                          slug: value,
+                          storeId: storeId as string,
+                          omitId: product.id,
+                        });
+
+                      if (!isSlugAvailable) {
+                        return 'Slug already exists';
+                      }
+
+                      return;
+                    },
+                  }}
                 />
 
                 <form.Field
@@ -187,7 +224,6 @@ export function UpdateProductDialog({
                         allowNegative={false}
                         customInput={Input}
                         decimalScale={2}
-                        disabled={isUpdating}
                         fixedDecimalScale
                         id={field.name}
                         onBlur={field.handleBlur}
@@ -213,7 +249,6 @@ export function UpdateProductDialog({
                         allowNegative={false}
                         customInput={Input}
                         decimalScale={0}
-                        disabled={isUpdating}
                         fixedDecimalScale
                         id={field.name}
                         onBlur={field.handleBlur}
@@ -235,7 +270,9 @@ export function UpdateProductDialog({
                     <div className="space-y-2">
                       <Label htmlFor={field.name}>Category</Label>
                       <Select
-                        disabled={isUpdating || isLoadingCategories}
+                        disabled={
+                          isLoadingCategories || categories?.length === 0
+                        }
                         onValueChange={(value) => field.handleChange(value)}
                         value={field.state.value ?? ''}
                       >
@@ -261,7 +298,6 @@ export function UpdateProductDialog({
                       <Label htmlFor={field.name}>Description</Label>
                       <Input
                         autoComplete="off"
-                        disabled={isUpdating}
                         id={field.name}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -271,6 +307,72 @@ export function UpdateProductDialog({
                     </div>
                   )}
                   name="description"
+                />
+
+                <form.Field
+                  children={(field) => (
+                    <div className="col-span-2 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={field.name}>Tags</Label>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              disabled={!availableTags.length}
+                              onValueChange={(value) => {
+                                setSeletectedTag(
+                                  tags?.find((tag) => tag.id === value) ?? null
+                                );
+                              }}
+                              value={seletectedTag?.id ?? ''}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a tag" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableTags?.map((tag) => (
+                                  <SelectItem key={tag.id} value={tag.id}>
+                                    {tag.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              disabled={!seletectedTag}
+                              onClick={() => {
+                                if (seletectedTag) {
+                                  field.pushValue(seletectedTag);
+                                  setSeletectedTag(null);
+                                }
+                              }}
+                              size="sm"
+                            >
+                              <Plus className="size-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {field.state.value?.map((tag) => (
+                          <Button
+                            key={tag.id}
+                            onClick={() => {
+                              const newTags = field.state.value?.filter(
+                                (t) => t.id !== tag.id
+                              );
+                              field.handleChange(newTags);
+                            }}
+                            size="sm"
+                            variant="outline"
+                          >
+                            {tag.name}
+                            <X className="size-3" />
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  mode="array"
+                  name="tags"
                 />
               </div>
             </form>
@@ -330,21 +432,12 @@ export function UpdateProductDialog({
           </TabsContent>
         </Tabs>
         <DialogFooter>
+          <div className="flex items-center justify-center">
+            {isUpdating && <Loader className="size-4 animate-spin" />}
+          </div>
           <DialogClose asChild>
-            <Button variant="outline">
-              {tab === 'product' ? 'Cancel' : 'Done'}
-            </Button>
+            <Button variant="outline">Done</Button>
           </DialogClose>
-          {tab === 'product' && (
-            <Button
-              className="w-20"
-              disabled={isUpdating}
-              form="update-product-form"
-              type="submit"
-            >
-              {isUpdating ? <Loader className="size-4 animate-spin" /> : 'Save'}
-            </Button>
-          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -2,11 +2,11 @@
 
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { skipToken, useQuery } from '@tanstack/react-query';
-import { Loader, Plus } from 'lucide-react';
+import { Loader, Plus, X } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -35,6 +35,7 @@ import {
   type Product,
   type ProductCreate,
   productCreateSchema,
+  type Tag,
 } from '../schemas/product-schema';
 import { UploadProductImages } from './upload-product-images';
 
@@ -51,6 +52,11 @@ export function CreateProductDialog() {
   const [createdProduct, setCreatedProduct] = useState<Product | null>(null);
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
     client.categories.protected.getAllByStoreId.queryOptions({
+      input: store?.id ? { storeId: store.id } : skipToken,
+    })
+  );
+  const { data: tags } = useQuery(
+    client.tags.protected.getAllByStoreId.queryOptions({
       input: store?.id ? { storeId: store.id } : skipToken,
     })
   );
@@ -83,9 +89,15 @@ export function CreateProductDialog() {
       categoryId: '',
       storeId: store?.id ?? '',
       details: [],
+      tags: [],
     } as ProductCreate,
     validators: {
       onSubmit: productCreateSchema,
+    },
+    listeners: {
+      onChange: ({ formApi }) => {
+        console.log(formApi.state.values);
+      },
     },
     onSubmit: ({ value }) => {
       execute({
@@ -94,6 +106,14 @@ export function CreateProductDialog() {
       });
     },
   });
+
+  const [seletectedTag, setSeletectedTag] = useState<Tag | null>(null);
+  const currentTags = useStore(form.store, (state) => state.values.tags);
+  const availableTags = useMemo(() => {
+    return (
+      tags?.filter((tag) => !currentTags.some((t) => t.id === tag.id)) ?? []
+    );
+  }, [tags, currentTags]);
 
   return (
     <Dialog
@@ -160,6 +180,21 @@ export function CreateProductDialog() {
                     </div>
                   )}
                   name="slug"
+                  validators={{
+                    onChangeAsync: async ({ value }) => {
+                      const isSlugAvailable =
+                        await client.products.protected.isSlugAvailable.call({
+                          slug: value,
+                          storeId: store?.id ?? '',
+                        });
+
+                      if (!isSlugAvailable) {
+                        return 'Slug already exists';
+                      }
+
+                      return;
+                    },
+                  }}
                 />
                 <form.Field
                   children={(field) => (
@@ -259,6 +294,72 @@ export function CreateProductDialog() {
                   )}
                   name="description"
                 />
+                <form.Field
+                  children={(field) => (
+                    <div className="col-span-2 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={field.name}>Tags</Label>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              disabled={!availableTags.length}
+                              onValueChange={(value) => {
+                                setSeletectedTag(
+                                  tags?.find((tag) => tag.id === value) ?? null
+                                );
+                              }}
+                              value={seletectedTag?.id ?? ''}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a tag" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableTags?.map((tag) => (
+                                  <SelectItem key={tag.id} value={tag.id}>
+                                    {tag.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              disabled={!seletectedTag}
+                              onClick={() => {
+                                if (seletectedTag) {
+                                  field.pushValue(seletectedTag);
+                                  setSeletectedTag(null);
+                                }
+                              }}
+                              size="sm"
+                            >
+                              <Plus className="size-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {field.state.value.map((tag) => (
+                          <Button
+                            key={tag.id}
+                            onClick={() => {
+                              const newTags = field.state.value.filter(
+                                (t) => t.id !== tag.id
+                              );
+                              field.handleChange(newTags);
+                            }}
+                            size="sm"
+                            variant="outline"
+                          >
+                            {tag.name}
+                            <X className="size-3" />
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  mode="array"
+                  name="tags"
+                />
+
                 <form.Field mode="array" name="details">
                   {(field) => (
                     <div className="col-span-2 space-y-2">
@@ -282,7 +383,7 @@ export function CreateProductDialog() {
                           <Plus className="size-4" />
                         </Button>
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex max-h-[120px] flex-col gap-2 overflow-visible overflow-y-auto">
                         {field.state.value?.map((detail, index) => (
                           <form.Field
                             children={(subField) => (
@@ -296,6 +397,20 @@ export function CreateProductDialog() {
                                   placeholder="Add a detail for this product"
                                   value={subField.state.value}
                                 />
+                                <Button
+                                  onClick={() => {
+                                    const newDetails =
+                                      field.state.value?.filter(
+                                        (d) => d.id !== detail.id
+                                      );
+                                    field.handleChange(newDetails);
+                                  }}
+                                  size="sm"
+                                  type="button"
+                                  variant="outline"
+                                >
+                                  <X className="size-4" />
+                                </Button>
                               </div>
                             )}
                             key={detail.id}

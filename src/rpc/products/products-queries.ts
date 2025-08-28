@@ -1,5 +1,5 @@
 import { ORPCError } from '@orpc/server';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, not } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { category, product, productDetail, store } from '@/db/schema';
@@ -39,6 +39,11 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
+            productTags: {
+              with: {
+                tag: true,
+              },
+            },
             details: {
               orderBy: [desc(productDetail.createdAt)],
             },
@@ -49,7 +54,10 @@ export const productQueries = {
           throw new ORPCError('NOT_FOUND');
         }
 
-        return productFound;
+        return {
+          ...productFound,
+          tags: productFound.productTags.map((pt) => pt.tag),
+        };
       }),
     getAllByStoreId: publicOs
       .input(
@@ -68,11 +76,19 @@ export const productQueries = {
             details: {
               orderBy: [desc(productDetail.createdAt)],
             },
+            productTags: {
+              with: {
+                tag: true,
+              },
+            },
           },
           orderBy: [desc(product.createdAt)],
         });
 
-        return products;
+        return products.map((p) => ({
+          ...p,
+          tags: p.productTags.map((pt) => pt.tag),
+        }));
       }),
     getAllByCategorySlug: publicOs
       .input(
@@ -99,10 +115,18 @@ export const productQueries = {
               store: true,
               images: true,
               details: true,
+              productTags: {
+                with: {
+                  tag: true,
+                },
+              },
             },
           });
 
-          return products;
+          return products.map((p) => ({
+            ...p,
+            tags: p.productTags.map((pt) => pt.tag),
+          }));
         }
 
         const categoryFound = await db.query.category.findFirst({
@@ -125,10 +149,18 @@ export const productQueries = {
             details: {
               orderBy: [desc(productDetail.createdAt)],
             },
+            productTags: {
+              with: {
+                tag: true,
+              },
+            },
           },
         });
 
-        return products;
+        return products.map((p) => ({
+          ...p,
+          tags: p.productTags.map((pt) => pt.tag),
+        }));
       }),
   },
   protected: {
@@ -149,11 +181,52 @@ export const productQueries = {
             details: {
               orderBy: [desc(productDetail.createdAt)],
             },
+            productTags: {
+              with: {
+                tag: true,
+              },
+            },
           },
           orderBy: [desc(product.createdAt)],
         });
 
-        return products;
+        const result = products.map((p) => ({
+          ...p,
+          tags: p.productTags.map((pt) => pt.tag),
+        }));
+
+        return result;
+      }),
+    isSlugAvailable: protectedOs
+      .input(
+        z.object({
+          slug: z.string(),
+          storeId: z.uuid(),
+          omitId: z.string().optional(),
+        })
+      )
+      .output(z.boolean())
+      .handler(async ({ input }) => {
+        if (input.omitId) {
+          const productFound = await db.query.product.findFirst({
+            where: and(
+              eq(product.slug, input.slug),
+              eq(product.storeId, input.storeId),
+              not(eq(product.id, input.omitId))
+            ),
+          });
+
+          return !productFound;
+        }
+
+        const productFound = await db.query.product.findFirst({
+          where: and(
+            eq(product.slug, input.slug),
+            eq(product.storeId, input.storeId)
+          ),
+        });
+
+        return !productFound;
       }),
   },
 };

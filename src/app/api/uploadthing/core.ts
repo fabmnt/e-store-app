@@ -108,13 +108,11 @@ export const ourFileRouter = {
       };
     })
     .onUploadComplete(async ({ file, metadata }) => {
-      await db
-        .insert(storeImage)
-        .values({
-          fileKey: file.key,
-          url: file.ufsUrl,
-          storeId: metadata.storeId,
-        });
+      await db.insert(storeImage).values({
+        fileKey: file.key,
+        url: file.ufsUrl,
+        storeId: metadata.storeId,
+      });
     }),
 } satisfies FileRouter;
 

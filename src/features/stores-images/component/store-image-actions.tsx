@@ -22,7 +22,7 @@ export function StoreImageActions({ storeImageId }: StoreImageActionsProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline">
+        <Button size="icon">
           <EllipsisVerticalIcon />
         </Button>
       </DropdownMenuTrigger>

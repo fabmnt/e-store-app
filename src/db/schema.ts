@@ -154,6 +154,28 @@ export const productImage = pgTable('product_image', {
     .references(() => product.id, { onDelete: 'no action' }),
 });
 
+export const tag = pgTable('tag', {
+  id: uuid().defaultRandom().primaryKey(),
+  name: text().notNull(),
+  slug: text().notNull().unique(),
+  description: text(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  storeId: uuid('store_id')
+    .notNull()
+    .references(() => store.id, { onDelete: 'cascade' }),
+});
+
+export const productTag = pgTable('product_tag', {
+  id: uuid().defaultRandom().primaryKey(),
+  productId: uuid('product_id')
+    .notNull()
+    .references(() => product.id, { onDelete: 'cascade' }),
+  tagId: uuid('tag_id')
+    .notNull()
+    .references(() => tag.id, { onDelete: 'cascade' }),
+});
+
 // relations
 export const storeRelations = relations(store, ({ many }) => ({
   categories: many(category),
@@ -179,6 +201,7 @@ export const storeImageRelations = relations(storeImage, ({ one }) => ({
 export const productRelations = relations(product, ({ many, one }) => ({
   images: many(productImage),
   details: many(productDetail),
+  productTags: many(productTag),
   category: one(category, {
     fields: [product.categoryId],
     references: [category.id],
@@ -200,5 +223,24 @@ export const productImageRelations = relations(productImage, ({ one }) => ({
   product: one(product, {
     fields: [productImage.productId],
     references: [product.id],
+  }),
+}));
+
+export const tagRelations = relations(tag, ({ many, one }) => ({
+  store: one(store, {
+    fields: [tag.storeId],
+    references: [store.id],
+  }),
+  productTags: many(productTag),
+}));
+
+export const productTagRelations = relations(productTag, ({ one }) => ({
+  product: one(product, {
+    fields: [productTag.productId],
+    references: [product.id],
+  }),
+  tag: one(tag, {
+    fields: [productTag.tagId],
+    references: [tag.id],
   }),
 }));
