@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ProductCarousel } from '@/features/products/components/product-carousel';
 import { ProductDetails } from '@/features/products/components/product-details';
 import { client } from '@/lib/orpc';
@@ -19,12 +21,27 @@ export default async function ProductPage({ params }: PageProps) {
 
   return (
     <HydrateClient client={queryClient}>
-      <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
-        <div className="w-full">
-          <ProductCarousel />
+      <Suspense fallback={<ProductPageSkeleton />}>
+        <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
+          <div className="w-full">
+            <ProductCarousel />
+          </div>
+          <ProductDetails />
         </div>
-        <ProductDetails />
-      </div>
+      </Suspense>
     </HydrateClient>
+  );
+}
+
+function ProductPageSkeleton() {
+  return (
+    <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
+      <div className="w-full">
+        <Skeleton className="h-[460px] w-full" />
+      </div>
+      <div className="w-full">
+        <Skeleton className="h-[460px] w-full" />
+      </div>
+    </div>
   );
 }
