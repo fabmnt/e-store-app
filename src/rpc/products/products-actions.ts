@@ -187,3 +187,57 @@ export const addProductDetail = protectedOs
     return newDetail;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
+
+export const updateProductDetail = protectedOs
+  .input(
+    z.object({
+      id: z.string(),
+      detail: z.string(),
+    })
+  )
+  .output(productDetailSchema)
+  .errors({
+    INTERNAL_SERVER_ERROR: {
+      message: 'Could not update detail',
+    },
+  })
+  .handler(async ({ input }) => {
+    const { id, detail } = input;
+
+    const [updatedDetail] = await db
+      .update(productDetail)
+      .set({ content: detail, updatedAt: new Date() })
+      .where(eq(productDetail.id, id))
+      .returning();
+
+    if (!updatedDetail) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    return updatedDetail;
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
+
+export const deleteProductDetail = protectedOs
+  .input(z.object({ id: z.string() }))
+  .output(productDetailSchema)
+  .errors({
+    INTERNAL_SERVER_ERROR: {
+      message: 'Could not delete detail',
+    },
+  })
+  .handler(async ({ input }) => {
+    const { id } = input;
+
+    const [deletedDetail] = await db
+      .delete(productDetail)
+      .where(eq(productDetail.id, id))
+      .returning();
+
+    if (!deletedDetail) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    return deletedDetail;
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });

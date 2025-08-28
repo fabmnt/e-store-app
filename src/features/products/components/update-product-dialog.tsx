@@ -49,7 +49,7 @@ export function UpdateProductDialog({
   open,
   onOpenChange,
 }: UpdateProductDialogProps) {
-  const [tab, setTab] = useState<'details' | 'images'>('details');
+  const [tab, setTab] = useState<'product' | 'images' | 'details'>('product');
   const { storeId } = useParams();
 
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
@@ -93,7 +93,6 @@ export function UpdateProductDialog({
       stock: product.stock,
       slug: product.slug,
       categoryId: product.categoryId ?? '',
-      details: product.details ?? [],
     } as ProductUpdate,
     validators: {
       onSubmit: productUpdateSchema,
@@ -119,14 +118,17 @@ export function UpdateProductDialog({
         </DialogHeader>
         <Tabs
           className="w-full"
-          onValueChange={(value) => setTab(value as 'details' | 'images')}
+          onValueChange={(value) =>
+            setTab(value as 'product' | 'images' | 'details')
+          }
           value={tab}
         >
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="product">Product</TabsTrigger>
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="images">Images</TabsTrigger>
           </TabsList>
-          <TabsContent className="mt-4" value="details">
+          <TabsContent className="mt-4" value="product">
             <form
               id="update-product-form"
               onSubmit={(e) => {
@@ -267,36 +269,6 @@ export function UpdateProductDialog({
                   )}
                   name="description"
                 />
-                <form.Field mode="array" name="details">
-                  {(field) => (
-                    <div className="col-span-2 space-y-2">
-                      <div className="flex w-full items-center justify-between gap-2">
-                        <Label htmlFor={field.name}>Details</Label>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        {field.state.value?.map((detail, index) => (
-                          <form.Field
-                            children={(subField) => (
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  autoComplete="off"
-                                  onBlur={subField.handleBlur}
-                                  onChange={(e) =>
-                                    subField.handleChange(e.target.value)
-                                  }
-                                  placeholder="Add a detail for this product"
-                                  value={subField.state.value}
-                                />
-                              </div>
-                            )}
-                            key={detail.id}
-                            name={`details[${index}].content`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </form.Field>
               </div>
             </form>
           </TabsContent>
@@ -347,14 +319,17 @@ export function UpdateProductDialog({
               )}
             </div>
           </TabsContent>
+          <TabsContent className="mt-4" value="details">
+            Details
+          </TabsContent>
         </Tabs>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">
-              {tab === 'details' ? 'Cancel' : 'Done'}
+              {tab === 'product' ? 'Cancel' : 'Done'}
             </Button>
           </DialogClose>
-          {tab === 'details' && (
+          {tab === 'product' && (
             <Button
               className="w-20"
               disabled={isUpdating}

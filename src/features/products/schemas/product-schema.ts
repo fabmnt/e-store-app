@@ -16,13 +16,14 @@ export const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   slug: z.string().min(1, 'Slug is required'),
   description: z.string().nullable(),
-  price: z.number().min(0, 'Price must be positive'),
-  stock: z.number().min(0, 'Stock must be positive'),
+  price: z.number().min(0, 'Price must be greater than 0'),
+  stock: z.number().min(0, 'Stock must be greater than 0'),
   categoryId: z.uuid('Category is required').nullable(),
   storeId: z.uuid('Store is required'),
   category: categorySchema.nullable(),
   store: storeSchema,
   createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export const productWithDetailsSchema = productSchema.extend({
@@ -40,6 +41,7 @@ export const productCreateSchema = productSchema
   .omit({
     id: true,
     createdAt: true,
+    updatedAt: true,
     category: true,
     store: true,
   })
@@ -47,17 +49,17 @@ export const productCreateSchema = productSchema
     details: z.array(productDetailCreateSchema).default([]).optional(),
   });
 
-export const productUpdateSchema = productWithDetailsSchema
+export const productUpdateSchema = productSchema
   .omit({
     createdAt: true,
     storeId: true,
     category: true,
     store: true,
+    updatedAt: true,
   })
   .partial()
   .extend({
     id: z.string(),
-    slug: z.string().optional(),
   });
 
 export const productWithImagesSchema = productSchema.extend({
