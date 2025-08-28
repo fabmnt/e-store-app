@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="space-y-1">
       <Card className="rounded-none">
         <CardContent>
-          <div className="h-full space-y-2">
+          <div className="flex h-[360px] flex-col gap-y-2">
             <AspectRatio
               className="mx-auto max-w-[280px] xl:max-w-[320px]"
               ratio={1}
@@ -35,32 +35,36 @@ export function ProductCard({ product }: ProductCardProps) {
                 />
               )}
             </AspectRatio>
-            <div className="flex justify-between">
-              <div>
-                <h4 className="font-medium text-sm">{product.name}</h4>
-                <p className="text-muted-foreground text-sm">
-                  {product.description}
-                </p>
+            <div className="mt-auto flex flex-col gap-y-2">
+              <div className="flex justify-between">
+                <div>
+                  <h4 className="font-medium text-sm">{product.name}</h4>
+                  <p className="text-muted-foreground text-sm">
+                    {product.description}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground text-sm">
+                    {product.price}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-muted-foreground text-sm">{product.price}</p>
-              </div>
-            </div>
-            <div className="mt-auto">
-              <Button
-                asChild
-                className="w-full rounded-sm"
-                onClick={() => {
-                  addClickToProductAction({ id: product.id });
-                }}
-                size="lg"
-              >
-                <Link
-                  href={`/s/${product.store.slug}/products/${product.slug}`}
+              <div className="mt-auto">
+                <Button
+                  asChild
+                  className="w-full rounded-sm"
+                  onClick={() => {
+                    addClickToProductAction({ id: product.id });
+                  }}
+                  size="lg"
                 >
-                  Ver Producto
-                </Link>
-              </Button>
+                  <Link
+                    href={`/s/${product.store.slug}/products/${product.slug}`}
+                  >
+                    Ver Producto
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>

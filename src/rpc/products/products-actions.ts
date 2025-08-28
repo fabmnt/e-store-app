@@ -9,6 +9,7 @@ import { db } from '@/db';
 import { product, productDetail, productImage, store } from '@/db/schema';
 import {
   productCreateSchema,
+  productDetailSchema,
   productSchema,
   productUpdateSchema,
 } from '@/features/products/schemas/product-schema';
@@ -152,5 +153,37 @@ export const addClickToProductAction = publicOs
       })
       .where(eq(product.id, id))
       .returning();
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
+
+export const addProductDetail = protectedOs
+  .input(
+    z.object({
+      productId: z.string(),
+      detail: z.string(),
+    })
+  )
+  .output(productDetailSchema)
+  .errors({
+    NOT_FOUND: {
+      message: 'Could not add detail',
+    },
+  })
+  .handler(async ({ input }) => {
+    const { productId, detail } = input;
+
+    const [newDetail] = await db
+      .insert(productDetail)
+      .values({
+        productId,
+        content: detail,
+      })
+      .returning();
+
+    if (!newDetail) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    return newDetail;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
