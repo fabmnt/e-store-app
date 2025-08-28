@@ -42,7 +42,9 @@ export function CreateTagDialog() {
         toast.success('Tag created successfully');
         setOpen(false);
       }),
-      onError((error) => toast.error(error.message)),
+      onError((error) => {
+        toast.error(error.message);
+      }),
     ],
   });
 

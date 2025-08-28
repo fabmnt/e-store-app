@@ -1,6 +1,12 @@
 'use client';
 
-import { LogOutIcon, PackageIcon, StoreIcon, TagIcon } from 'lucide-react';
+import {
+  LogOutIcon,
+  PackageIcon,
+  PackageOpenIcon,
+  StoreIcon,
+  TagIcon,
+} from 'lucide-react';
 import type { Route } from 'next';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import {
@@ -31,7 +37,7 @@ const sidebarItems = [
   {
     label: 'Categories',
     href: 'categories',
-    icon: TagIcon,
+    icon: PackageOpenIcon,
   },
   {
     label: 'Tags',
