@@ -115,7 +115,7 @@ importers:
         specifier: latest
         version: 2.2.0
       '@tailwindcss/postcss':
-        specifier: ^1.1.1
+        specifier: ^4.1.12
         version: 4.1.12
       '@types/node':
         specifier: ^20
