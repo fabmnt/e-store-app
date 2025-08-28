@@ -1,6 +1,8 @@
 'use client';
 
+import { useSuspenseQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   Carousel,
@@ -10,13 +12,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import type { ProductWithImages } from '../schemas/product-schema';
+import { client } from '@/lib/orpc';
 
-type ProductCarouselProps = {
-  product: ProductWithImages;
-};
-
-export function ProductCarousel({ product }: ProductCarouselProps) {
+export function ProductCarousel() {
+  const { storeSlug, productSlug } = useParams();
+  const { data: product } = useSuspenseQuery(
+    client.products.public.getBySlug.queryOptions({
+      input: {
+        storeSlug: storeSlug as string,
+        productSlug: productSlug as string,
+      },
+    })
+  );
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);

@@ -1,19 +1,27 @@
+'use client';
+
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Store } from '@/features/stores/schemas/store-schema';
-import type { StoreImage } from '@/features/stores-images/schemas/store-image-schema';
+import { useParams } from 'next/navigation';
+import { client } from '@/lib/orpc';
 import { Container } from './container';
 import { WhatsApp } from './icons/whatsapp';
 import { Button } from './ui/button';
 
-type HeaderProps = {
-  storeSlug: string;
-  store: Store;
-  logoImage?: StoreImage;
-};
+export function Header() {
+  const { storeSlug } = useParams();
+  const { data: store } = useSuspenseQuery(
+    client.stores.public.getBySlug.queryOptions({
+      input: {
+        slug: storeSlug as string,
+      },
+    })
+  );
 
-export function Header({ storeSlug, store, logoImage }: HeaderProps) {
+  const logoImage = store.images.find((image) => image.type === 'logo');
+
   return (
     <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Container>
