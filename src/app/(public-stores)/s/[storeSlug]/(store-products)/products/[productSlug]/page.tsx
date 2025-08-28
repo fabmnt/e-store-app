@@ -1,11 +1,9 @@
-import { safe } from '@orpc/server';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { WhatsApp } from '@/components/icons/whatsapp';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Suspense } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ProductCarousel } from '@/features/products/components/product-carousel';
+import { ProductDetails } from '@/features/products/components/product-details';
 import { client } from '@/lib/orpc';
+import { getQueryClient, HydrateClient } from '@/lib/query/hydration';
 
 type PageProps = {
   params: Promise<{ storeSlug: string; productSlug: string }>;
@@ -14,68 +12,35 @@ type PageProps = {
 export default async function ProductPage({ params }: PageProps) {
   const { storeSlug, productSlug } = await params;
 
-  const {
-    data: product,
-    error,
-    isDefined,
-  } = await safe(
-    client.products.public.getBySlug.call({ storeSlug, productSlug })
+  const queryClient = getQueryClient();
+  queryClient.prefetchQuery(
+    client.products.public.getBySlug.queryOptions({
+      input: { storeSlug, productSlug },
+    })
   );
 
-  if (error) {
-    if (isDefined && error.code === 'NOT_FOUND') {
-      return notFound();
-    }
-    throw error;
-  }
+  return (
+    <HydrateClient client={queryClient}>
+      <Suspense fallback={<ProductPageSkeleton />}>
+        <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
+          <div className="w-full">
+            <ProductCarousel />
+          </div>
+          <ProductDetails />
+        </div>
+      </Suspense>
+    </HydrateClient>
+  );
+}
 
+function ProductPageSkeleton() {
   return (
     <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
       <div className="w-full">
-        <ProductCarousel product={product} />
+        <Skeleton className="h-[460px] w-full" />
       </div>
-
-      <div className="flex h-full w-full flex-col gap-4 self-start">
-        <div className="flex flex-col items-center gap-2 md:items-start">
-          <Badge asChild className="rounded-full px-6" variant="outline">
-            <Link href={`/s/${storeSlug}/${product.category?.slug}`}>
-              {product.category?.name}
-            </Link>
-          </Badge>
-          <h1 className="font-semibold text-3xl">{product.name}</h1>
-        </div>
-
-        {product.description ? (
-          <p className="text-neutral-800 leading-7">{product.description}</p>
-        ) : (
-          <p className="text-neutral-700">Sin descripción.</p>
-        )}
-
-        {product.details && product.details.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <h2 className="font-medium">Detalles</h2>
-            <ul className="list-inside list-disc text-neutral-700">
-              {product.details?.map((detail) => (
-                <li key={detail.id}>{detail.content}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className="mt-2">
-          <p className="font-bold text-3xl text-primary">
-            {product.price.toFixed(2)}
-          </p>
-        </div>
-
-        <div className="mt-auto flex w-full flex-col gap-2">
-          <Button className="w-full py-6 text-lg" size="lg">
-            Comprar ahora <WhatsApp className="size-6" />
-          </Button>
-          <Button className="w-full py-6 text-lg" size="lg" variant="outline">
-            Agregar al carrito
-          </Button>
-        </div>
+      <div className="w-full">
+        <Skeleton className="h-[460px] w-full" />
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 'use client';
 
+import { useSuspenseQuery } from '@tanstack/react-query';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   Carousel,
