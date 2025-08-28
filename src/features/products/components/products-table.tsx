@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-table';
 import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -85,6 +86,27 @@ const productsColumns = [
   columnHelper.accessor('category', {
     header: 'Category',
     cell: ({ row }) => row.original.category?.name || 'Uncategorized',
+  }),
+  columnHelper.accessor('tags', {
+    header: 'Tags',
+    cell: ({ row }) => {
+      const maxTags = 2;
+      return (
+        <div className="flex flex-wrap gap-2">
+          {row.original.tags?.length === 0 && (
+            <span className="text-muted-foreground">No tags</span>
+          )}
+          {row.original.tags.slice(0, maxTags).map((tag) => (
+            <Badge key={tag.id}>{tag.name}</Badge>
+          ))}
+          {row.original.tags.length > maxTags && (
+            <Badge variant="outline">
+              +{row.original.tags.length - maxTags}
+            </Badge>
+          )}
+        </div>
+      );
+    },
   }),
   columnHelper.accessor('description', {
     header: 'Description',
