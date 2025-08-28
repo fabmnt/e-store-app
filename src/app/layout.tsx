@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Mona_Sans } from 'next/font/google';
 import './globals.css';
 import '../lib/orpc.server';
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { extractRouterConfig } from 'uploadthing/server';
 import { Toaster } from '@/components/ui/sonner';
 import { TanstackQueryClientProvider } from '@/providers/query-client-provider';
@@ -38,11 +39,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${monaSans.variable} antialiased`}
       >
-        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-        <TanstackQueryClientProvider>
-          {children}
-          <Toaster />
-        </TanstackQueryClientProvider>
+        <NuqsAdapter>
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          <TanstackQueryClientProvider>
+            {children}
+            <Toaster />
+          </TanstackQueryClientProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
