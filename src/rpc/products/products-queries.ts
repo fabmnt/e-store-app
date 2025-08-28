@@ -2,7 +2,7 @@ import { ORPCError } from '@orpc/server';
 import { and, desc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
-import { category, product, store } from '@/db/schema';
+import { category, product, productDetail, store } from '@/db/schema';
 import { productExtendedSchema } from '@/features/products/schemas/product-schema';
 import { protectedOs, publicOs } from '../procedures';
 
@@ -39,7 +39,9 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
-            details: true,
+            details: {
+              orderBy: [desc(productDetail.createdAt)],
+            },
           },
         });
 
@@ -63,7 +65,9 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
-            details: true,
+            details: {
+              orderBy: [desc(productDetail.createdAt)],
+            },
           },
           orderBy: [desc(product.createdAt)],
         });
@@ -118,7 +122,9 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
-            details: true,
+            details: {
+              orderBy: [desc(productDetail.createdAt)],
+            },
           },
         });
 
@@ -140,7 +146,9 @@ export const productQueries = {
             category: true,
             store: true,
             images: true,
-            details: true,
+            details: {
+              orderBy: [desc(productDetail.createdAt)],
+            },
           },
           orderBy: [desc(product.createdAt)],
         });

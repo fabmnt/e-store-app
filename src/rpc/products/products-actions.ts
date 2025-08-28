@@ -165,12 +165,26 @@ export const addProductDetail = protectedOs
   )
   .output(productDetailSchema)
   .errors({
-    NOT_FOUND: {
+    INTERNAL_SERVER_ERROR: {
       message: 'Could not add detail',
+    },
+    NOT_FOUND: {
+      message: 'Product not found',
     },
   })
   .handler(async ({ input }) => {
     const { productId, detail } = input;
+
+    const productWithRelations = await db.query.product.findFirst({
+      where: eq(product.id, productId),
+      with: {
+        store: true,
+      },
+    });
+
+    if (!productWithRelations) {
+      throw new ORPCError('NOT_FOUND');
+    }
 
     const [newDetail] = await db
       .insert(productDetail)
@@ -183,6 +197,8 @@ export const addProductDetail = protectedOs
     if (!newDetail) {
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
+
+    revalidatePath(`/d/${productWithRelations.store.id}/products`);
 
     return newDetail;
   })
@@ -200,9 +216,27 @@ export const updateProductDetail = protectedOs
     INTERNAL_SERVER_ERROR: {
       message: 'Could not update detail',
     },
+    NOT_FOUND: {
+      message: 'Product not found',
+    },
   })
   .handler(async ({ input }) => {
     const { id, detail } = input;
+
+    const productDetailFound = await db.query.productDetail.findFirst({
+      where: eq(productDetail.id, id),
+      with: {
+        product: {
+          with: {
+            store: true,
+          },
+        },
+      },
+    });
+
+    if (!productDetailFound) {
+      throw new ORPCError('NOT_FOUND');
+    }
 
     const [updatedDetail] = await db
       .update(productDetail)
@@ -213,6 +247,8 @@ export const updateProductDetail = protectedOs
     if (!updatedDetail) {
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
+
+    revalidatePath(`/d/${productDetailFound.product.store.id}/products`);
 
     return updatedDetail;
   })
@@ -225,9 +261,23 @@ export const deleteProductDetail = protectedOs
     INTERNAL_SERVER_ERROR: {
       message: 'Could not delete detail',
     },
+    NOT_FOUND: {
+      message: 'Product not found',
+    },
   })
   .handler(async ({ input }) => {
     const { id } = input;
+
+    const productWithRelations = await db.query.product.findFirst({
+      where: eq(productDetail.id, id),
+      with: {
+        store: true,
+      },
+    });
+
+    if (!productWithRelations) {
+      throw new ORPCError('NOT_FOUND');
+    }
 
     const [deletedDetail] = await db
       .delete(productDetail)
@@ -237,6 +287,8 @@ export const deleteProductDetail = protectedOs
     if (!deletedDetail) {
       throw new ORPCError('INTERNAL_SERVER_ERROR');
     }
+
+    revalidatePath(`/d/${productWithRelations.store.id}/products`);
 
     return deletedDetail;
   })

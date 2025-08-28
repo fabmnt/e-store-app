@@ -32,15 +32,11 @@ export default function UpdateProductDetails({
     setItems(details ?? []);
   }, [details]);
 
-  console.log({ details });
-  // Derived state can be added later if needed
-
   const { execute: executeAdd, isPending: isAdding } = useServerAction(
     addProductDetail,
     {
       interceptors: [
-        onSuccess((created) => {
-          setItems((prev) => [...prev, created]);
+        onSuccess(() => {
           setNewDetail('');
           toast.success('Detail added');
         }),
@@ -55,10 +51,7 @@ export default function UpdateProductDetails({
     updateProductDetail,
     {
       interceptors: [
-        onSuccess((updated) => {
-          setItems((prev) =>
-            prev.map((d) => (d.id === updated.id ? updated : d))
-          );
+        onSuccess(() => {
           setEditingId(null);
           setEditValue('');
           toast.success('Detail updated');
@@ -74,8 +67,7 @@ export default function UpdateProductDetails({
     deleteProductDetail,
     {
       interceptors: [
-        onSuccess((deleted) => {
-          setItems((prev) => prev.filter((d) => d.id !== deleted.id));
+        onSuccess(() => {
           toast.success('Detail deleted');
         }),
         onError((error) => {
@@ -90,6 +82,7 @@ export default function UpdateProductDetails({
       <div className="flex items-center gap-2">
         <Input
           autoComplete="off"
+          className="h-10"
           disabled={isAdding}
           onChange={(e) => setNewDetail(e.target.value)}
           onKeyDown={(e) => {
@@ -101,6 +94,7 @@ export default function UpdateProductDetails({
           value={newDetail}
         />
         <Button
+          className="h-10"
           disabled={isAdding || newDetail.trim().length === 0}
           onClick={() => executeAdd({ productId, detail: newDetail.trim() })}
           type="button"
@@ -108,10 +102,7 @@ export default function UpdateProductDetails({
           {isAdding ? (
             <Loader className="size-4 animate-spin" />
           ) : (
-            <>
-              <Plus className="mr-2 size-4" />
-              Add
-            </>
+            <Plus className="size-4" />
           )}
         </Button>
       </div>
@@ -120,20 +111,21 @@ export default function UpdateProductDetails({
         <p className="text-muted-foreground text-sm">No details yet.</p>
       )}
 
-      <ul className="flex flex-col gap-2">
+      <ul className="flex max-h-[320px] flex-col gap-2 overflow-visible overflow-y-auto">
         {items.map((detail) => (
-          <li className="group relative" key={detail.id}>
+          <li className="group relative rounded-sm" key={detail.id}>
             {editingId === detail.id ? (
               <div className="flex items-center gap-2">
                 <Input
                   autoComplete="off"
+                  className="h-10"
                   disabled={isUpdating}
                   onChange={(e) => setEditValue(e.target.value)}
                   placeholder="Edit detail"
                   value={editValue}
                 />
                 <Button
-                  className="w-20"
+                  className="h-10 w-20"
                   disabled={isUpdating || editValue.trim().length === 0}
                   onClick={() =>
                     executeUpdate({ id: detail.id, detail: editValue.trim() })
@@ -150,7 +142,7 @@ export default function UpdateProductDetails({
             ) : (
               <div className="flex items-center justify-between gap-2 rounded border px-3 py-2">
                 <span className="text-sm">{detail.content}</span>
-                <div className="invisible flex items-center gap-1 group-hover:visible">
+                <div className="invisible flex items-center gap-2 group-hover:visible">
                   <Button
                     onClick={() => {
                       setEditingId(detail.id);
@@ -163,11 +155,12 @@ export default function UpdateProductDetails({
                     <Pencil className="size-4" />
                   </Button>
                   <Button
+                    className="text-destructive hover:text-destructive"
                     disabled={isDeleting}
                     onClick={() => executeDelete({ id: detail.id })}
                     size="icon"
                     title="Delete detail"
-                    variant="destructive"
+                    variant="outline"
                   >
                     <Trash2 className="size-4" />
                   </Button>
