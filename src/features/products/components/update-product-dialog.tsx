@@ -36,6 +36,7 @@ import {
   type ProductWithDetails,
   productUpdateSchema,
 } from '../schemas/product-schema';
+import UpdateProductDetails from './update-product-details';
 import { UploadProductImages } from './upload-product-images';
 
 type UpdateProductDialogProps = {
@@ -51,6 +52,8 @@ export function UpdateProductDialog({
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'product' | 'images' | 'details'>('product');
   const { storeId } = useParams();
+
+  console.log({ product });
 
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
     client.categories.protected.getAllByStoreId.queryOptions({
@@ -320,7 +323,10 @@ export function UpdateProductDialog({
             </div>
           </TabsContent>
           <TabsContent className="mt-4" value="details">
-            Details
+            <UpdateProductDetails
+              details={product.details ?? []}
+              productId={product.id}
+            />
           </TabsContent>
         </Tabs>
         <DialogFooter>

@@ -66,6 +66,12 @@ export const productWithImagesSchema = productSchema.extend({
   images: z.array(productImageSchema),
 });
 
+export const productExtendedSchema = productSchema.extend({
+  details: z.array(productDetailSchema),
+  images: z.array(productImageSchema),
+});
+
+export type ProductDetail = z.infer<typeof productDetailSchema>;
 export type ProductWithDetails = z.infer<typeof productWithDetailsSchema>;
 export type ProductWithImages = z.infer<typeof productWithImagesSchema>;
 export type Product = z.infer<typeof productSchema>;

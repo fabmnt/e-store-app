@@ -3,10 +3,7 @@ import { and, desc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { category, product, store } from '@/db/schema';
-import {
-  productWithDetailsSchema,
-  productWithImagesSchema,
-} from '@/features/products/schemas/product-schema';
+import { productExtendedSchema } from '@/features/products/schemas/product-schema';
 import { protectedOs, publicOs } from '../procedures';
 
 export const productQueries = {
@@ -23,7 +20,7 @@ export const productQueries = {
           productSlug: z.string(),
         })
       )
-      .output(productWithDetailsSchema)
+      .output(productExtendedSchema)
       .handler(async ({ input }) => {
         const storeFound = await db.query.store.findFirst({
           where: eq(store.slug, input.storeSlug),
@@ -58,7 +55,7 @@ export const productQueries = {
           storeId: z.uuid(),
         })
       )
-      .output(productWithImagesSchema.array())
+      .output(productExtendedSchema.array())
       .handler(async ({ input }) => {
         const products = await db.query.product.findMany({
           where: eq(product.storeId, input.storeId),
@@ -80,7 +77,7 @@ export const productQueries = {
           categorySlug: z.string().optional(),
         })
       )
-      .output(productWithImagesSchema.array())
+      .output(productExtendedSchema.array())
       .handler(async ({ input }) => {
         const storeFound = await db.query.store.findFirst({
           where: eq(store.slug, input.storeSlug),
@@ -135,7 +132,7 @@ export const productQueries = {
           storeId: z.uuid(),
         })
       )
-      .output(productWithImagesSchema.array())
+      .output(productExtendedSchema.array())
       .handler(async ({ input }) => {
         const products = await db.query.product.findMany({
           where: eq(product.storeId, input.storeId),
