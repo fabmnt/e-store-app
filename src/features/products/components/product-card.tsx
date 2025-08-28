@@ -44,9 +44,9 @@ export function ProductCard({ product }: ProductCardProps) {
                   </p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground text-sm">
-                    {product.price}
-                  </p>
+                  <span className="font-semibold">
+                    {product.price.toFixed(2)}
+                  </span>
                 </div>
               </div>
               <div className="mt-auto">
