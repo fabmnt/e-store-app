@@ -136,6 +136,26 @@ export function UpdateTagDialog({
                 </div>
               )}
               name="slug"
+              validators={{
+                onChangeAsync: async ({ value }) => {
+                  if (!value) {
+                    return;
+                  }
+
+                  const isSlugAvailable =
+                    await client.tags.protected.isSlugAvailable.call({
+                      slug: value,
+                      storeId: tag.storeId,
+                      omitId: tag.id,
+                    });
+
+                  if (!isSlugAvailable) {
+                    return 'Slug already exists';
+                  }
+
+                  return;
+                },
+              }}
             />
 
             <form.Field

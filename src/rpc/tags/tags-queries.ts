@@ -1,5 +1,5 @@
 import { ORPCError } from '@orpc/server';
-import { eq } from 'drizzle-orm';
+import { and, eq, not } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { store, tag } from '@/db/schema';
@@ -51,6 +51,34 @@ export const tagsQueries = {
         });
 
         return tagsFound;
+      }),
+    isSlugAvailable: protectedOs
+      .input(
+        z.object({
+          slug: z.string(),
+          storeId: z.uuid(),
+          omitId: z.string().optional(),
+        })
+      )
+      .output(z.boolean())
+      .handler(async ({ input }) => {
+        if (input.omitId) {
+          const tagFound = await db.query.tag.findFirst({
+            where: and(
+              eq(tag.slug, input.slug),
+              eq(tag.storeId, input.storeId),
+              not(eq(tag.id, input.omitId))
+            ),
+          });
+
+          return !tagFound;
+        }
+
+        const tagFound = await db.query.tag.findFirst({
+          where: and(eq(tag.slug, input.slug), eq(tag.storeId, input.storeId)),
+        });
+
+        return !tagFound;
       }),
   },
 };
