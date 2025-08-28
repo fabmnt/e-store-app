@@ -197,5 +197,18 @@ export const productQueries = {
 
         return result;
       }),
+    isSlugAvailable: protectedOs
+      .input(z.object({ slug: z.string(), storeId: z.uuid() }))
+      .output(z.boolean())
+      .handler(async ({ input }) => {
+        const productFound = await db.query.product.findFirst({
+          where: and(
+            eq(product.slug, input.slug),
+            eq(product.storeId, input.storeId)
+          ),
+        });
+
+        return !productFound;
+      }),
   },
 };

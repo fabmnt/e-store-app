@@ -194,6 +194,25 @@ export function UpdateProductDialog({
                     </div>
                   )}
                   name="slug"
+                  validators={{
+                    onChangeAsync: async ({ value }) => {
+                      if (!value) {
+                        return;
+                      }
+
+                      const isSlugAvailable =
+                        await client.products.protected.isSlugAvailable.call({
+                          slug: value,
+                          storeId: storeId as string,
+                        });
+
+                      if (!isSlugAvailable) {
+                        return 'Slug already exists';
+                      }
+
+                      return;
+                    },
+                  }}
                 />
 
                 <form.Field

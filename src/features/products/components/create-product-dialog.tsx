@@ -180,6 +180,21 @@ export function CreateProductDialog() {
                     </div>
                   )}
                   name="slug"
+                  validators={{
+                    onChangeAsync: async ({ value }) => {
+                      const isSlugAvailable =
+                        await client.products.protected.isSlugAvailable.call({
+                          slug: value,
+                          storeId: store?.id ?? '',
+                        });
+
+                      if (!isSlugAvailable) {
+                        return 'Slug already exists';
+                      }
+
+                      return;
+                    },
+                  }}
                 />
                 <form.Field
                   children={(field) => (
