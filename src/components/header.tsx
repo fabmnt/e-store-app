@@ -51,8 +51,14 @@ export function Header() {
             </nav>
           </div>
           <div className="flex flex-1 justify-end">
-            <Button variant="ghost">
-              <WhatsApp className="size-6" />
+            <Button asChild variant="ghost">
+              <Link
+                href={`https://wa.me/${store.whatsapp ?? ''}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <WhatsApp className="size-6" />
+              </Link>
             </Button>
             <Button variant="ghost">
               <ShoppingCart className="size-6 text-primary" />
