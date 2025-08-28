@@ -37,9 +37,9 @@ export function Header({ storeSlug, store, logoImage }: HeaderProps) {
           </div>
           <div className="">
             <nav className="flex items-center gap-4 text-sm">
-              <Link href={`/s/${storeSlug}/products`}>Productos</Link>
               <Link href={`/s/${storeSlug}/categories`}>Categorías</Link>
-              <Link href={`/s/${storeSlug}/orders`}>Pedidos</Link>
+              <Link href={`/s/${storeSlug}/orders`}>Ofertas</Link>
+              <Link href={`/s/${storeSlug}/orders`}>Contacto</Link>
             </nav>
           </div>
           <div className="flex flex-1 justify-end">
