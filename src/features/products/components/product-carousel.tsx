@@ -80,7 +80,7 @@ export function ProductCarousel() {
         {product.images.map((img, index) => (
           <button
             className={cn(
-              'aspect-square rounded-md border-2 border-transparent p-2 hover:border-neutral-300',
+              'relative aspect-square h-auto w-[100px] rounded-md border-2 border-transparent p-2 hover:border-neutral-300',
               index + 1 === current && 'border-neutral-300'
             )}
             key={img.id}
@@ -90,9 +90,9 @@ export function ProductCarousel() {
             <Image
               alt={product.name}
               className="rounded object-cover transition-transform duration-300 group-hover:scale-105"
-              height={320}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
               src={img.url}
-              width={320}
             />
           </button>
         ))}
