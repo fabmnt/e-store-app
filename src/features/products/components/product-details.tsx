@@ -22,7 +22,7 @@ export function ProductDetails() {
   return (
     <div className="flex h-full w-full flex-col gap-4 self-start">
       <div className="flex flex-col items-center gap-2 md:items-start">
-        <Button asChild variant="link">
+        <Button asChild className="px-0" variant="link">
           <Link className="" href={`/s/${storeSlug}/${product.category?.slug}`}>
             {product.category?.name}
           </Link>
