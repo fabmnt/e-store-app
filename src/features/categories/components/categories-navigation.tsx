@@ -1,20 +1,23 @@
 'use client';
 
+import { useSuspenseQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { client } from '@/lib/orpc';
 import { cn } from '@/lib/utils';
-import type { Category } from '../schemas/category-schema';
 
-type CategoriesNavigationProps = {
-  categories: Category[];
-};
-
-export function CategoriesNavigation({
-  categories,
-}: CategoriesNavigationProps) {
+export function CategoriesNavigation() {
   const { storeSlug } = useParams();
   const pathname = usePathname();
+  const { data: store } = useSuspenseQuery(
+    client.stores.public.getBySlug.queryOptions({
+      input: {
+        slug: storeSlug as string,
+      },
+    })
+  );
+  const categories = store.categories;
 
   return (
     <nav className="flex items-center gap-x-2 xl:gap-x-6">
