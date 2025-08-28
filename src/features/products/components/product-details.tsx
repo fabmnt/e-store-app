@@ -18,15 +18,26 @@ export function ProductDetails() {
       },
     })
   );
+
   return (
     <div className="flex h-full w-full flex-col gap-4 self-start">
       <div className="flex flex-col items-center gap-2 md:items-start">
-        <Badge asChild className="rounded-full px-6" variant="outline">
-          <Link href={`/s/${storeSlug}/${product.category?.slug}`}>
-            {product.category?.name}
-          </Link>
-        </Badge>
-        <h1 className="font-semibold text-3xl">{product.name}</h1>
+        <Link
+          className="text-sm hover:underline"
+          href={`/s/${storeSlug}/${product.category?.slug}`}
+        >
+          {product.category?.name}
+        </Link>
+        <div className="flex flex-col gap-1">
+          <h1 className="font-semibold text-3xl">{product.name}</h1>
+          <div className="flex items-center gap-2">
+            {product.tags.map((tag) => (
+              <Badge className="px-4 text-sm" key={tag.id} variant="outline">
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </div>
 
       {product.description ? (

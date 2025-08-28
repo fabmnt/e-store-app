@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { addClickToProductAction } from '@/rpc/products/products-actions';
@@ -21,7 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <CardContent>
           <div className="flex h-[360px] flex-col gap-y-2">
             <AspectRatio
-              className="mx-auto max-w-[280px] xl:max-w-[320px]"
+              className="relative mx-auto max-w-[280px] xl:max-w-[320px]"
               ratio={1}
             >
               {firstImageUrl && (
@@ -34,6 +35,13 @@ export function ProductCard({ product }: ProductCardProps) {
                   src={firstImageUrl}
                 />
               )}
+              <div className="absolute right-2 bottom-2 flex items-center gap-2 font-light">
+                {product.tags.map((tag) => (
+                  <Badge key={tag.id} variant="secondary">
+                    {tag.name}
+                  </Badge>
+                ))}
+              </div>
             </AspectRatio>
             <div className="mt-auto flex flex-col gap-y-2">
               <div className="flex justify-between">

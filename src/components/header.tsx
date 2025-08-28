@@ -55,7 +55,7 @@ export function Header() {
               <WhatsApp className="size-6" />
             </Button>
             <Button variant="ghost">
-              <ShoppingCart className="size-6" />
+              <ShoppingCart className="size-6 text-primary" />
             </Button>
           </div>
         </header>

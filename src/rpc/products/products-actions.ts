@@ -133,12 +133,22 @@ export const updateProductAction = protectedOs
     },
   })
   .handler(async ({ input }) => {
-    const { id, ...data } = input;
+    const { id, tags, ...data } = input;
 
     await db
       .update(product)
       .set({ ...data, updatedAt: new Date() })
       .where(eq(product.id, id));
+
+    // If tags were provided, replace existing associations
+    if (tags) {
+      // clear existing tags
+      await db.delete(productTag).where(eq(productTag.productId, id));
+      if (tags.length > 0) {
+        const rows = tags.map((t) => ({ productId: id, tagId: t.id }));
+        await db.insert(productTag).values(rows);
+      }
+    }
 
     const productWithRelations = await db.query.product.findFirst({
       where: eq(product.id, id),
