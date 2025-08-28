@@ -322,10 +322,15 @@ export function CreateProductDialog() {
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {field.state.value.map((tag, index) => (
+                        {field.state.value.map((tag) => (
                           <Button
                             key={tag.id}
-                            onClick={() => field.removeValue(index)}
+                            onClick={() => {
+                              const newTags = field.state.value.filter(
+                                (t) => t.id !== tag.id
+                              );
+                              field.handleChange(newTags);
+                            }}
                             size="sm"
                             variant="outline"
                           >
@@ -363,7 +368,7 @@ export function CreateProductDialog() {
                           <Plus className="size-4" />
                         </Button>
                       </div>
-                      <div className="flex flex-col gap-2">
+                      <div className="flex max-h-[120px] flex-col gap-2 overflow-visible overflow-y-auto">
                         {field.state.value?.map((detail, index) => (
                           <form.Field
                             children={(subField) => (
@@ -377,6 +382,20 @@ export function CreateProductDialog() {
                                   placeholder="Add a detail for this product"
                                   value={subField.state.value}
                                 />
+                                <Button
+                                  onClick={() => {
+                                    const newDetails =
+                                      field.state.value?.filter(
+                                        (d) => d.id !== detail.id
+                                      );
+                                    field.handleChange(newDetails);
+                                  }}
+                                  size="sm"
+                                  type="button"
+                                  variant="outline"
+                                >
+                                  <X className="size-4" />
+                                </Button>
                               </div>
                             )}
                             key={detail.id}
