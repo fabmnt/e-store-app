@@ -11,6 +11,9 @@
       },
       "correctness": {
         "noChildrenProp": "off"
+      },
+      "a11y": {
+        "useSemanticElements": "off"
       }
     }
   }

@@ -32,15 +32,15 @@ import { client } from '@/lib/orpc';
 import { updateProductAction } from '@/rpc/products/products-actions';
 import { deleteProductImage } from '@/rpc/products-images/products-images-actions';
 import {
+  type Product,
   type ProductUpdate,
-  type ProductWithDetails,
   productUpdateSchema,
 } from '../schemas/product-schema';
 import UpdateProductDetails from './update-product-details';
 import { UploadProductImages } from './upload-product-images';
 
 type UpdateProductDialogProps = {
-  product: ProductWithDetails;
+  product: Product;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -52,8 +52,6 @@ export function UpdateProductDialog({
 }: UpdateProductDialogProps) {
   const [tab, setTab] = useState<'product' | 'images' | 'details'>('product');
   const { storeId } = useParams();
-
-  console.log({ product });
 
   const { data: categories, isLoading: isLoadingCategories } = useQuery(
     client.categories.protected.getAllByStoreId.queryOptions({

@@ -39,7 +39,7 @@ export const createProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
-    const { details, tagIds, ...productData } = input;
+    const { details, tags, ...productData } = input;
 
     const [productCreated] = await db
       .insert(product)
@@ -59,10 +59,10 @@ export const createProductAction = protectedOs
       await db.insert(productDetail).values(newDetails);
     }
 
-    if (tagIds && tagIds.length > 0) {
-      const rows = tagIds.map((tagId) => ({
+    if (tags && tags.length > 0) {
+      const rows = tags.map((tag) => ({
         productId: productCreated.id,
-        tagId,
+        tagId: tag.id,
       }));
       await db.insert(productTag).values(rows);
     }
@@ -177,8 +177,7 @@ export const addClickToProductAction = publicOs
         clicks: sql`${product.clicks} + 1`,
         updatedAt: new Date(),
       })
-      .where(eq(product.id, id))
-      .returning();
+      .where(eq(product.id, id));
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 

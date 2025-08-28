@@ -195,8 +195,6 @@ export const productQueries = {
           tags: p.productTags.map((pt) => pt.tag),
         }));
 
-        console.log(result);
-
         return result;
       }),
   },

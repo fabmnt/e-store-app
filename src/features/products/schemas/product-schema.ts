@@ -43,14 +43,12 @@ export const productSchema = z.object({
   storeId: z.uuid('Store is required'),
   category: categorySchema.nullable(),
   store: storeSchema,
+  clicks: z.number().default(0).nullable(),
+  details: z.array(productDetailSchema),
+  images: z.array(productImageSchema),
   createdAt: z.date(),
   updatedAt: z.date(),
-  tags: z.array(tagSchema).optional(),
-});
-
-export const productWithDetailsSchema = productSchema.extend({
-  details: z.array(productDetailSchema).optional(),
-  images: z.array(productImageSchema),
+  tags: z.array(tagSchema),
 });
 
 export const productDetailCreateSchema = productDetailSchema.omit({
@@ -66,11 +64,12 @@ export const productCreateSchema = productSchema
     updatedAt: true,
     category: true,
     store: true,
-    tags: true,
+    clicks: true,
+    details: true,
+    images: true,
   })
   .extend({
     details: z.array(productDetailCreateSchema).default([]).optional(),
-    tagIds: z.array(z.uuid()).default([]).optional(),
   });
 
 export const productUpdateSchema = productSchema
@@ -80,6 +79,9 @@ export const productUpdateSchema = productSchema
     category: true,
     store: true,
     updatedAt: true,
+    clicks: true,
+    details: true,
+    images: true,
   })
   .partial()
   .extend({
@@ -96,7 +98,6 @@ export const productExtendedSchema = productSchema.extend({
 });
 
 export type ProductDetail = z.infer<typeof productDetailSchema>;
-export type ProductWithDetails = z.infer<typeof productWithDetailsSchema>;
 export type ProductWithImages = z.infer<typeof productWithImagesSchema>;
 export type Product = z.infer<typeof productSchema>;
 export type ProductCreate = z.infer<typeof productCreateSchema>;

@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
+import { SelectTags } from '@/components/multiple-expandable';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -54,7 +55,7 @@ export function CreateProductDialog() {
       input: store?.id ? { storeId: store.id } : skipToken,
     })
   );
-  const { data: tags, isLoading: isLoadingTags } = useQuery(
+  const { data: tags } = useQuery(
     client.tags.protected.getAllByStoreId.queryOptions({
       input: store?.id ? { storeId: store.id } : skipToken,
     })
@@ -88,10 +89,15 @@ export function CreateProductDialog() {
       categoryId: '',
       storeId: store?.id ?? '',
       details: [],
-      tagIds: [],
+      tags: [],
     } as ProductCreate,
     validators: {
       onSubmit: productCreateSchema,
+    },
+    listeners: {
+      onChange: ({ formApi }) => {
+        console.log(formApi.state.values);
+      },
     },
     onSubmit: ({ value }) => {
       execute({
@@ -131,46 +137,6 @@ export function CreateProductDialog() {
               }}
             >
               <div className="grid grid-cols-2 gap-4">
-                <form.Field
-                  children={(field) => (
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor={field.name}>Tags</Label>
-                      <div className="flex flex-wrap gap-2">
-                        {(tags ?? []).map((t) => {
-                          const checked =
-                            field.state.value?.includes(t.id) ?? false;
-                          return (
-                            <label
-                              className="flex items-center gap-2"
-                              key={t.id}
-                            >
-                              <input
-                                checked={checked}
-                                disabled={isLoadingTags || isCreatingProduct}
-                                onChange={(e) => {
-                                  const isChecked = e.target.checked;
-                                  if (isChecked) {
-                                    field.pushValue(t.id);
-                                  } else {
-                                    const idx =
-                                      field.state.value?.indexOf(t.id) ?? -1;
-                                    if (idx >= 0) {
-                                      field.removeValue(idx);
-                                    }
-                                  }
-                                }}
-                                type="checkbox"
-                              />
-                              <span className="text-sm">{t.name}</span>
-                            </label>
-                          );
-                        })}
-                      </div>
-                      <FieldInfo field={field} />
-                    </div>
-                  )}
-                  name="tagIds"
-                />
                 <form.Field
                   children={(field) => (
                     <div className="space-y-2">
@@ -304,6 +270,20 @@ export function CreateProductDialog() {
                     </div>
                   )}
                   name="description"
+                />
+                <form.Field
+                  children={(field) => (
+                    <div className="col-span-2 space-y-2">
+                      <Label htmlFor={field.name}>Tags</Label>
+                      <SelectTags
+                        onTagsChange={(ts) => field.handleChange(ts)}
+                        selectedTags={field.state.value}
+                        tags={tags ?? []}
+                      />
+                      <FieldInfo field={field} />
+                    </div>
+                  )}
+                  name="tags"
                 />
                 <form.Field mode="array" name="details">
                   {(field) => (
