@@ -1,5 +1,5 @@
 import { ORPCError } from '@orpc/server';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, not } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { category, product, productDetail, store } from '@/db/schema';
@@ -198,9 +198,27 @@ export const productQueries = {
         return result;
       }),
     isSlugAvailable: protectedOs
-      .input(z.object({ slug: z.string(), storeId: z.uuid() }))
+      .input(
+        z.object({
+          slug: z.string(),
+          storeId: z.uuid(),
+          omitId: z.string().optional(),
+        })
+      )
       .output(z.boolean())
       .handler(async ({ input }) => {
+        if (input.omitId) {
+          const productFound = await db.query.product.findFirst({
+            where: and(
+              eq(product.slug, input.slug),
+              eq(product.storeId, input.storeId),
+              not(eq(product.id, input.omitId))
+            ),
+          });
+
+          return !productFound;
+        }
+
         const productFound = await db.query.product.findFirst({
           where: and(
             eq(product.slug, input.slug),

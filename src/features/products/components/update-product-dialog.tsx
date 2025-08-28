@@ -204,6 +204,7 @@ export function UpdateProductDialog({
                         await client.products.protected.isSlugAvailable.call({
                           slug: value,
                           storeId: storeId as string,
+                          omitId: product.id,
                         });
 
                       if (!isSlugAvailable) {
