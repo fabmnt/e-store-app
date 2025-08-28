@@ -51,11 +51,11 @@ export function Header() {
             </nav>
           </div>
           <div className="flex flex-1 justify-end">
-            <Button size="icon" variant="ghost">
-              <WhatsApp />
+            <Button variant="ghost">
+              <WhatsApp className="size-6" />
             </Button>
-            <Button size="icon" variant="ghost">
-              <ShoppingCart />
+            <Button variant="ghost">
+              <ShoppingCart className="size-6" />
             </Button>
           </div>
         </header>

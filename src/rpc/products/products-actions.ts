@@ -6,7 +6,14 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
 import { db } from '@/db';
-import { product, productDetail, productImage, store } from '@/db/schema';
+import {
+  product,
+  productDetail,
+  productImage,
+  productTag,
+  store,
+} from '@/db/schema';
+import type { Tag } from '@/features/products/schemas/product-schema';
 import {
   productCreateSchema,
   productDetailSchema,
@@ -33,7 +40,7 @@ export const createProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
-    const { details, ...productData } = input;
+    const { details, tagIds, ...productData } = input;
 
     const [productCreated] = await db
       .insert(product)
@@ -53,6 +60,14 @@ export const createProductAction = protectedOs
       await db.insert(productDetail).values(newDetails);
     }
 
+    if (tagIds && tagIds.length > 0) {
+      const rows = tagIds.map((tagId) => ({
+        productId: productCreated.id,
+        tagId,
+      }));
+      await db.insert(productTag).values(rows);
+    }
+
     const productWithRelations = await db.query.product.findFirst({
       where: eq(product.id, productCreated.id),
       with: {
@@ -60,6 +75,7 @@ export const createProductAction = protectedOs
         store: true,
         details: true,
         images: true,
+        productTags: { with: { tag: true } },
       },
     });
 
@@ -69,7 +85,16 @@ export const createProductAction = protectedOs
 
     revalidatePath(`/d/${storeFound.id}/products`);
 
-    return productWithRelations;
+    const transformed = ((): unknown => {
+      const rel = productWithRelations as unknown as {
+        productTags?: { tag: Tag }[];
+      } & Record<string, unknown>;
+      const tags = (rel.productTags ?? []).map((pt) => pt.tag);
+      const { productTags: _omit, ...rest } = rel;
+      return { ...rest, tags };
+    })();
+
+    return transformed as typeof productSchema._type;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 

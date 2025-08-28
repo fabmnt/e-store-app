@@ -33,6 +33,11 @@ const sidebarItems = [
     href: 'categories',
     icon: TagIcon,
   },
+  {
+    label: 'Tags',
+    href: 'tags',
+    icon: TagIcon,
+  },
 ];
 
 export function AppSidebar() {

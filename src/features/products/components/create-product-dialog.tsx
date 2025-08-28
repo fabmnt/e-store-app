@@ -54,6 +54,11 @@ export function CreateProductDialog() {
       input: store?.id ? { storeId: store.id } : skipToken,
     })
   );
+  const { data: tags, isLoading: isLoadingTags } = useQuery(
+    client.tags.protected.getAllByStoreId.queryOptions({
+      input: store?.id ? { storeId: store.id } : skipToken,
+    })
+  );
   const { execute, isPending: isCreatingProduct } = useServerAction(
     createProductAction,
     {
@@ -83,6 +88,7 @@ export function CreateProductDialog() {
       categoryId: '',
       storeId: store?.id ?? '',
       details: [],
+      tagIds: [],
     } as ProductCreate,
     validators: {
       onSubmit: productCreateSchema,
@@ -125,6 +131,46 @@ export function CreateProductDialog() {
               }}
             >
               <div className="grid grid-cols-2 gap-4">
+                <form.Field
+                  children={(field) => (
+                    <div className="col-span-2 space-y-2">
+                      <Label htmlFor={field.name}>Tags</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {(tags ?? []).map((t) => {
+                          const checked =
+                            field.state.value?.includes(t.id) ?? false;
+                          return (
+                            <label
+                              className="flex items-center gap-2"
+                              key={t.id}
+                            >
+                              <input
+                                checked={checked}
+                                disabled={isLoadingTags || isCreatingProduct}
+                                onChange={(e) => {
+                                  const isChecked = e.target.checked;
+                                  if (isChecked) {
+                                    field.pushValue(t.id);
+                                  } else {
+                                    const idx =
+                                      field.state.value?.indexOf(t.id) ?? -1;
+                                    if (idx >= 0) {
+                                      field.removeValue(idx);
+                                    }
+                                  }
+                                }}
+                                type="checkbox"
+                              />
+                              <span className="text-sm">{t.name}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                      <FieldInfo field={field} />
+                    </div>
+                  )}
+                  name="tagIds"
+                />
                 <form.Field
                   children={(field) => (
                     <div className="space-y-2">
