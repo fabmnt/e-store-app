@@ -13,7 +13,6 @@ import {
   productTag,
   store,
 } from '@/db/schema';
-import type { Tag } from '@/features/products/schemas/product-schema';
 import {
   productCreateSchema,
   productDetailSchema,
@@ -85,16 +84,12 @@ export const createProductAction = protectedOs
 
     revalidatePath(`/d/${storeFound.id}/products`);
 
-    const transformed = ((): unknown => {
-      const rel = productWithRelations as unknown as {
-        productTags?: { tag: Tag }[];
-      } & Record<string, unknown>;
-      const tags = (rel.productTags ?? []).map((pt) => pt.tag);
-      const { productTags: _omit, ...rest } = rel;
-      return { ...rest, tags };
-    })();
+    const result = {
+      ...productWithRelations,
+      tags: productWithRelations.productTags.map((pt) => pt.tag),
+    };
 
-    return transformed as typeof productSchema._type;
+    return result;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -152,6 +147,7 @@ export const updateProductAction = protectedOs
         store: true,
         details: true,
         images: true,
+        productTags: { with: { tag: true } },
       },
     });
 
@@ -159,9 +155,14 @@ export const updateProductAction = protectedOs
       throw new ORPCError('NOT_FOUND');
     }
 
+    const result = {
+      ...productWithRelations,
+      tags: productWithRelations.productTags.map((pt) => pt.tag),
+    };
+
     revalidatePath(`/d/${productWithRelations.store.id}/products`);
 
-    return productWithRelations;
+    return result;
   })
   .actionable({ context: async () => ({ headers: await headers() }) });
 
@@ -204,6 +205,7 @@ export const addProductDetail = protectedOs
       where: eq(product.id, productId),
       with: {
         store: true,
+        productTags: { with: { tag: true } },
       },
     });
 
