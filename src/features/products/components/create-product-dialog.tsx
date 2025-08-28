@@ -10,7 +10,6 @@ import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
-import { SelectTags } from '@/components/multiple-expandable';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -55,11 +54,11 @@ export function CreateProductDialog() {
       input: store?.id ? { storeId: store.id } : skipToken,
     })
   );
-  const { data: tags } = useQuery(
+  /*   const { data: tags } = useQuery(
     client.tags.protected.getAllByStoreId.queryOptions({
       input: store?.id ? { storeId: store.id } : skipToken,
     })
-  );
+  ); */
   const { execute, isPending: isCreatingProduct } = useServerAction(
     createProductAction,
     {
@@ -271,7 +270,7 @@ export function CreateProductDialog() {
                   )}
                   name="description"
                 />
-                <form.Field
+                {/*                 <form.Field
                   children={(field) => (
                     <div className="col-span-2 space-y-2">
                       <Label htmlFor={field.name}>Tags</Label>
@@ -284,7 +283,7 @@ export function CreateProductDialog() {
                     </div>
                   )}
                   name="tags"
-                />
+                /> */}
                 <form.Field mode="array" name="details">
                   {(field) => (
                     <div className="col-span-2 space-y-2">

@@ -6,6 +6,15 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Table,
   TableBody,
@@ -15,8 +24,49 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import type { Tag } from '@/features/products/schemas/product-schema';
+import { DeleteTagDialog } from './delete-tag-dialog';
+import { UpdateTagDialog } from './update-tag-dialog';
 
 const columnHelper = createColumnHelper<Tag>();
+
+const RowActions = ({ tag }: { tag: Tag }) => {
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  return (
+    <>
+      <UpdateTagDialog
+        onOpenChange={setOpenEditDialog}
+        open={openEditDialog}
+        tag={tag}
+      />
+      <DeleteTagDialog
+        onOpenChange={setOpenDeleteDialog}
+        open={openDeleteDialog}
+        tag={tag}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="outline">
+            <EllipsisVerticalIcon className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => setOpenEditDialog(true)}>
+            <PencilIcon className="size-4" />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setOpenDeleteDialog(true)}
+            variant="destructive"
+          >
+            <TrashIcon className="size-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+};
 
 const columns = [
   columnHelper.accessor('name', { header: 'Name' }),
@@ -24,6 +74,10 @@ const columns = [
   columnHelper.accessor('description', {
     header: 'Description',
     cell: ({ row }) => row.original.description || '-',
+  }),
+  columnHelper.display({
+    header: 'Actions',
+    cell: ({ row }) => <RowActions tag={row.original} />,
   }),
 ];
 

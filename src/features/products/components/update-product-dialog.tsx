@@ -1,7 +1,7 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
 import { useForm } from '@tanstack/react-form';
-import { skipToken, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Loader, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
-import { SelectTags } from '@/components/multiple-expandable';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -60,11 +59,11 @@ export function UpdateProductDialog({
     })
   );
 
-  const { data: tags } = useQuery(
+  /*   const { data: tags } = useQuery(
     client.tags.protected.getAllByStoreId.queryOptions({
       input: storeId ? { storeId: storeId as string } : skipToken,
     })
-  );
+  ); */
 
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,
@@ -279,7 +278,7 @@ export function UpdateProductDialog({
                   name="description"
                 />
 
-                <form.Field
+                {/*                 <form.Field
                   children={(field) => (
                     <div className="col-span-2 space-y-2">
                       <Label htmlFor={field.name}>Tags</Label>
@@ -292,7 +291,7 @@ export function UpdateProductDialog({
                     </div>
                   )}
                   name="tags"
-                />
+                /> */}
               </div>
             </form>
           </TabsContent>
