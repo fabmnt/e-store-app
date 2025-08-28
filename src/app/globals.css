@@ -123,3 +123,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+h1,
+h2,
+[data-slot="card-title"] {
+  @apply text-balance line-clamp-3 leading-tight;
+}
+
+p,
+ul,
+li {
+  @apply text-pretty;
+}
