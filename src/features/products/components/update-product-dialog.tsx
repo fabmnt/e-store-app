@@ -1,11 +1,11 @@
 import { onError, onSuccess } from '@orpc/client';
 import { useServerAction } from '@orpc/react/hooks';
-import { useForm } from '@tanstack/react-form';
-import { useQuery } from '@tanstack/react-query';
-import { Loader, Trash2 } from 'lucide-react';
+import { useForm, useStore } from '@tanstack/react-form';
+import { skipToken, useQuery } from '@tanstack/react-query';
+import { Loader, Plus, Trash2, X } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { FieldInfo } from '@/components/field-info';
@@ -35,6 +35,7 @@ import {
   type Product,
   type ProductUpdate,
   productUpdateSchema,
+  type Tag,
 } from '../schemas/product-schema';
 import UpdateProductDetails from './update-product-details';
 import { UploadProductImages } from './upload-product-images';
@@ -59,19 +60,10 @@ export function UpdateProductDialog({
     })
   );
 
-  /*   const { data: tags } = useQuery(
-    client.tags.protected.getAllByStoreId.queryOptions({
-      input: storeId ? { storeId: storeId as string } : skipToken,
-    })
-  ); */
-
   const { execute: executeUpdate, isPending: isUpdating } = useServerAction(
     updateProductAction,
     {
       interceptors: [
-        onSuccess(() => {
-          toast.success('Product updated successfully');
-        }),
         onError((error) => {
           toast.error(error.message);
         }),
@@ -82,6 +74,9 @@ export function UpdateProductDialog({
   const { execute: executeDeleteImage, isPending: isDeletingImage } =
     useServerAction(deleteProductImage, {
       interceptors: [
+        onSuccess(() => {
+          toast.success('Image deleted');
+        }),
         onError((error) => {
           toast.error(error.message);
         }),
@@ -113,6 +108,21 @@ export function UpdateProductDialog({
       },
     },
   });
+
+  const { data: tags } = useQuery(
+    client.tags.protected.getAllByStoreId.queryOptions({
+      input: storeId ? { storeId: storeId as string } : skipToken,
+    })
+  );
+
+  const currentTags = useStore(form.store, (state) => state.values.tags);
+  const availableTags = useMemo(() => {
+    return (
+      tags?.filter((tag) => !currentTags?.some((t) => t.id === tag.id)) ?? []
+    );
+  }, [tags, currentTags]);
+
+  const [seletectedTag, setSeletectedTag] = useState<Tag | null>(null);
 
   return (
     <Dialog
@@ -279,20 +289,71 @@ export function UpdateProductDialog({
                   name="description"
                 />
 
-                {/*                 <form.Field
+                <form.Field
                   children={(field) => (
-                    <div className="col-span-2 space-y-2">
-                      <Label htmlFor={field.name}>Tags</Label>
-                      <SelectTags
-                        onTagsChange={(ts) => field.handleChange(ts)}
-                        selectedTags={field.state.value ?? []}
-                        tags={tags ?? []}
-                      />
-                      <FieldInfo field={field} />
+                    <div className="col-span-2 space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={field.name}>Tags</Label>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              disabled={!availableTags.length}
+                              onValueChange={(value) => {
+                                setSeletectedTag(
+                                  tags?.find((tag) => tag.id === value) ?? null
+                                );
+                              }}
+                              value={seletectedTag?.id ?? ''}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a tag" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableTags?.map((tag) => (
+                                  <SelectItem key={tag.id} value={tag.id}>
+                                    {tag.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              disabled={!seletectedTag}
+                              onClick={() => {
+                                if (seletectedTag) {
+                                  field.pushValue(seletectedTag);
+                                  setSeletectedTag(null);
+                                }
+                              }}
+                              size="sm"
+                            >
+                              <Plus className="size-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {field.state.value?.map((tag) => (
+                          <Button
+                            key={tag.id}
+                            onClick={() => {
+                              const newTags = field.state.value?.filter(
+                                (t) => t.id !== tag.id
+                              );
+                              field.handleChange(newTags);
+                            }}
+                            size="sm"
+                            variant="outline"
+                          >
+                            {tag.name}
+                            <X className="size-3" />
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                   )}
+                  mode="array"
                   name="tags"
-                /> */}
+                />
               </div>
             </form>
           </TabsContent>
