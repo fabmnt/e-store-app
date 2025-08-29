@@ -28,7 +28,7 @@ export function ProductDetails() {
   const text = `¡Hola! Me interesa el producto **${product.name}**`;
 
   return (
-    <div className="flex h-full w-full flex-col gap-4 self-start">
+    <div className="flex h-full w-full flex-col gap-6 self-start">
       <div className="flex flex-col items-center gap-2 md:items-start">
         <Button asChild className="px-0" variant="link">
           <Link className="" href={`/s/${storeSlug}/${product.category?.slug}`}>
@@ -48,7 +48,7 @@ export function ProductDetails() {
       </div>
 
       {product.description ? (
-        <p className="text-neutral-800 leading-7">{product.description}</p>
+        <p className="text-neutral-800 xl:leading-7">{product.description}</p>
       ) : (
         <p className="text-neutral-700">Sin descripción.</p>
       )}

@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProductCarousel } from '@/features/products/components/product-carousel';
 import { ProductDetails } from '@/features/products/components/product-details';
@@ -22,11 +23,14 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <HydrateClient client={queryClient}>
       <Suspense fallback={<ProductPageSkeleton />}>
-        <div className="grid w-full grid-cols-1 gap-16 py-8 md:grid-cols-2">
+        <div className="grid w-full grid-cols-1 gap-6 py-8 md:grid-cols-2 xl:gap-16">
           <div className="w-full">
             <ProductCarousel />
           </div>
-          <ProductDetails />
+          <Separator className="xl:hidden" />
+          <div>
+            <ProductDetails />
+          </div>
         </div>
       </Suspense>
     </HydrateClient>
