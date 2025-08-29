@@ -37,7 +37,7 @@ export function ProductDetails() {
         </Button>
         <div className="flex flex-col gap-1">
           <h1 className="font-semibold text-3xl">{product.name}</h1>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2 xl:justify-start">
             {product.tags.map((tag) => (
               <Badge className="px-4 text-sm" key={tag.id} variant="outline">
                 {tag.name}
@@ -64,7 +64,7 @@ export function ProductDetails() {
         </div>
       )}
 
-      <div className="mt-2">
+      <div className="mt-2 flex justify-end xl:justify-start">
         <p className="font-bold text-3xl text-primary">
           {product.price.toFixed(2)}
         </p>
