@@ -137,21 +137,23 @@ export function Header() {
                     ))}
                   </div>
                 </div>
-                <DrawerFooter>
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground text-xl">
-                        Total{' '}
-                      </span>
-                      <span className="font-semibold text-2xl">
-                        {total.toFixed(2)}
-                      </span>
+                {items.length > 0 && (
+                  <DrawerFooter>
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground text-xl">
+                          Total{' '}
+                        </span>
+                        <span className="font-semibold text-2xl">
+                          {total.toFixed(2)}
+                        </span>
+                      </div>
+                      <Button className="w-full py-6 text-lg" size="lg">
+                        Comprar productos <WhatsApp className="size-6" />
+                      </Button>
                     </div>
-                    <Button className="w-full py-6 text-lg" size="lg">
-                      Comprar productos <WhatsApp className="size-6" />
-                    </Button>
-                  </div>
-                </DrawerFooter>
+                  </DrawerFooter>
+                )}
               </DrawerContent>
             </Drawer>
           </div>
