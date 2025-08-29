@@ -142,9 +142,7 @@ export function Header() {
                   <DrawerFooter>
                     <div className="flex flex-col gap-4">
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground text-xl">
-                          Total{' '}
-                        </span>
+                        <span className="font-semibold text-2xl">Total </span>
                         <span className="font-semibold text-2xl">
                           {total.toFixed(2)}
                         </span>
