@@ -26,9 +26,9 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="space-y-1">
       <Card className="rounded-none">
         <CardContent>
-          <div className="flex h-[360px] flex-col gap-y-2">
+          <div className="flex flex-col gap-y-4 xl:h-[360px]">
             <AspectRatio
-              className="relative mx-auto max-w-[280px] xl:max-w-[320px]"
+              className="relative mx-auto w-full xl:max-w-[320px]"
               ratio={1}
             >
               {firstImageUrl && (
@@ -49,7 +49,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 ))}
               </div>
             </AspectRatio>
-            <div className="mt-auto flex flex-col gap-y-2">
+            <div className="mt-auto flex flex-col gap-y-4">
               <div className="flex justify-between">
                 <div>
                   <h4 className="font-medium text-sm">{product.name}</h4>
