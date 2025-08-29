@@ -7,10 +7,31 @@ import { headers } from 'next/headers';
 import { db } from '@/db';
 import { store } from '@/db/schema';
 import {
+  createStoreSchema,
   storeSchema,
   updateStoreSchema,
 } from '@/features/stores/schemas/store-schema';
 import { protectedOs } from '../procedures';
+
+export const createStoreAction = protectedOs
+  .input(createStoreSchema)
+  .output(storeSchema)
+  .errors({
+    INTERNAL_SERVER_ERROR: {
+      message: 'Failed to create store',
+    },
+  })
+  .handler(async ({ input }) => {
+    const [created] = await db.insert(store).values(input).returning();
+
+    if (!created) {
+      throw new ORPCError('INTERNAL_SERVER_ERROR');
+    }
+
+    revalidatePath('/');
+    return created;
+  })
+  .actionable({ context: async () => ({ headers: await headers() }) });
 
 export const updateStoreAction = protectedOs
   .input(updateStoreSchema)
