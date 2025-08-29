@@ -1,0 +1,62 @@
+'use client';
+
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { client } from '@/lib/orpc';
+
+export function TagsNavigation({ storeSlug }: { storeSlug: string }) {
+  const { data: tags } = useSuspenseQuery(
+    client.tags.public.getAllByStoreSlug.queryOptions({
+      input: {
+        storeSlug: storeSlug as string,
+      },
+    })
+  );
+
+  return (
+    <div
+      className="scrollbar-hide overflow-x-auto xl:max-w-[300px]"
+      style={{
+        scrollbarWidth: 'none',
+      }}
+    >
+      <div className="flex items-center gap-4">
+        {tags?.map((tag) => (
+          <Button
+            className="rounded-full px-5 text-xs uppercase tracking-wider"
+            key={tag.id}
+            size="sm"
+            variant="outline"
+          >
+            {tag.name}
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function TagsNavigationWrapper() {
+  const { storeSlug } = useParams();
+  return (
+    <Suspense fallback={<TagsNavigationSkeleton />} key={storeSlug as string}>
+      <TagsNavigation storeSlug={storeSlug as string} />
+    </Suspense>
+  );
+}
+
+function TagsNavigationSkeleton() {
+  return (
+    <div className="scrollbar-hide overflow-x-auto xl:max-w-[300px]">
+      <div className="flex items-center gap-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static
+          <Skeleton className="h-8 w-44 rounded-full" key={index} />
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -127,7 +127,11 @@ export function Header() {
                             </span>
                           </div>
                           <Button
-                            onClick={() => removeItem(item.id)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              removeItem(item.id);
+                            }}
                             size="icon"
                             variant="ghost"
                           >

@@ -17,6 +17,12 @@ export default async function PublicStoreCategoryPage({ params }: PageProps) {
     })
   );
 
+  queryClient.prefetchQuery(
+    client.tags.public.getAllByStoreSlug.queryOptions({
+      input: { storeSlug },
+    })
+  );
+
   return (
     <HydrateClient client={queryClient}>
       <Suspense fallback={<ProductsGridSkeleton />}>

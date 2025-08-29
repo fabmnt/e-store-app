@@ -29,6 +29,24 @@ export const tagsQueries = {
 
         return tagsFound;
       }),
+    getAllByStoreSlug: publicOs
+      .input(z.object({ storeSlug: z.string() }))
+      .output(tagSchema.array())
+      .handler(async ({ input }) => {
+        const storeFound = await db.query.store.findFirst({
+          where: eq(store.slug, input.storeSlug),
+        });
+
+        if (!storeFound) {
+          throw new ORPCError('NOT_FOUND');
+        }
+
+        const tagsFound = await db.query.tag.findMany({
+          where: eq(tag.storeId, storeFound.id),
+        });
+
+        return tagsFound;
+      }),
   },
   protected: {
     getAllByStoreId: protectedOs

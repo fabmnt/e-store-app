@@ -107,7 +107,7 @@ export const storeImage = pgTable('store_image', {
 export const category = pgTable('category', {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
-  slug: text().notNull().unique(),
+  slug: text().notNull(),
   description: text(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -119,7 +119,7 @@ export const category = pgTable('category', {
 export const product = pgTable('product', {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
-  slug: text().notNull().unique(),
+  slug: text().notNull(),
   description: text(),
   price: numeric({ mode: 'number', precision: 10, scale: 2 }).notNull(),
   stock: integer().notNull().default(0),
@@ -157,7 +157,7 @@ export const productImage = pgTable('product_image', {
 export const tag = pgTable('tag', {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
-  slug: text().notNull().unique(),
+  slug: text().notNull(),
   description: text(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
