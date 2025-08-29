@@ -1,3 +1,4 @@
+import { Container } from '@/components/container';
 import { client } from '@/lib/orpc';
 import { getQueryClient, HydrateClient } from '@/lib/query/hydration';
 
@@ -19,5 +20,19 @@ export default async function PublicStoreLayout({
     })
   );
 
-  return <HydrateClient client={queryClient}>{children}</HydrateClient>;
+  return (
+    <HydrateClient client={queryClient}>
+      {children}
+      <footer className="mt-4 border-t py-6">
+        <Container>
+          <div className="flex items-center justify-between">
+            <p className="text-muted-foreground text-sm">
+              &copy; {new Date().getFullYear()} {storeSlug}. Todos los derechos
+              reservados.
+            </p>
+          </div>
+        </Container>
+      </footer>
+    </HydrateClient>
+  );
 }
