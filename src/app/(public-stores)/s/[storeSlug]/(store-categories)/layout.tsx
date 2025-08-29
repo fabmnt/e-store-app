@@ -20,7 +20,9 @@ export default function PublicStoreLayout({
       >
         <div className="space-y-8">
           <Header />
-          <StoreHero />
+          <Container>
+            <StoreHero />
+          </Container>
           <section className="flex justify-center">
             <CategoriesNavigation />
           </section>

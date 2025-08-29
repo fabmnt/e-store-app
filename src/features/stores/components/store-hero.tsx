@@ -16,9 +16,11 @@ export function StoreHero() {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="font-semibold text-2xl tracking-wide">{store.name}</h1>
-      <p className="text-muted-foreground">{store.description}</p>
+    <div className="flex w-full flex-col items-center justify-center gap-y-2 xl:gap-y-4">
+      <h1 className="text-center font-semibold text-2xl tracking-wide">
+        {store.name}
+      </h1>
+      <p className="text-center text-muted-foreground">{store.description}</p>
     </div>
   );
 }
