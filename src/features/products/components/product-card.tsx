@@ -74,6 +74,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 >
                   <Link
                     href={`/s/${product.store.slug}/products/${product.slug}`}
+                    scroll={false}
                   >
                     Ver Producto
                   </Link>
