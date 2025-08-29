@@ -1,11 +1,14 @@
 'use client';
 
+import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useShoppingCart } from '@/features/shopping-cart/hooks/use-shopping-cart';
 import { addClickToProductAction } from '@/rpc/products/products-actions';
 import type { ProductWithImages } from '../schemas/product-schema';
 
@@ -15,6 +18,9 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   const firstImageUrl = product.images[0]?.url ?? '';
+  const addItem = useShoppingCart((state) => state.addItem);
+  const items = useShoppingCart((state) => state.items);
+  const isInCart = items.some((item) => item.product.id === product.id);
 
   return (
     <div className="space-y-1">
@@ -57,10 +63,10 @@ export function ProductCard({ product }: ProductCardProps) {
                   </span>
                 </div>
               </div>
-              <div className="mt-auto">
+              <div className="mt-auto flex items-center gap-2">
                 <Button
                   asChild
-                  className="w-full rounded-sm"
+                  className="flex-1 rounded-sm"
                   onClick={() => {
                     addClickToProductAction({ id: product.id });
                   }}
@@ -72,6 +78,22 @@ export function ProductCard({ product }: ProductCardProps) {
                     Ver Producto
                   </Link>
                 </Button>
+                {isInCart ? null : (
+                  <Button
+                    onClick={() => {
+                      addItem({
+                        id: crypto.randomUUID(),
+                        quantity: 1,
+                        product,
+                      });
+                      toast.success('Producto agregado al carrito');
+                    }}
+                    size="lg"
+                    variant="outline"
+                  >
+                    <ShoppingCart className="size-5" strokeWidth={1.5} />
+                  </Button>
+                )}
               </div>
             </div>
           </div>

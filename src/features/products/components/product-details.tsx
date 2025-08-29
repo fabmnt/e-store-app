@@ -1,14 +1,19 @@
 'use client';
 
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { WhatsApp } from '@/components/icons/whatsapp';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useShoppingCart } from '@/features/shopping-cart/hooks/use-shopping-cart';
 import { client } from '@/lib/orpc';
 
 export function ProductDetails() {
+  const addItem = useShoppingCart((state) => state.addItem);
+  const items = useShoppingCart((state) => state.items);
   const { storeSlug, productSlug } = useParams();
   const { data: product } = useSuspenseQuery(
     client.products.public.getBySlug.queryOptions({
@@ -18,6 +23,7 @@ export function ProductDetails() {
       },
     })
   );
+  const isInCart = items.some((item) => item.product.id === product.id);
 
   const text = `¡Hola! Me interesa el producto **${product.name}**`;
 
@@ -74,9 +80,21 @@ export function ProductDetails() {
             Comprar ahora <WhatsApp className="size-6" />
           </Link>
         </Button>
-        <Button className="w-full py-6 text-lg" size="lg" variant="outline">
-          Agregar al carrito
-        </Button>
+        <div>
+          {isInCart ? null : (
+            <Button
+              className="w-full py-6 text-lg"
+              onClick={() => {
+                addItem({ id: product.id, quantity: 1, product });
+                toast.success('Producto agregado al carrito');
+              }}
+              size="lg"
+              variant="outline"
+            >
+              Agregar al carrito <ShoppingCart className="size-6" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
