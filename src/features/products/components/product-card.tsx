@@ -53,7 +53,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <div className="flex justify-between">
                 <div>
                   <h4 className="font-medium text-sm">{product.name}</h4>
-                  <p className="max-w-[30ch] truncate text-muted-foreground text-sm xl:max-w-[20ch]">
+                  <p className="max-w-[25ch] truncate text-muted-foreground text-sm xl:max-w-[20ch]">
                     {product.description}
                   </p>
                 </div>
