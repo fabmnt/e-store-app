@@ -35,6 +35,7 @@ export function Header() {
   );
 
   const logoImage = store.images.find((image) => image.type === 'logo');
+  const whatsappText = `Hola, quiero comprar los siguientes productos: ${items.map((item) => item.product.name).join(', ')}`;
 
   return (
     <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -148,8 +149,14 @@ export function Header() {
                           {total.toFixed(2)}
                         </span>
                       </div>
-                      <Button className="w-full py-6 text-lg" size="lg">
-                        Comprar productos <WhatsApp className="size-6" />
+                      <Button asChild className="w-full py-6 text-lg" size="lg">
+                        <Link
+                          href={`https://wa.me/${store.whatsapp}?text=${encodeURIComponent(whatsappText)}`}
+                          rel="noopener noreferrer"
+                          target="_blank"
+                        >
+                          Comprar productos <WhatsApp className="size-6" />
+                        </Link>
                       </Button>
                     </div>
                   </DrawerFooter>
