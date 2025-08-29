@@ -110,7 +110,11 @@ const productsColumns = [
   }),
   columnHelper.accessor('description', {
     header: 'Description',
-    cell: ({ row }) => row.original.description || '-',
+    cell: ({ row }) => (
+      <p className="max-w-[30ch] truncate text-muted-foreground text-sm xl:max-w-[20ch]">
+        {row.original.description}
+      </p>
+    ),
   }),
   columnHelper.accessor('price', {
     header: 'Price',

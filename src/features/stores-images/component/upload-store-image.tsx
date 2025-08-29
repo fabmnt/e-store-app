@@ -15,6 +15,9 @@ export function UploadStoreImage({ store }: UploadStoreImageProps) {
       appearance={{
         button: buttonVariants({ variant: 'outline' }),
       }}
+      config={{
+        mode: 'manual',
+      }}
       endpoint="storeImageUploader"
       input={{ storeId: store.id }}
       onClientUploadComplete={() => {
