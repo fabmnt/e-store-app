@@ -45,14 +45,16 @@ export function Header() {
             <Link href={`/s/${storeSlug}/`}>
               <div className="flex items-center gap-4">
                 <div className="relative size-[40px] overflow-hidden rounded-full">
-                  <Image
-                    alt={store.name}
-                    className="object-cover"
-                    fill
-                    priority
-                    sizes="100px"
-                    src={logoImage?.url ?? ''}
-                  />
+                  {logoImage && (
+                    <Image
+                      alt={store.name}
+                      className="object-cover"
+                      fill
+                      priority
+                      sizes="100px"
+                      src={logoImage.url}
+                    />
+                  )}
                 </div>
                 <span className="font-medium text-sm">{store.name}</span>
               </div>

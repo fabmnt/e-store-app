@@ -24,7 +24,7 @@ export function TagsNavigation({ storeSlug }: { storeSlug: string }) {
 
   return (
     <div
-      className="scrollbar-hide overflow-x-auto xl:max-w-[300px]"
+      className="scrollbar-hide overflow-x-auto xl:max-w-[360px]"
       style={{
         scrollbarWidth: 'none',
       }}
@@ -57,12 +57,9 @@ export function TagsNavigationWrapper() {
 
 function TagsNavigationSkeleton() {
   return (
-    <div className="scrollbar-hide overflow-x-auto xl:max-w-[300px]">
+    <div className="scrollbar-hide overflow-x-auto xl:max-w-[360px]">
       <div className="flex items-center gap-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: static
-          <Skeleton className="h-8 w-44 rounded-full" key={index} />
-        ))}
+        <Skeleton className="h-8 w-full rounded-full" />
       </div>
     </div>
   );
