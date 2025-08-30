@@ -57,7 +57,7 @@ export function TagsNavigationWrapper() {
 
 function TagsNavigationSkeleton() {
   return (
-    <div className="scrollbar-hide overflow-x-auto xl:max-w-[360px]">
+    <div className="overflow-x-auto xl:max-w-[360px]">
       <div className="flex items-center gap-4">
         <Skeleton className="h-8 w-full rounded-full" />
       </div>
