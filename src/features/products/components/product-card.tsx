@@ -71,10 +71,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   onClick={() => {
                     addClickToProductAction({ id: product.id });
                     router.push(
-                      `/s/${product.store.slug}/products/${product.slug}`,
-                      {
-                        scroll: false,
-                      }
+                      `/s/${product.store.slug}/products/${product.slug}`
                     );
                   }}
                   size="lg"
