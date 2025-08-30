@@ -3,7 +3,7 @@ import * as z from 'zod';
 export const productImageSchema = z.object({
   id: z.uuid(),
   url: z.url(),
-  fileKey: z.string(),
+  fileKey: z.string().nullable(),
   createdAt: z.date(),
   productId: z.uuid(),
 });

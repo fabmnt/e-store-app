@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  DatabaseIcon,
   LogOutIcon,
   PackageIcon,
   PackageOpenIcon,
@@ -43,6 +44,11 @@ const sidebarItems = [
     label: 'Tags',
     href: 'tags',
     icon: TagIcon,
+  },
+  {
+    label: 'Migrations',
+    href: 'migrations',
+    icon: DatabaseIcon,
   },
 ];
 

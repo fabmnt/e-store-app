@@ -102,9 +102,12 @@ export const deleteProductAction = protectedOs
       where: eq(productImage.productId, id),
     });
 
-    const deleteProductFilesPromises = deletedProductImages.map(
-      (deletedProductImage) => utapi.deleteFiles(deletedProductImage.fileKey)
-    );
+    const deleteProductFilesPromises = deletedProductImages
+      .filter((deletedProductImage) => deletedProductImage.fileKey != null)
+      .map(
+        // biome-ignore lint/style/noNonNullAssertion: is filtered
+        (deletedProductImage) => utapi.deleteFiles(deletedProductImage.fileKey!)
+      );
 
     await Promise.all(deleteProductFilesPromises);
     await db.delete(productImage).where(eq(productImage.productId, id));

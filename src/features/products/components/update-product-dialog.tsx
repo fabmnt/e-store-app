@@ -403,6 +403,9 @@ export function UpdateProductDialog({
                           disabled={isDeletingImage}
                           onClick={async () => {
                             const idToDelete = img.id;
+                            if (img.fileKey == null) {
+                              return;
+                            }
                             await executeDeleteImage({
                               id: idToDelete,
                               fileKey: img.fileKey,

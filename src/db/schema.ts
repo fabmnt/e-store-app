@@ -150,7 +150,7 @@ export const productDetail = pgTable('product_detail', {
 export const productImage = pgTable('product_image', {
   id: uuid().defaultRandom().primaryKey(),
   url: text().notNull(),
-  fileKey: text().notNull(),
+  fileKey: text(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   productId: uuid('product_id')
     .notNull()
