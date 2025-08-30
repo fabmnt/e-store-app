@@ -32,17 +32,7 @@ export const signOut = os
 
 export const signUp = os
   .input(signUpSchema)
-  .handler(async ({ input }) => {
-    try {
-      await auth.api.signUpEmail({
-        body: {
-          name: input.name,
-          email: input.email,
-          password: input.password,
-        },
-      });
-    } catch (_error) {
-      throw new ORPCError('BAD_REQUEST');
-    }
+  .handler(() => {
+    throw new ORPCError('BAD_REQUEST');
   })
   .actionable();
