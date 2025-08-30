@@ -104,22 +104,24 @@ export function Header() {
                   <div className="flex max-h-[500px] flex-col overflow-y-auto">
                     {items.map((item) => (
                       <Link
-                        className="flex w-full items-center justify-between gap-2 px-2 py-6 hover:bg-muted/40"
+                        className="flex gap-4 border-muted border-b px-2 py-6 hover:bg-muted/40"
                         href={`/s/${storeSlug}/products/${item.product.slug}`}
                         key={item.id}
                       >
-                        {item.product.images[0]?.url ? (
-                          <Image
-                            alt={item.product.name}
-                            className="rounded-md"
-                            height={100}
-                            src={item.product.images[0]?.url ?? ''}
-                            width={100}
-                          />
-                        ) : (
-                          <div className="h-[100px] w-[100px] rounded-md bg-muted" />
-                        )}
-                        <div className="flex items-center gap-2">
+                        <div className="relative aspect-square size-[120px] rounded-md">
+                          {item.product.images[0]?.url ? (
+                            <Image
+                              alt={item.product.name}
+                              className="rounded-md"
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              src={item.product.images[0]?.url ?? ''}
+                            />
+                          ) : (
+                            <div className="rounded-md bg-muted" />
+                          )}
+                        </div>
+                        <div className="flex flex-1 items-center justify-between gap-4">
                           <div className="flex flex-col gap-1">
                             <span className="font-medium text-sm">
                               {item.product.name}
@@ -135,7 +137,7 @@ export function Header() {
                               removeItem(item.id);
                             }}
                             size="icon"
-                            variant="ghost"
+                            variant="outline"
                           >
                             <X className="size-4" />
                           </Button>
