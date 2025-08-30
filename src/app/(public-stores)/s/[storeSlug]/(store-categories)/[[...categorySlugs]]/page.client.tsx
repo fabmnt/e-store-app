@@ -21,13 +21,16 @@ export function ProductsGrid() {
     clearOnDefault: true,
   });
 
+  const normalizedQuery = search || undefined;
+  const normalizedQueryTag = queryTag || undefined;
+
   const { data: products } = useSuspenseQuery(
     client.products.public.getAllByCategorySlug.queryOptions({
       input: {
         categorySlug,
         storeSlug: storeSlug as string,
-        query: search,
-        queryTag,
+        query: normalizedQuery,
+        queryTag: normalizedQueryTag,
       },
     })
   );

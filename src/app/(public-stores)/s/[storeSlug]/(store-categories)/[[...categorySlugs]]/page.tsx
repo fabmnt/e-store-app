@@ -13,12 +13,20 @@ export default async function PublicStoreCategoryPage({
   searchParams,
 }: PageProps) {
   const { categorySlugs, storeSlug } = await params;
-  const { queryTag, search } = await searchParams;
+  const { queryTag = '', search = '' } = await searchParams;
   const categorySlug = categorySlugs?.[0];
   const queryClient = getQueryClient();
+  const normalizedQuery = search || undefined;
+  const normalizedQueryTag = queryTag || undefined;
+
   queryClient.prefetchQuery(
     client.products.public.getAllByCategorySlug.queryOptions({
-      input: { categorySlug, storeSlug, queryTag, search },
+      input: {
+        categorySlug,
+        storeSlug,
+        queryTag: normalizedQueryTag,
+        query: normalizedQuery,
+      },
     })
   );
 
