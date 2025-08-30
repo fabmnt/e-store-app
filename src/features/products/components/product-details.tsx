@@ -36,7 +36,9 @@ export function ProductDetails() {
           </Link>
         </Button>
         <div className="flex flex-col gap-1">
-          <h1 className="font-semibold text-3xl">{product.name}</h1>
+          <h1 className="text-center font-semibold text-3xl xl:text-left">
+            {product.name}
+          </h1>
           <div className="flex items-center justify-center gap-2 xl:justify-start">
             {product.tags.map((tag) => (
               <Badge className="px-4 text-sm" key={tag.id} variant="outline">
