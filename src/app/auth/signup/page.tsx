@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,6 +10,7 @@ import {
 import { SignUpForm } from '@/features/signup/components/signup-form';
 
 export default function SignUpPage() {
+  redirect('/auth/signin');
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 p-4">
       <div className="w-full max-w-md space-y-8">
