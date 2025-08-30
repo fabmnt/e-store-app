@@ -116,6 +116,8 @@ export const category = pgTable('category', {
     .references(() => store.id, { onDelete: 'cascade' }),
 });
 
+export const productStatus = pgEnum('product_status', ['available', 'sold']);
+
 export const product = pgTable('product', {
   id: uuid().defaultRandom().primaryKey(),
   name: text().notNull(),
@@ -124,6 +126,7 @@ export const product = pgTable('product', {
   price: numeric({ mode: 'number', precision: 10, scale: 2 }).notNull(),
   stock: integer().notNull().default(0),
   clicks: integer().default(0),
+  status: productStatus('status').default('available'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
   storeId: uuid('store_id')

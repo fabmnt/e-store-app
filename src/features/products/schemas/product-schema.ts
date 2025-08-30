@@ -32,6 +32,8 @@ export const productDetailSchema = z.object({
   updatedAt: z.date(),
 });
 
+export const produtStatusSchema = z.enum(['available', 'sold']);
+
 export const productSchema = z.object({
   id: z.uuid(),
   name: z.string().min(1, 'Name is required'),
@@ -44,6 +46,7 @@ export const productSchema = z.object({
   category: categorySchema.nullable(),
   store: storeSchema,
   clicks: z.number().default(0).nullable(),
+  status: produtStatusSchema.nullable(),
   details: z.array(productDetailSchema),
   images: z.array(productImageSchema),
   createdAt: z.date(),
@@ -67,6 +70,7 @@ export const productCreateSchema = productSchema
     clicks: true,
     details: true,
     images: true,
+    status: true,
   })
   .extend({
     details: z.array(productDetailCreateSchema).default([]).optional(),
