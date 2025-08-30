@@ -20,12 +20,10 @@ export function CategoriesNavigation() {
   const categories = store.categories;
 
   return (
-    <nav className="flex max-w-[360px] items-center gap-x-4 overflow-x-auto xl:gap-x-6">
+    <nav className="flex max-w-[360px] items-center gap-x-4 overflow-x-auto xl:max-w-fit xl:gap-x-6">
       <Button
         asChild
-        className={cn(
-          'relative px-5 py-5 tracking-tight transition-all hover:font-semibold xl:px-10'
-        )}
+        className={cn('relative px-5 py-5 tracking-tight xl:px-10')}
         variant={pathname === `/s/${storeSlug}` ? 'default' : 'secondary'}
       >
         <Link href={`/s/${storeSlug}/`}>
@@ -38,9 +36,7 @@ export function CategoriesNavigation() {
       {categories.map((category) => (
         <Button
           asChild
-          className={cn(
-            'relative px-5 py-5 tracking-tight transition-all hover:font-semibold xl:px-10'
-          )}
+          className={cn('relative px-5 py-5 tracking-tight xl:px-10')}
           key={category.id}
           variant={
             pathname === `/s/${storeSlug}/${category.slug}`
@@ -48,12 +44,7 @@ export function CategoriesNavigation() {
               : 'secondary'
           }
         >
-          <Link
-            className={cn(
-              pathname === `/s/${storeSlug}/${category.slug}` && 'font-semibold'
-            )}
-            href={`/s/${storeSlug}/${category.slug}`}
-          >
+          <Link href={`/s/${storeSlug}/${category.slug}`}>
             <span>{category.name}</span>
             {/*             {pathname === `/s/${storeSlug}/${category.slug}` && (
               <span className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />

@@ -29,7 +29,7 @@ export default function PublicStoreLayout({
           </Container>
           <Container>
             <div className="motion-opacity-in motion-translate-y-in-50 motion-delay-100 flex flex-col gap-y-4 overflow-y-hidden">
-              <section className="flex justify-center overflow-x-auto">
+              <section className="flex justify-center">
                 <CategoriesNavigation />
               </section>
               <div className="flex w-full flex-col justify-between gap-4 py-2 xl:flex-row">
