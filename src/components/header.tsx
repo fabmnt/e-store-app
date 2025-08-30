@@ -101,7 +101,7 @@ export function Header() {
                       </span>
                     </div>
                   )}
-                  <div className="flex max-h-[500px] flex-col overflow-y-auto">
+                  <div className="flex max-h-[370px] flex-col overflow-y-auto xl:max-h-[500px]">
                     {items.map((item) => (
                       <Link
                         className="flex gap-4 border-muted border-b px-2 py-6 hover:bg-muted/40"
