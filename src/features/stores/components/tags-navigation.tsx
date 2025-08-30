@@ -2,12 +2,18 @@
 
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
+import { useQueryState } from 'nuqs';
 import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { client } from '@/lib/orpc';
 
 export function TagsNavigation({ storeSlug }: { storeSlug: string }) {
+  const [queryTag, setQueryTag] = useQueryState('queryTag', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+
   const { data: tags } = useSuspenseQuery(
     client.tags.public.getAllByStoreSlug.queryOptions({
       input: {
@@ -28,8 +34,9 @@ export function TagsNavigation({ storeSlug }: { storeSlug: string }) {
           <Button
             className="rounded-full px-5 text-xs uppercase tracking-wider"
             key={tag.id}
+            onClick={() => setQueryTag(queryTag === tag.id ? '' : tag.id)}
             size="sm"
-            variant="outline"
+            variant={queryTag === tag.id ? 'default' : 'outline'}
           >
             {tag.name}
           </Button>

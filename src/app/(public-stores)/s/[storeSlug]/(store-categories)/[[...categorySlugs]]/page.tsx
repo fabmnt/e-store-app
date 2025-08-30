@@ -5,15 +5,20 @@ import { ProductsGrid, ProductsGridSkeleton } from './page.client';
 
 type PageProps = {
   params: Promise<{ categorySlugs?: string[]; storeSlug: string }>;
+  searchParams: Promise<{ queryTag?: string; search?: string }>;
 };
 
-export default async function PublicStoreCategoryPage({ params }: PageProps) {
+export default async function PublicStoreCategoryPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { categorySlugs, storeSlug } = await params;
+  const { queryTag, search } = await searchParams;
   const categorySlug = categorySlugs?.[0];
   const queryClient = getQueryClient();
   queryClient.prefetchQuery(
     client.products.public.getAllByCategorySlug.queryOptions({
-      input: { categorySlug, storeSlug },
+      input: { categorySlug, storeSlug, queryTag, search },
     })
   );
 

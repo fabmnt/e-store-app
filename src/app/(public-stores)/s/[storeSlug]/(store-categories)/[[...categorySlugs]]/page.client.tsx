@@ -1,6 +1,8 @@
 'use client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
+import { useQueryState } from 'nuqs';
+import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -10,19 +12,40 @@ import { client } from '@/lib/orpc';
 export function ProductsGrid() {
   const { categorySlugs, storeSlug } = useParams();
   const categorySlug = categorySlugs?.[0];
+  const [search] = useQueryState('search', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+  const [queryTag] = useQueryState('queryTag', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
 
   const { data: products } = useSuspenseQuery(
     client.products.public.getAllByCategorySlug.queryOptions({
       input: {
         categorySlug,
         storeSlug: storeSlug as string,
+        query: search,
+        queryTag,
       },
     })
   );
 
+  if (products.length === 0) {
+    return (
+      <div className="py-8 text-center text-xl">
+        <Alert className="space-y-2">
+          <AlertTitle className="p-6 font-normal text-lg tracking-wide">
+            No se encontraron productos
+          </AlertTitle>
+        </Alert>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {products.length === 0 && <div>No products found</div>}
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

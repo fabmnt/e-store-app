@@ -1,8 +1,14 @@
 import { ORPCError } from '@orpc/server';
-import { and, desc, eq, not } from 'drizzle-orm';
+import { and, desc, eq, exists, ilike, not, or } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
-import { category, product, productDetail, store } from '@/db/schema';
+import {
+  category,
+  product,
+  productDetail,
+  productTag,
+  store,
+} from '@/db/schema';
 import { productExtendedSchema } from '@/features/products/schemas/product-schema';
 import { protectedOs, publicOs } from '../procedures';
 
@@ -63,12 +69,21 @@ export const productQueries = {
       .input(
         z.object({
           storeId: z.uuid(),
+          query: z.string().optional(),
         })
       )
       .output(productExtendedSchema.array())
       .handler(async ({ input }) => {
         const products = await db.query.product.findMany({
-          where: eq(product.storeId, input.storeId),
+          where: and(
+            eq(product.storeId, input.storeId),
+            or(
+              input.query ? ilike(product.name, `%${input.query}%`) : undefined,
+              input.query
+                ? ilike(product.description, `%${input.query}%`)
+                : undefined
+            )
+          ),
           with: {
             category: true,
             store: true,
@@ -95,6 +110,8 @@ export const productQueries = {
         z.object({
           storeSlug: z.string(),
           categorySlug: z.string().optional(),
+          query: z.string().optional(),
+          queryTag: z.string().optional(),
         })
       )
       .output(productExtendedSchema.array())
@@ -109,7 +126,30 @@ export const productQueries = {
 
         if (!input.categorySlug) {
           const products = await db.query.product.findMany({
-            where: eq(product.storeId, storeFound.id),
+            where: and(
+              eq(product.storeId, storeFound.id),
+              input.queryTag
+                ? exists(
+                    db
+                      .select()
+                      .from(productTag)
+                      .where(
+                        and(
+                          eq(productTag.productId, product.id),
+                          eq(productTag.tagId, input.queryTag)
+                        )
+                      )
+                  )
+                : undefined,
+              or(
+                input.query
+                  ? ilike(product.name, `%${input.query}%`)
+                  : undefined,
+                input.query
+                  ? ilike(product.description, `%${input.query}%`)
+                  : undefined
+              )
+            ),
             with: {
               category: true,
               store: true,
@@ -141,7 +181,28 @@ export const productQueries = {
         }
 
         const products = await db.query.product.findMany({
-          where: eq(product.categoryId, categoryFound.id),
+          where: and(
+            eq(product.categoryId, categoryFound.id),
+            input.queryTag
+              ? exists(
+                  db
+                    .select()
+                    .from(productTag)
+                    .where(
+                      and(
+                        eq(productTag.productId, product.id),
+                        eq(productTag.tagId, input.queryTag)
+                      )
+                    )
+                )
+              : undefined,
+            or(
+              input.query ? ilike(product.name, `%${input.query}%`) : undefined,
+              input.query
+                ? ilike(product.description, `%${input.query}%`)
+                : undefined
+            )
+          ),
           with: {
             category: true,
             store: true,
