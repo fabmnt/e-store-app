@@ -3,6 +3,7 @@ import { asc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
 import { store, storeImage } from '@/db/schema';
+import { storeSchema } from '@/features/stores/schemas/store-schema';
 import { storeImageSchema } from '@/features/stores-images/schemas/store-image-schema';
 import { publicOs } from '../procedures';
 
@@ -32,7 +33,7 @@ export const storeImagesQueries = {
     }),
   getStoreLogo: publicOs
     .input(z.object({ storeSlug: z.string() }))
-    .output(z.object({ url: z.string() }).optional())
+    .output(z.object({ logoUrl: z.string(), store: storeSchema }).optional())
     .handler(async ({ input }) => {
       const storeFound = await db.query.store.findFirst({
         where: eq(store.slug, input.storeSlug),
@@ -53,6 +54,6 @@ export const storeImagesQueries = {
         return;
       }
 
-      return { url: storeLogo.url };
+      return { logoUrl: storeLogo.url, store: storeFound };
     }),
 };

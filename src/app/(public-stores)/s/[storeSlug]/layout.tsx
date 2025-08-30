@@ -9,18 +9,19 @@ export async function generateMetadata({
   params: Promise<{ storeSlug: string }>;
 }): Promise<Metadata> {
   const { storeSlug } = await params;
-  const storeLogo = await client.storeImages.getStoreLogo.call({
-    storeSlug,
-  });
+  const { logoUrl, store } =
+    (await client.storeImages.getStoreLogo.call({
+      storeSlug,
+    })) ?? {};
 
-  console.log({ storeLogo });
   return {
-    title: storeSlug,
+    title: store?.name ?? '',
+    description: store?.description ?? '',
     icons: {
       icon: [
         {
           rel: 'icon',
-          url: storeLogo?.url ?? '',
+          url: logoUrl ?? '',
           type: 'image/jpg',
           sizes: '32x32',
         },
