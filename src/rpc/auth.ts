@@ -32,7 +32,8 @@ export const signOut = os
 
 export const signUp = os
   .input(signUpSchema)
-  .handler(() => {
+  .handler(async () => {
+    await Promise.reject(new ORPCError('BAD_REQUEST'));
     throw new ORPCError('BAD_REQUEST');
   })
   .actionable();
