@@ -24,7 +24,7 @@ export function TagsNavigation({ storeSlug }: { storeSlug: string }) {
 
   return (
     <div
-      className="scrollbar-hide overflow-x-auto xl:max-w-[360px]"
+      className="scrollbar-hide max-w-fit overflow-x-auto xl:max-w-[360px]"
       style={{
         scrollbarWidth: 'none',
       }}
