@@ -26,38 +26,37 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="h-full space-y-1">
       <Card className="h-full rounded-none">
         <CardContent className="h-full">
-          <div className="flex h-full flex-col gap-y-4">
-            <AspectRatio
-              className="relative mx-auto w-full xl:max-w-[320px]"
-              ratio={1}
-            >
-              {firstImageUrl && (
-                <Image
-                  alt={product.name}
-                  className="object-cover"
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  src={firstImageUrl}
-                />
-              )}
-              <div className="absolute top-2 right-2 flex flex-wrap items-center gap-2 font-light">
-                {product.tags.map((tag) => (
-                  <Badge className="text-xs" key={tag.id} variant="secondary">
-                    {tag.name}
-                  </Badge>
-                ))}
-              </div>
-            </AspectRatio>
-            <div className="mt-auto flex flex-col gap-y-4">
+          <div className="flex h-full flex-col gap-y-3">
+            <div className="flex flex-col gap-y-2">
+              <AspectRatio
+                className="relative mx-auto w-full xl:max-w-[320px]"
+                ratio={1}
+              >
+                {firstImageUrl && (
+                  <Image
+                    alt={product.name}
+                    className="object-cover"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    src={firstImageUrl}
+                  />
+                )}
+              </AspectRatio>
+            </div>
+            <div className="mt-auto flex flex-col gap-y-2">
               <div className="flex justify-between">
-                <div>
+                <div className="flex flex-col gap-y-2">
                   <h4 className="line-clamp-2 font-medium text-sm">
                     {product.name}
                   </h4>
-                  <p className="max-w-[25ch] truncate text-muted-foreground text-sm xl:max-w-[20ch]">
-                    {product.description}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2 font-light">
+                    {product.tags.map((tag) => (
+                      <Badge className="text-xs" key={tag.id} variant="outline">
+                        {tag.name}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <span className="font-semibold">
