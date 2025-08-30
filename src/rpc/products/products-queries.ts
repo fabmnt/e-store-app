@@ -126,6 +126,7 @@ export const productQueries = {
 
         if (!input.categorySlug) {
           const products = await db.query.product.findMany({
+            orderBy: [desc(product.createdAt)],
             where: and(
               eq(product.storeId, storeFound.id),
               input.queryTag
@@ -181,6 +182,7 @@ export const productQueries = {
         }
 
         const products = await db.query.product.findMany({
+          orderBy: [desc(product.createdAt)],
           where: and(
             eq(product.categoryId, categoryFound.id),
             input.queryTag
@@ -234,6 +236,7 @@ export const productQueries = {
       .output(productExtendedSchema.array())
       .handler(async ({ input }) => {
         const products = await db.query.product.findMany({
+          orderBy: [desc(product.createdAt)],
           where: eq(product.storeId, input.storeId),
           with: {
             category: true,
@@ -248,7 +251,6 @@ export const productQueries = {
               },
             },
           },
-          orderBy: [desc(product.createdAt)],
         });
 
         const result = products.map((p) => ({
