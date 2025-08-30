@@ -1,6 +1,33 @@
+import type { Metadata } from 'next';
 import { Container } from '@/components/container';
 import { client } from '@/lib/orpc';
 import { getQueryClient, HydrateClient } from '@/lib/query/hydration';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ storeSlug: string }>;
+}): Promise<Metadata> {
+  const { storeSlug } = await params;
+  const storeLogo = await client.storeImages.getStoreLogo.call({
+    storeSlug,
+  });
+
+  console.log({ storeLogo });
+  return {
+    title: storeSlug,
+    icons: {
+      icon: [
+        {
+          rel: 'icon',
+          url: storeLogo?.url ?? '',
+          type: 'image/jpg',
+          sizes: '32x32',
+        },
+      ],
+    },
+  };
+}
 
 export default async function PublicStoreLayout({
   children,

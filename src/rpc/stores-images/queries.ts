@@ -1,7 +1,8 @@
+import { ORPCError } from '@orpc/server';
 import { asc, eq } from 'drizzle-orm';
 import * as z from 'zod';
 import { db } from '@/db';
-import { storeImage } from '@/db/schema';
+import { store, storeImage } from '@/db/schema';
 import { storeImageSchema } from '@/features/stores-images/schemas/store-image-schema';
 import { publicOs } from '../procedures';
 
@@ -28,5 +29,30 @@ export const storeImagesQueries = {
       });
 
       return storeImages;
+    }),
+  getStoreLogo: publicOs
+    .input(z.object({ storeSlug: z.string() }))
+    .output(z.object({ url: z.string() }).optional())
+    .handler(async ({ input }) => {
+      const storeFound = await db.query.store.findFirst({
+        where: eq(store.slug, input.storeSlug),
+        with: {
+          images: true,
+        },
+      });
+
+      if (!storeFound) {
+        throw new ORPCError('NOT_FOUND');
+      }
+
+      const storeLogo = storeFound.images.find(
+        (image) => image.type === 'logo'
+      );
+
+      if (!storeLogo) {
+        return;
+      }
+
+      return { url: storeLogo.url };
     }),
 };
