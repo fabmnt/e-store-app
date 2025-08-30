@@ -20,7 +20,7 @@ export function CategoriesNavigation() {
   const categories = store.categories;
 
   return (
-    <nav className="flex max-w-fit items-center xl:gap-x-6">
+    <nav className="flex items-center xl:gap-x-6">
       <Button
         asChild
         className={cn(
