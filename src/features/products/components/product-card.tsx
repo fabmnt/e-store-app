@@ -2,7 +2,7 @@
 
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Badge } from '@/components/ui/badge';
@@ -21,12 +21,12 @@ export function ProductCard({ product }: ProductCardProps) {
   const addItem = useShoppingCart((state) => state.addItem);
   const items = useShoppingCart((state) => state.items);
   const isInCart = items.some((item) => item.product.id === product.id);
-
+  const router = useRouter();
   return (
-    <div className="space-y-1">
-      <Card className="rounded-none">
-        <CardContent>
-          <div className="flex flex-col gap-y-4 xl:h-[360px]">
+    <div className="h-full space-y-1">
+      <Card className="h-full rounded-none">
+        <CardContent className="h-full">
+          <div className="flex h-full flex-col gap-y-4">
             <AspectRatio
               className="relative mx-auto w-full xl:max-w-[320px]"
               ratio={1}
@@ -41,9 +41,9 @@ export function ProductCard({ product }: ProductCardProps) {
                   src={firstImageUrl}
                 />
               )}
-              <div className="absolute right-2 bottom-2 flex items-center gap-2 font-light">
+              <div className="absolute top-2 right-2 flex flex-wrap items-center gap-2 font-light">
                 {product.tags.map((tag) => (
-                  <Badge key={tag.id} variant="secondary">
+                  <Badge className="text-xs" key={tag.id} variant="secondary">
                     {tag.name}
                   </Badge>
                 ))}
@@ -52,7 +52,9 @@ export function ProductCard({ product }: ProductCardProps) {
             <div className="mt-auto flex flex-col gap-y-4">
               <div className="flex justify-between">
                 <div>
-                  <h4 className="font-medium text-sm">{product.name}</h4>
+                  <h4 className="line-clamp-2 font-medium text-sm">
+                    {product.name}
+                  </h4>
                   <p className="max-w-[25ch] truncate text-muted-foreground text-sm xl:max-w-[20ch]">
                     {product.description}
                   </p>
@@ -65,19 +67,19 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
               <div className="mt-auto flex items-center gap-2">
                 <Button
-                  asChild
                   className="flex-1 rounded-sm"
                   onClick={() => {
                     addClickToProductAction({ id: product.id });
+                    router.push(
+                      `/s/${product.store.slug}/products/${product.slug}`,
+                      {
+                        scroll: false,
+                      }
+                    );
                   }}
                   size="lg"
                 >
-                  <Link
-                    href={`/s/${product.store.slug}/products/${product.slug}`}
-                    scroll={false}
-                  >
-                    Ver Producto
-                  </Link>
+                  Ver Producto
                 </Button>
                 {isInCart ? null : (
                   <Button
