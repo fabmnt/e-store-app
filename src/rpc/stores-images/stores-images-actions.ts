@@ -1,7 +1,7 @@
 'use server';
 
 import { ORPCError } from '@orpc/server';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import * as z from 'zod';
@@ -18,6 +18,7 @@ export const updateStoreImageType = protectedOs
     z.object({
       id: z.string(),
       type: storeImageTypeSchema,
+      storeId: z.uuid(),
     })
   )
   .output(storeImageSchema)
@@ -27,10 +28,10 @@ export const updateStoreImageType = protectedOs
     },
   })
   .handler(async ({ input }) => {
-    const { id, type } = input;
+    const { id, type, storeId } = input;
 
     const currentTypeImage = await db.query.storeImage.findFirst({
-      where: eq(storeImage.type, type),
+      where: and(eq(storeImage.type, type), eq(storeImage.storeId, storeId)),
     });
 
     if (currentTypeImage) {

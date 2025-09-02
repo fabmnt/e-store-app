@@ -2,6 +2,7 @@
 
 import { useServerAction } from '@orpc/react/hooks';
 import { EllipsisVerticalIcon } from 'lucide-react';
+import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,7 @@ type StoreImageActionsProps = {
 };
 
 export function StoreImageActions({ storeImageId }: StoreImageActionsProps) {
+  const { storeId } = useParams<{ storeId: string }>();
   const { execute } = useServerAction(updateStoreImageType);
 
   return (
@@ -30,11 +32,14 @@ export function StoreImageActions({ storeImageId }: StoreImageActionsProps) {
         <DropdownMenuItem
           onClick={(e) => {
             e.preventDefault();
-            toast.promise(execute({ id: storeImageId, type: 'cover' }), {
-              loading: 'Setting as cover...',
-              success: 'Cover set successfully',
-              error: 'Failed to set as cover',
-            });
+            toast.promise(
+              execute({ id: storeImageId, type: 'cover', storeId }),
+              {
+                loading: 'Setting as cover...',
+                success: 'Cover set successfully',
+                error: 'Failed to set as cover',
+              }
+            );
           }}
         >
           Set as cover
@@ -42,11 +47,14 @@ export function StoreImageActions({ storeImageId }: StoreImageActionsProps) {
         <DropdownMenuItem
           onClick={(e) => {
             e.preventDefault();
-            toast.promise(execute({ id: storeImageId, type: 'logo' }), {
-              loading: 'Setting as logo...',
-              success: 'Logo set successfully',
-              error: 'Failed to set as logo',
-            });
+            toast.promise(
+              execute({ id: storeImageId, type: 'logo', storeId }),
+              {
+                loading: 'Setting as logo...',
+                success: 'Logo set successfully',
+                error: 'Failed to set as logo',
+              }
+            );
           }}
         >
           Set as logo
@@ -54,11 +62,14 @@ export function StoreImageActions({ storeImageId }: StoreImageActionsProps) {
         <DropdownMenuItem
           onClick={(e) => {
             e.preventDefault();
-            toast.promise(execute({ id: storeImageId, type: 'banner' }), {
-              loading: 'Setting as banner...',
-              success: 'Banner set successfully',
-              error: 'Failed to set as banner',
-            });
+            toast.promise(
+              execute({ id: storeImageId, type: 'banner', storeId }),
+              {
+                loading: 'Setting as banner...',
+                success: 'Banner set successfully',
+                error: 'Failed to set as banner',
+              }
+            );
           }}
         >
           Set as banner
