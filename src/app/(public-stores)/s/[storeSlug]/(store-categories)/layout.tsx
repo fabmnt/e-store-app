@@ -44,7 +44,9 @@ export default function PublicStoreLayout({
               </div>
             </div>
           </Container>
-          <Container>{children}</Container>
+          <div className="motion-opacity-in motion-delay-150">
+            <Container>{children}</Container>
+          </div>
           <Header />
         </div>
       </ThemeProvider>

@@ -3,14 +3,12 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { Alert, AlertTitle } from '@/components/ui/alert';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   ProductCard,
   ProductCardMobile,
 } from '@/features/products/components/product-card';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { client } from '@/lib/orpc';
 
 export function ProductsGrid() {
@@ -24,7 +22,6 @@ export function ProductsGrid() {
     defaultValue: '',
     clearOnDefault: true,
   });
-  const isMobile = useIsMobile();
 
   const normalizedQuery = search || undefined;
   const normalizedQueryTag = queryTag || undefined;
@@ -54,44 +51,38 @@ export function ProductsGrid() {
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {products.map((product) =>
-        isMobile ? (
-          <ProductCardMobile key={product.id} product={product} />
-        ) : (
-          <ProductCard key={product.id} product={product} />
-        )
-      )}
+      {products.map((product) => (
+        <div key={product.id}>
+          <div className="block md:hidden">
+            <ProductCardMobile key={product.id} product={product} />
+          </div>
+          <div className="hidden md:block">
+            <ProductCard key={product.id} product={product} />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
 export function ProductsGridSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static
         <div className="space-y-1" key={index}>
-          <Card className="rounded-none">
-            <CardContent className="rounded-none">
-              <div className="space-y-2">
-                <AspectRatio
-                  className="mx-auto max-w-[280px] rounded-none xl:max-w-[320px]"
-                  ratio={1}
-                >
-                  <Skeleton className="h-full w-full rounded-none" />
-                </AspectRatio>
-                <div className="flex justify-between gap-4">
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-5/6" />
-                  </div>
-                  <div className="w-16 shrink-0">
-                    <Skeleton className="h-4 w-full" />
-                  </div>
+          <Card className="rounded-none p-0">
+            <CardContent className="space-y-2 rounded-none p-0">
+              <Skeleton className="h-[200px] w-full rounded-none" />
+              <div className="px-1">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <Skeleton className="h-3 w-5/6" />
+                  <Skeleton className="h-3 w-5/6" />
+                  <Skeleton className="h-4 w-3/4" />
                 </div>
-                <div>
-                  <Skeleton className="h-10 w-full rounded-sm" />
-                </div>
+              </div>
+              <div>
+                <Skeleton className="h-10 w-full rounded-none" />
               </div>
             </CardContent>
           </Card>
