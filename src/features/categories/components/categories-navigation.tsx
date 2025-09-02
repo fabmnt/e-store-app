@@ -20,38 +20,39 @@ export function CategoriesNavigation() {
   const categories = store.categories;
 
   return (
-    <nav className="flex max-w-[360px] items-center gap-x-4 overflow-x-auto pb-3 xl:max-w-fit xl:gap-x-6">
-      <Button
-        asChild
-        className={cn('relative px-5 py-5 tracking-tight xl:px-10')}
-        variant={pathname === `/s/${storeSlug}` ? 'default' : 'secondary'}
+    <div className="">
+      <nav
+        className="flex max-w-[360px] items-center gap-x-4 overflow-x-auto xl:max-w-fit xl:gap-x-6"
+        style={{
+          scrollbarWidth: 'none',
+        }}
       >
-        <Link href={`/s/${storeSlug}/`}>
-          <span>Todos</span>
-          {/*           {pathname === `/s/${storeSlug}` && (
-            <span className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
-          )} */}
-        </Link>
-      </Button>
-      {categories.map((category) => (
         <Button
           asChild
           className={cn('relative px-5 py-5 tracking-tight xl:px-10')}
-          key={category.id}
-          variant={
-            pathname === `/s/${storeSlug}/${category.slug}`
-              ? 'default'
-              : 'secondary'
-          }
+          variant={pathname === `/s/${storeSlug}` ? 'default' : 'secondary'}
         >
-          <Link href={`/s/${storeSlug}/${category.slug}`}>
-            <span>{category.name}</span>
-            {/*             {pathname === `/s/${storeSlug}/${category.slug}` && (
-              <span className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
-            )} */}
+          <Link href={`/s/${storeSlug}/`}>
+            <span>Todos</span>
           </Link>
         </Button>
-      ))}
-    </nav>
+        {categories.map((category) => (
+          <Button
+            asChild
+            className={cn('relative px-5 py-5 tracking-tight xl:px-10')}
+            key={category.id}
+            variant={
+              pathname === `/s/${storeSlug}/${category.slug}`
+                ? 'default'
+                : 'secondary'
+            }
+          >
+            <Link href={`/s/${storeSlug}/${category.slug}`}>
+              <span>{category.name}</span>
+            </Link>
+          </Button>
+        ))}
+      </nav>
+    </div>
   );
 }

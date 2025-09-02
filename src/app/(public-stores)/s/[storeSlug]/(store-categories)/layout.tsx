@@ -1,5 +1,6 @@
 import { Container } from '@/components/container';
 import { Header } from '@/components/header';
+import { StickyBackdrop } from '@/components/sticky-backdrop';
 import { CategoriesNavigation } from '@/features/categories/components/categories-navigation';
 import { SearchInput } from '@/features/products/components/search-input';
 import { StoreHero } from '@/features/stores/components/store-hero';
@@ -20,19 +21,22 @@ export default function PublicStoreLayout({
         enableSystem
         forcedTheme="light"
       >
-        <div className="space-y-8">
-          <Header />
+        <div className="space-y-2">
           <Container>
-            <div className="motion-opacity-in motion-translate-y-in-50 overflow-hidden">
-              <StoreHero />
+            <div className="pt-4 pb-2">
+              <div className="motion-opacity-in motion-translate-y-in-50 overflow-hidden">
+                <StoreHero />
+              </div>
             </div>
           </Container>
+          <StickyBackdrop className="motion-opacity-in motion-translate-y-in-50 motion-delay-100 sticky top-0 z-10 bg-background">
+            <Container>
+              <CategoriesNavigation />
+            </Container>
+          </StickyBackdrop>
           <Container>
-            <div className="motion-opacity-in motion-translate-y-in-50 motion-delay-100 flex flex-col gap-y-4 overflow-y-hidden">
-              <section className="flex justify-center">
-                <CategoriesNavigation />
-              </section>
-              <div className="flex w-full flex-col justify-between gap-4 py-2 xl:flex-row">
+            <div className="flex flex-col gap-y-4">
+              <div className="motion-opacity-in motion-translate-y-in-50 motion-delay-100 flex w-full flex-col justify-between gap-4 py-2 xl:flex-row">
                 <SearchInput />
                 <div>
                   <TagsNavigationWrapper />
@@ -41,6 +45,7 @@ export default function PublicStoreLayout({
             </div>
           </Container>
           <Container>{children}</Container>
+          <Header />
         </div>
       </ThemeProvider>
     </div>

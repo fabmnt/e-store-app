@@ -43,7 +43,7 @@ export default function RootLayout({
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <TanstackQueryClientProvider>
             {children}
-            <Toaster />
+            <Toaster position="top-center" />
           </TanstackQueryClientProvider>
         </NuqsAdapter>
       </body>

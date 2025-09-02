@@ -38,7 +38,7 @@ export function Header() {
   const whatsappText = `Hola, quiero comprar los siguientes productos: ${items.map((item) => item.product.name).join(', ')}`;
 
   return (
-    <div className="sticky top-0 z-50 border-b bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="fixed bottom-0 z-50 w-full border-y bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Container>
         <header className="flex items-center">
           <div className="flex-1">
