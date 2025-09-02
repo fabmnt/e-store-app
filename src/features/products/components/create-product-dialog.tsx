@@ -94,11 +94,6 @@ export function CreateProductDialog() {
     validators: {
       onSubmit: productCreateSchema,
     },
-    listeners: {
-      onChange: ({ formApi }) => {
-        console.log(formApi.state.values);
-      },
-    },
     onSubmit: ({ value }) => {
       execute({
         ...value,

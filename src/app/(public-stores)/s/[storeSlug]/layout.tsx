@@ -13,7 +13,7 @@ export async function generateMetadata({
     (await client.storeImages.getStoreLogo.call({
       storeSlug,
     })) ?? {};
-  console.log('storeLogo', storeLogo);
+
   return {
     title: store?.name ?? '',
     description: store?.description ?? '',

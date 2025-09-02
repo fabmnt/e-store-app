@@ -6,7 +6,11 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ProductCard } from '@/features/products/components/product-card';
+import {
+  ProductCard,
+  ProductCardMobile,
+} from '@/features/products/components/product-card';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { client } from '@/lib/orpc';
 
 export function ProductsGrid() {
@@ -20,6 +24,7 @@ export function ProductsGrid() {
     defaultValue: '',
     clearOnDefault: true,
   });
+  const isMobile = useIsMobile();
 
   const normalizedQuery = search || undefined;
   const normalizedQueryTag = queryTag || undefined;
@@ -48,10 +53,14 @@ export function ProductsGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {products.map((product) =>
+        isMobile ? (
+          <ProductCardMobile key={product.id} product={product} />
+        ) : (
+          <ProductCard key={product.id} product={product} />
+        )
+      )}
     </div>
   );
 }
