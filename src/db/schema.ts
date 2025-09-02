@@ -97,6 +97,7 @@ export const storeImage = pgTable('store_image', {
   id: uuid().defaultRandom().primaryKey(),
   url: text().notNull(),
   fileKey: text().notNull(),
+  fileType: text(),
   type: storeImageType('type'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   storeId: uuid('store_id').references(() => store.id, {

@@ -112,6 +112,7 @@ export const ourFileRouter = {
         fileKey: file.key,
         url: file.ufsUrl,
         storeId: metadata.storeId,
+        fileType: file.type,
       });
     }),
 } satisfies FileRouter;

@@ -8,6 +8,7 @@ export const storeImageSchema = z.object({
   id: z.uuid(),
   url: z.url(),
   fileKey: z.string(),
+  fileType: z.string().nullable(),
   type: storeImageTypeSchema.nullable(),
   createdAt: z.coerce.date(),
   storeId: z.uuid().nullable(),

@@ -33,7 +33,9 @@ export const storeImagesQueries = {
     }),
   getStoreLogo: publicOs
     .input(z.object({ storeSlug: z.string() }))
-    .output(z.object({ logoUrl: z.string(), store: storeSchema }).optional())
+    .output(
+      z.object({ storeLogo: storeImageSchema, store: storeSchema }).optional()
+    )
     .handler(async ({ input }) => {
       const storeFound = await db.query.store.findFirst({
         where: eq(store.slug, input.storeSlug),
@@ -54,6 +56,6 @@ export const storeImagesQueries = {
         return;
       }
 
-      return { logoUrl: storeLogo.url, store: storeFound };
+      return { storeLogo, store: storeFound };
     }),
 };
